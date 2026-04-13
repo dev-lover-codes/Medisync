@@ -127,7 +127,7 @@ export default function BookAppointment() {
   }
 
   return (
-    <div className="p-8 pb-24 bg-[#faf9fa] min-h-screen flex justify-center items-start">
+    <div className="p-4 md:p-8 pb-24 bg-[#faf9fa] min-h-screen flex justify-center items-start">
       <div className="max-w-3xl w-full">
         
         {/* Header */}

@@ -56,7 +56,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-12 min-h-screen">
       {/* Welcome Banner Section */}
       <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary to-[#8e7492] p-8 text-on-primary shadow-xl shadow-primary/10">
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-end md:items-center">
@@ -293,8 +293,7 @@ const Dashboard = () => {
           </section>
         </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default Dashboard;

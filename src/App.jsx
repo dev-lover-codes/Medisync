@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/shared/ProtectedRoute';
@@ -32,12 +33,14 @@ import Sidebar from './components/shared/Sidebar';
 import Navbar from './components/shared/Navbar';
 
 const Layout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar />
-      <div className="flex-1 flex flex-col w-full h-full">
-        <Navbar />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-surface-container-low p-6">
+    <div className="flex h-screen overflow-hidden bg-background relative">
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <div className="flex-1 flex flex-col w-full h-full min-w-0">
+        <Navbar onMenuClick={() => setIsSidebarOpen(true)} />
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-surface-container-low p-4 md:p-6 pb-20 md:pb-6">
           <Outlet />
         </main>
       </div>
