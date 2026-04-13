@@ -7,9 +7,7 @@ CREATE TABLE profiles (
   gender TEXT,
   blood_group TEXT,
   address TEXT,
-  role TEXT DEFAULT 'patient', 
-  -- roles: patient, doctor
-  , admin, nurse, pharmacist
+  role TEXT DEFAULT 'patient', -- roles: patient, doctor, admin, nurse, pharmacist
   emergency_contact_name TEXT,
   emergency_contact_phone TEXT,
   known_allergies TEXT,
