@@ -77,13 +77,16 @@ function App() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="bed-management" element={<BedManagement />} />
             <Route path="inventory" element={<Inventory />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
 
           {/* Doctor Routes */}
           <Route path="/doctor" element={<ProtectedRoute allowedRoles={['doctor']}><Layout /></ProtectedRoute>}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DoctorDashboard />} />
+            <Route path="appointments" element={<DoctorDashboard />} /> {/* Fallback since missing */}
             <Route path="write-prescription" element={<WritePrescription />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>
       </Router>

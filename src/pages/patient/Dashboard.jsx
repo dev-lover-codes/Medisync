@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Dashboard = () => {
   const { user, userProfile } = useAuth();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [pendingBillsTotal, setPendingBillsTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -148,7 +150,7 @@ const Dashboard = () => {
           <section>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-on-surface">Upcoming Appointments</h2>
-              <button className="text-primary text-sm font-bold hover:underline">View All</button>
+              <Link to="/patient/appointments" className="text-primary text-sm font-bold hover:underline">View All</Link>
             </div>
             <div className="space-y-4">
               
@@ -212,10 +214,10 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="bg-surface-container-low p-4 text-center">
-                <button className="text-primary text-sm font-bold flex items-center justify-center gap-2 w-full hover:underline">
+                <Link to="/patient/prescriptions" className="text-primary text-sm font-bold flex items-center justify-center gap-2 w-full hover:underline">
                   <span className="material-symbols-outlined text-[18px]">receipt_long</span>
                   Request Refill
-                </button>
+                </Link>
               </div>
             </div>
           </section>
@@ -272,7 +274,7 @@ const Dashboard = () => {
             <p className="text-sm text-on-surface-variant leading-relaxed mb-6">
               Stay hydrated! Aim for at least 3 liters of water today to improve your energy levels and help with your recent BP readings.
             </p>
-            <button className="w-full py-3 bg-primary text-on-primary font-bold rounded-xl hover:scale-[0.98] transition-transform active:opacity-80">
+            <button onClick={() => navigate('/patient/ai-symptom-checker')} className="w-full py-3 bg-primary text-on-primary font-bold rounded-xl hover:scale-[0.98] transition-transform active:opacity-80">
               Ask AI More
             </button>
           </section>
@@ -281,11 +283,11 @@ const Dashboard = () => {
           <section>
             <h2 className="text-xl font-bold text-on-surface mb-4">Quick Actions</h2>
             <div className="grid grid-cols-2 gap-4">
-              <button className="p-4 bg-surface-container-lowest rounded-2xl flex flex-col items-center justify-center gap-3 hover:bg-primary-container/20 transition-all group shadow-sm border border-transparent hover:border-primary-container">
+              <button onClick={() => navigate('/patient/book-appointment')} className="p-4 bg-surface-container-lowest rounded-2xl flex flex-col items-center justify-center gap-3 hover:bg-primary-container/20 transition-all group shadow-sm border border-transparent hover:border-primary-container">
                 <span className="material-symbols-outlined text-3xl text-primary group-hover:scale-110 transition-transform">add_circle</span>
                 <span className="text-xs font-bold text-on-surface">Book Appt</span>
               </button>
-              <button className="p-4 bg-surface-container-lowest rounded-2xl flex flex-col items-center justify-center gap-3 hover:bg-primary-container/20 transition-all group shadow-sm border border-transparent hover:border-primary-container">
+              <button onClick={() => navigate('/patient/ai-symptom-checker')} className="p-4 bg-surface-container-lowest rounded-2xl flex flex-col items-center justify-center gap-3 hover:bg-primary-container/20 transition-all group shadow-sm border border-transparent hover:border-primary-container">
                 <span className="material-symbols-outlined text-3xl text-primary group-hover:scale-110 transition-transform">chat</span>
                 <span className="text-xs font-bold text-on-surface">AI Consult</span>
               </button>

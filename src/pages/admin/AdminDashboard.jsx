@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { Link } from 'react-router-dom';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -197,10 +198,10 @@ export default function AdminDashboard() {
             </div>
 
             <div className="pt-4 border-t border-outline-variant/10">
-              <button className="w-full py-3 bg- surface-container-high text-on-surface font-bold rounded-xl hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2">
+              <Link to="/admin/profile" className="w-full py-3 bg-surface-container-high text-on-surface font-bold rounded-xl hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2">
                 <span className="material-symbols-outlined text-sm">settings</span>
                 System Settings
-              </button>
+              </Link>
             </div>
           </div>
         </div>

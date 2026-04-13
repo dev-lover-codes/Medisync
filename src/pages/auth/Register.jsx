@@ -221,7 +221,7 @@ export default function Register() {
 
           {renderStepIndicator()}
 
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); if (currentStep === 3) handleSubmit(e); else handleNext(); }}>
             <div className="transition-all duration-300">
               {/* STEP 1: Personal Info */}
               {currentStep === 1 && (

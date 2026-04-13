@@ -47,9 +47,9 @@ export default function LandingPage() {
                 Precision medicine meets human connection. Our platform connects you with the world's leading specialists through AI-driven insights and 3D diagnostics.
               </p>
               <div className="flex flex-wrap gap-4">
-                <button className="px-8 py-4 bg-gradient-to-br from-primary to-primary-container text-white rounded-full font-bold shadow-lg shadow-primary-container/40 hover:scale-105 active:scale-95 transition-all">
+                <Link to="/login" className="px-8 py-4 bg-gradient-to-br from-primary to-primary-container text-white rounded-full font-bold shadow-lg shadow-primary-container/40 hover:scale-105 active:scale-95 transition-all inline-block">
                   Book Consultation
-                </button>
+                </Link>
                 <button className="px-8 py-4 bg-surface-container-high text-primary rounded-full font-bold hover:bg-surface-container-highest transition-all flex items-center gap-2">
                   <span className="material-symbols-outlined">play_circle</span>
                   Watch Tour
@@ -96,7 +96,7 @@ export default function LandingPage() {
                     <p className="italic text-sm">"Hello, I'm your DoczNow assistant. How are you feeling today?"</p>
                   </div>
                 </div>
-                <button className="relative bg-white text-primary px-8 py-3 rounded-full font-bold w-fit mt-8 hover:shadow-xl transition-all active:scale-95">Start Chat</button>
+                <Link to="/login" className="relative bg-white text-primary px-8 py-3 rounded-full font-bold w-fit mt-8 hover:shadow-xl transition-all active:scale-95 block">Start Chat</Link>
               </div>
 
               <div className="md:col-span-2 bg-surface-container-lowest p-8 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
@@ -221,9 +221,9 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <button className="fixed bottom-28 right-8 z-[60] bg-primary text-white w-16 h-16 rounded-full shadow-2xl shadow-primary/40 flex items-center justify-center group hover:scale-110 active:scale-95 transition-all">
+      <Link to="/login" className="fixed bottom-28 right-8 z-[60] bg-primary text-white w-16 h-16 rounded-full shadow-2xl shadow-primary/40 flex items-center justify-center group hover:scale-110 active:scale-95 transition-all">
         <span className="material-symbols-outlined text-3xl group-hover:rotate-12 transition-transform" style={{fontVariationSettings: "'FILL' 1"}}>auto_awesome</span>
-      </button>
+      </Link>
 
       <footer className="md:hidden fixed bottom-0 left-0 w-full rounded-t-[2rem] z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl shadow-[0_-10px_40px_rgba(188,158,191,0.15)] bg-gradient-to-b from-[#faf9fa] to-[#f4f3f4]">
         <div className="fixed bottom-0 w-full flex justify-around items-end px-4 pb-6 pt-2">

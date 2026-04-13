@@ -25,13 +25,13 @@ const Sidebar = ({ isOpen, onClose }) => {
       { to: '/doctor/dashboard', icon: 'dashboard', label: 'Doctor Dashboard' },
       { to: '/doctor/appointments', icon: 'calendar_today', label: 'Appointments' },
       { to: '/doctor/write-prescription', icon: 'edit_note', label: 'Write Prescription' },
-      { to: '/patient/profile', icon: 'settings', label: 'Profile' },
+      { to: '/doctor/profile', icon: 'settings', label: 'Profile' },
     ],
     admin: [
       { to: '/admin/dashboard', icon: 'admin_panel_settings', label: 'Admin Center' },
       { to: '/admin/bed-management', icon: 'bed', label: 'Beds' },
       { to: '/admin/inventory', icon: 'inventory', label: 'Inventory' },
-      { to: '/patient/profile', icon: 'settings', label: 'Settings' },
+      { to: '/admin/profile', icon: 'settings', label: 'Settings' },
     ]
   };
 
