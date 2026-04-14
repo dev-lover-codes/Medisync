@@ -95,12 +95,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signIn = async (email, password) => {
-    const { data: { user, session }, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     
     if (error) return { user: null, role: null, error };
+    
+    const { user } = data;
     
     // Fetch profile early so we can return the role immediately for routing
     const { data: profileData, error: profileError } = await supabase

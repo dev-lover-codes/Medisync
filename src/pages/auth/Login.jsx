@@ -20,21 +20,28 @@ export default function Login() {
     setIsLoading(true);
     setErrorMsg('');
     
-    // We try to sign in ignoring the selected role tab 
-    // because Supabase auth handles role retrieval post-login
-    const { user, role: userRole, error } = await signIn(email, password);
-    
-    setIsLoading(false);
-    
-    if (error) {
-      setErrorMsg(error.message);
-      return;
-    }
+    try {
+      // We try to sign in ignoring the selected role tab 
+      // because Supabase auth handles role retrieval post-login
+      const { user, role: userRole, error } = await signIn(email, password);
+      
+      if (error) {
+        setErrorMsg(error.message);
+        setIsLoading(false);
+        return;
+      }
 
-    if (userRole === 'patient') navigate('/patient/dashboard');
-    else if (userRole === 'admin') navigate('/admin/dashboard');
-    else if (userRole === 'doctor') navigate('/doctor/dashboard');
-    else navigate('/patient/dashboard'); // default fallback
+      setIsLoading(false);
+
+      if (userRole === 'patient') navigate('/patient/dashboard');
+      else if (userRole === 'admin') navigate('/admin/dashboard');
+      else if (userRole === 'doctor') navigate('/doctor/dashboard');
+      else navigate('/patient/dashboard'); // default fallback
+    } catch (err) {
+      console.error("Login Error:", err);
+      setErrorMsg("An unexpected error occurred. Please try again.");
+      setIsLoading(false);
+    }
   };
 
   return (

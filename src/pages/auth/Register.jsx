@@ -123,17 +123,23 @@ export default function Register() {
       emergency_contact_phone: formData.emergencyPhone
     };
 
-    // Provide default 'patient' role
-    const { data, error } = await signUp(formData.email, formData.password, formData.fullName, 'patient', extraData);
-    
-    setIsLoading(false);
+    try {
+      // Provide default 'patient' role
+      const { data, error } = await signUp(formData.email, formData.password, formData.fullName, 'patient', extraData);
+      
+      if (error) {
+        setErrorMsg(error.message);
+        setIsLoading(false);
+        return;
+      }
 
-    if (error) {
-      setErrorMsg(error.message);
-      return;
+      setIsLoading(false);
+      navigate('/patient/dashboard');
+    } catch (err) {
+      console.error("Registration Error:", err);
+      setErrorMsg("An unexpected error occurred. Please try again.");
+      setIsLoading(false);
     }
-
-    navigate('/patient/dashboard');
   };
 
   const renderStepIndicator = () => {
