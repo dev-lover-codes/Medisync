@@ -80,42 +80,67 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signUp = async (email, password, fullName, role, extraData) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          role: role,
-          ...extraData
-        }
+    try {
+      if (!supabase) {
+        throw new Error("Supabase is not initialized. Check your environment variables.");
       }
-    });
-    return { data, error };
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            role: role,
+            ...extraData
+          }
+        }
+      });
+      return { data, error };
+    } catch (err) {
+      console.error("Critical Sign Up Error:", err);
+      return { data: null, error: err };
+    }
   };
 
   const signIn = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    if (error) return { user: null, role: null, error };
-    
-    const { user } = data;
-    
-    // Fetch profile early so we can return the role immediately for routing
-    const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
+    try {
+      if (!supabase) {
+        throw new Error("Supabase is not initialized. Check your environment variables.");
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
       
-    if (profileError) {
-      return { user, role: 'patient', error: profileError };
+      if (error) {
+        console.error("Auth Error:", error);
+        return { user: null, role: null, error };
+      }
+      
+      const { user } = data;
+      if (!user) {
+        throw new Error("No user returned from Supabase after successful sign in.");
+      }
+      
+      // Fetch profile early so we can return the role immediately for routing
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+        
+      if (profileError) {
+        console.warn("Profile fetch error during sign in:", profileError);
+        return { user, role: 'patient', error: null }; // Default to patient if profile fetch fails but auth succeeded
+      }
+      
+      return { user, role: profileData?.role || 'patient', error: null };
+    } catch (err) {
+      console.error("Critical Sign In Error:", err);
+      return { user: null, role: null, error: err };
     }
-    
-    return { user, role: profileData.role, error: null };
   };
 
   const signOut = async () => {
