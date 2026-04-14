@@ -1,15 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
-  <!-- Outer Heart Paths (Stylized circuit lines) -->
-  <path d="M60 100C60 100 15 65 15 35C15 18 28 8 40 8C50 8 57 15 60 22C63 15 70 8 80 8C92 8 105 18 105 35C105 52 88 68 76 77" stroke="#38bdf8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M60 85C60 85 28 58 28 35C28 24 35 18 42 18C49 18 55 24 60 30C65 24 71 18 78 18C85 18 92 24 92 35C92 48 81 58 72 65" stroke="#38bdf8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Rounded Rect / Pill shape -->
+  <g transform="rotate(-40 370 280)">
+    <rect x="180" y="240" width="300" height="60" rx="30" fill="#4fd1c5" />
+  </g>
   
-  <!-- The Pill/Slash Shape diagonally in the center -->
-  <rect x="42" y="52" width="60" height="20" rx="10" transform="rotate(-45 60 60)" fill="#34d399" />
-  
-  <!-- Line cutting the pill in half -->
-  <path d="M48 62 L 72 62" stroke="#0f172a" stroke-width="3" transform="rotate(-45 60 60)" />
-
-  <!-- Inner circle / heart core -->
-  <circle cx="35" cy="40" r="4" fill="#38bdf8" />
-  <path d="M35 48 C 35 48 45 48 50 40" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" />
+  <!-- Contentric heart lines -->
+  <path d="M256 460C256 460 60 330 60 170C60 90 120 40 180 40C220 40 245 65 256 95C267 65 292 40 332 40C392 40 452 90 452 170C452 230 400 300 340 360" stroke="#4fd1c5" stroke-width="20" stroke-linecap="round" fill="none"/>
+  <path d="M256 400C256 400 100 300 100 170C100 110 140 70 180 70C210 70 230 85 240 110C250 85 270 70 300 70C340 70 380 110 380 170C380 210 350 260 310 300" stroke="#4fd1c5" stroke-width="20" stroke-linecap="round" fill="none"/>
+  <path d="M256 340C256 340 140 270 140 170C140 130 160 100 185 100C205 100 220 110 230 130C240 110 255 100 275 100C300 100 320 130 320 170C320 200 300 230 270 260" stroke="#4fd1c5" stroke-width="20" stroke-linecap="round" fill="none"/>
+  <path d="M256 280C256 280 180 240 180 170C180 150 190 130 205 130C220 130 230 140 230 150C230 140 245 130 260 130C275 130 285 150 285 170" stroke="#4fd1c5" stroke-width="20" stroke-linecap="round" fill="none"/>
 </svg>
