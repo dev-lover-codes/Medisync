@@ -48,7 +48,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       <aside className={`fixed md:static inset-y-0 left-0 w-64 h-full flex flex-col p-6 bg-white border-r border-outline-variant/20 z-50 overflow-y-auto transition-transform duration-300 transform ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <div className="flex items-center justify-between mb-8 p-2 text-primary">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-3xl font-bold" style={{ fontVariationSettings: "'FILL' 1" }}>medical_services</span>
+            <img src="/logo.svg" alt="MediSync Logo" className="w-8 h-8" />
             <span className="text-2xl font-extrabold font-headline tracking-tighter">MediSync</span>
           </div>
           <button onClick={onClose} className="md:hidden p-2 hover:bg-surface-container-high rounded-full">

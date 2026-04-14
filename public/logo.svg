@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Outer Heart Paths (Stylized circuit lines) -->
+  <path d="M60 100C60 100 15 65 15 35C15 18 28 8 40 8C50 8 57 15 60 22C63 15 70 8 80 8C92 8 105 18 105 35C105 52 88 68 76 77" stroke="#38bdf8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60 85C60 85 28 58 28 35C28 24 35 18 42 18C49 18 55 24 60 30C65 24 71 18 78 18C85 18 92 24 92 35C92 48 81 58 72 65" stroke="#38bdf8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- The Pill/Slash Shape diagonally in the center -->
+  <rect x="42" y="52" width="60" height="20" rx="10" transform="rotate(-45 60 60)" fill="#34d399" />
+  
+  <!-- Line cutting the pill in half -->
+  <path d="M48 62 L 72 62" stroke="#0f172a" stroke-width="3" transform="rotate(-45 60 60)" />
+
+  <!-- Inner circle / heart core -->
+  <circle cx="35" cy="40" r="4" fill="#38bdf8" />
+  <path d="M35 48 C 35 48 45 48 50 40" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" />
+</svg>

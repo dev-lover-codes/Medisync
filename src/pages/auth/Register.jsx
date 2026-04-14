@@ -184,8 +184,8 @@ export default function Register() {
         <div className="absolute top-[-10%] left-[-10%] w-64 h-64 bg-primary-container/20 rounded-full blur-[100px] z-[-1]"></div>
         <div className="absolute bottom-[-15%] right-[-15%] w-96 h-96 bg-secondary-container/30 rounded-full blur-[120px] z-[-1]"></div>
         <div className="z-10 flex flex-col items-center justify-center space-y-8">
-          <div className="w-24 h-24 bg-white/10 rounded-[2rem] border border-white/20 backdrop-blur-md flex justify-center items-center shadow-2xl">
-             <span className="material-symbols-outlined text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>app_registration</span>
+          <div className="w-24 h-24 bg-white/10 rounded-[2rem] border border-white/20 backdrop-blur-md flex justify-center items-center shadow-2xl p-4">
+             <img src="/logo.svg" alt="MediSync" className="w-full h-full object-contain drop-shadow-lg" />
           </div>
           <div className="space-y-4">
             <h1 className="font-headline font-extrabold text-5xl tracking-tight text-white drop-shadow-sm">

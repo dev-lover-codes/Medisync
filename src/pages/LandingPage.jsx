@@ -8,7 +8,10 @@ export default function LandingPage() {
       <header className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl shadow-xl shadow-purple-900/5 bg-gradient-to-b from-[#faf9fa] to-[#f4f3f4]">
         <nav className="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
           <div className="flex items-center gap-8">
-            <span className="text-2xl font-extrabold tracking-tight text-purple-700 dark:text-purple-300 font-headline">DoczNow</span>
+            <div className="flex items-center gap-2">
+              <img src="/logo.svg" alt="Logo" className="w-8 h-8" />
+              <span className="text-2xl font-extrabold tracking-tight text-purple-700 dark:text-purple-300 font-headline">DoczNow</span>
+            </div>
             <div className="hidden md:flex items-center gap-6">
               <a className="text-purple-700 font-bold border-b-2 border-purple-500 font-headline py-1 transition-all" href="#">Home</a>
               <a className="text-slate-500 hover:text-purple-600 transition-all font-headline py-1" href="#doctors">Doctors</a>
