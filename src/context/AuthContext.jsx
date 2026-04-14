@@ -15,18 +15,29 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
-      if (!supabase) {
-        setLoading(false);
-        return;
-      }
-      setLoading(true);
-      const { data: { session }, error } = await supabase.auth.getSession();
-      
-      if (session) {
-        setSession(session);
-        setUser(session.user);
-        await fetchProfile(session.user.id);
-      } else {
+      try {
+        if (!supabase) {
+          setLoading(false);
+          return;
+        }
+
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error getting initial session:", error);
+          setLoading(false);
+          return;
+        }
+
+        const session = data?.session;
+        if (session) {
+          setSession(session);
+          setUser(session.user);
+          await fetchProfile(session.user.id);
+        } else {
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error("Critical error in getInitialSession:", err);
         setLoading(false);
       }
     };
@@ -38,6 +49,7 @@ export const AuthProvider = ({ children }) => {
     if (supabase) {
       const { data } = supabase.auth.onAuthStateChange(
         async (event, newSession) => {
+          console.log("Auth State Change:", event);
           setSession(newSession);
           setUser(newSession?.user ?? null);
           
@@ -51,15 +63,24 @@ export const AuthProvider = ({ children }) => {
         }
       );
       authListener = data;
+    } else {
+      setLoading(false);
     }
+
+    // Safety timeout: ensure loading is set to false eventually
+    const safetyTimeout = setTimeout(() => {
+      setLoading(false);
+    }, 10000); // 10 seconds max loading
 
     return () => {
       if (authListener) authListener.subscription.unsubscribe();
+      clearTimeout(safetyTimeout);
     };
   }, []);
 
   const fetchProfile = async (userId) => {
     try {
+      console.log("Fetching profile for:", userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -68,13 +89,18 @@ export const AuthProvider = ({ children }) => {
         
       if (error) {
         console.error('Error fetching profile:', error.message);
+        setRole('patient'); // Fallback role
       } else if (data) {
         setUserProfile(data);
-        setRole(data.role);
+        setRole(data.role || 'patient');
+      } else {
+        setRole('patient'); // Fallback role
       }
     } catch (err) {
       console.error('Fetch profile error:', err);
+      setRole('patient'); // Fallback role
     } finally {
+      console.log("Profile fetch complete, setting loading false");
       setLoading(false);
     }
   };

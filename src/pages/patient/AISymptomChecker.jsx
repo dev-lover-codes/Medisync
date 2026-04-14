@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 export default function AISymptomChecker() {
-  const { user, profile } = useAuth();
+  const { user, userProfile } = useAuth();
   const [messages, setMessages] = useState([
     { 
       role: 'assistant', 
-      content: `Hello${profile?.full_name ? ' ' + profile.full_name : ''}. I'm MediSync's AI Health Assistant. Please describe your symptoms in detail so I can help you understand potential causes and whether you should see a doctor.` 
+      content: `Hello${userProfile?.full_name ? ' ' + userProfile.full_name : ''}. I'm MediSync's AI Health Assistant. Please describe your symptoms in detail so I can help you understand potential causes and whether you should see a doctor.` 
     }
   ]);
   const [input, setInput] = useState('');
@@ -33,28 +33,36 @@ export default function AISymptomChecker() {
         throw new Error('API key not found');
       }
 
-      // Note: Calling Anthropic directly from the browser may result in CORS errors.
-      // In production, this should be routed through your backend (e.g., Supabase Edge Functions).
-      // Here we implement a simulated fallback if the API call fails or is not meant to be used client-side.
+      // Anthropic API requires messages to start with 'user'
+      const apiMessages = messages
+        .concat(userMessage)
+        .filter(m => m.role === 'user' || m.role === 'assistant');
       
+      // If the first message is 'assistant', Anthropic will return 400.
+      // We take only the messages starting from the first 'user' message for the API call.
+      const firstUserIdx = apiMessages.findIndex(m => m.role === 'user');
+      const finalApiMessages = firstUserIdx !== -1 ? apiMessages.slice(firstUserIdx) : apiMessages;
+
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
           'anthropic-version': '2023-06-01',
-          'anthropic-dangerously-allow-browser': 'true' // For local testing only
+          'anthropic-dangerously-allow-browser': 'true'
         },
         body: JSON.stringify({
           model: 'claude-3-haiku-20240307',
           max_tokens: 500,
           system: "You are a helpful medical AI assistant for MediSync Hospital Management System. Always clarify that you are an AI and not a doctor. Provide general guidance based on symptoms but strongly recommend visiting a doctor or booking an appointment for a real diagnosis.",
-          messages: messages.concat(userMessage).map(m => ({ role: m.role, content: m.content }))
+          messages: finalApiMessages.map(m => ({ role: m.role, content: m.content }))
         })
       });
 
       if (!response.ok) {
-        throw new Error('API Request failed');
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Anthropic API Error:", errorData);
+        throw new Error(errorData.error?.message || 'API Request failed');
       }
 
       const data = await response.json();
@@ -63,6 +71,7 @@ export default function AISymptomChecker() {
         role: 'assistant', 
         content: data.content[0].text 
       }]);
+      setLoading(false);
 
     } catch (error) {
       console.warn("API call failed (likely due to CORS or missing key). Falling back to simulated response.", error);
@@ -106,7 +115,7 @@ export default function AISymptomChecker() {
                 {/* Avatar */}
                 <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white ${msg.role === 'user' ? 'bg-[#bc9ebf]' : 'bg-[#6f5673]'}`}>
                   {msg.role === 'user' ? (
-                    <span className="font-bold text-sm leading-none">{profile?.full_name?.charAt(0) || 'U'}</span>
+                    <span className="font-bold text-sm leading-none">{userProfile?.full_name?.charAt(0) || 'U'}</span>
                   ) : (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.536 5.879a1 1 0 001.415 0 3 3 0 014.242 0 1 1 0 001.415-1.415 5 5 0 00-7.072 0 1 1 0 000 1.415z" clipRule="evenodd" />
