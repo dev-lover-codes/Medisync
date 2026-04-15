@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log("Fetching profile for:", userId);
       const { data, error } = await supabase
-        .from('profiles')
+        .from('users')
         .select('*')
         .eq('id', userId)
         .single();
@@ -152,7 +152,7 @@ export const AuthProvider = ({ children }) => {
       
       // Fetch profile early so we can return the role immediately for routing
       const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
+        .from('users')
         .select('*')
         .eq('id', user.id)
         .single();
