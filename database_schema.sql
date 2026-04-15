@@ -1,137 +1,161 @@
--- PROFILES TABLE (extends Supabase auth.users)
-CREATE TABLE profiles (
-  id UUID REFERENCES auth.users(id) PRIMARY KEY,
-  full_name TEXT,
-  phone TEXT,
-  date_of_birth DATE,
-  gender TEXT,
-  blood_group TEXT,
+-- MEDICSYNC DATABASE SCHEMA (Synchronized from remote Supabase project)
+
+-- DEPARTMENTS TABLE
+CREATE TABLE departments (
+  department_id SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL,
+  code VARCHAR NOT NULL UNIQUE,
+  floor_number INTEGER,
+  daily_opd_limit INTEGER DEFAULT 100,
+  is_active BOOLEAN DEFAULT true
+);
+
+-- USERS TABLE
+CREATE TABLE users (
+  user_id SERIAL PRIMARY KEY,
+  email VARCHAR NOT NULL UNIQUE,
+  password_hash VARCHAR NOT NULL,
+  role VARCHAR NOT NULL CHECK (role IN ('admin', 'doctor', 'nurse', 'receptionist', 'pharmacist')),
+  linked_id INTEGER,
+  is_active BOOLEAN DEFAULT true,
+  last_login TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- PATIENTS TABLE
+CREATE TABLE patients (
+  patient_id SERIAL PRIMARY KEY,
+  uhid VARCHAR UNIQUE,
+  first_name VARCHAR NOT NULL,
+  last_name VARCHAR NOT NULL,
+  date_of_birth DATE NOT NULL,
+  gender CHAR(1) CHECK (gender IN ('M', 'F', 'O')),
+  blood_group VARCHAR CHECK (blood_group IN ('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-')),
+  phone VARCHAR NOT NULL UNIQUE,
+  email VARCHAR UNIQUE,
   address TEXT,
-  role TEXT DEFAULT 'patient', -- roles: patient, doctor, admin, nurse, pharmacist
-  emergency_contact_name TEXT,
-  emergency_contact_phone TEXT,
-  known_allergies TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  state VARCHAR,
+  pincode VARCHAR,
+  nationality VARCHAR DEFAULT 'Indian',
+  guardian_relation VARCHAR CHECK (guardian_relation IN ('S/o', 'D/o', 'W/o', 'H/o')),
+  guardian_name VARCHAR,
+  id_type VARCHAR CHECK (id_type IN ('Aadhaar', 'Voter ID', 'Passport', 'PAN', 'Other')),
+  id_number VARCHAR,
+  emergency_contact_name VARCHAR,
+  emergency_contact_phone VARCHAR,
+  is_active BOOLEAN DEFAULT true,
+  deleted_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- DOCTORS TABLE
 CREATE TABLE doctors (
-  id UUID REFERENCES auth.users(id) PRIMARY KEY,
-  full_name TEXT,
-  specialization TEXT,
-  department TEXT,
-  experience_years INT,
-  consultation_fee NUMERIC,
-  rating NUMERIC DEFAULT 0,
-  available_today BOOLEAN DEFAULT true,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  doctor_id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(user_id),
+  department_id INTEGER REFERENCES departments(department_id),
+  first_name VARCHAR NOT NULL,
+  last_name VARCHAR NOT NULL,
+  specialization VARCHAR,
+  qualification VARCHAR,
+  phone VARCHAR,
+  email VARCHAR,
+  consultation_fee NUMERIC DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  deleted_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- APPOINTMENTS TABLE
 CREATE TABLE appointments (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  patient_id UUID REFERENCES profiles(id),
-  doctor_id UUID REFERENCES doctors(id),
-  appointment_date DATE,
-  time_slot TEXT,
-  department TEXT,
-  reason TEXT,
-  status TEXT DEFAULT 'upcoming',
-  -- status: upcoming, completed, cancelled
-  consultation_fee NUMERIC,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  appointment_id SERIAL PRIMARY KEY,
+  opd_reg_number VARCHAR UNIQUE,
+  patient_id INTEGER REFERENCES patients(patient_id),
+  doctor_id INTEGER REFERENCES doctors(doctor_id),
+  department_id INTEGER REFERENCES departments(department_id),
+  appointment_date DATE NOT NULL,
+  appointment_time TIME NOT NULL,
+  token_number INTEGER,
+  status VARCHAR DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'completed', 'cancelled', 'no-show')),
+  type VARCHAR DEFAULT 'OPD' CHECK (type IN ('OPD', 'IPD', 'emergency', 'followup')),
+  complaint_text TEXT,
+  visit_number INTEGER DEFAULT 1,
+  is_followup BOOLEAN DEFAULT false,
+  parent_appointment_id INTEGER REFERENCES appointments(appointment_id),
+  id_type VARCHAR,
+  id_number VARCHAR,
+  created_by INTEGER REFERENCES users(user_id),
+  deleted_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- BEDS TABLE
+CREATE TABLE beds (
+  bed_id SERIAL PRIMARY KEY,
+  bed_number VARCHAR NOT NULL,
+  department_id INTEGER REFERENCES departments(department_id),
+  ward_name VARCHAR,
+  bed_type VARCHAR DEFAULT 'general' CHECK (bed_type IN ('general', 'ICU', 'emergency', 'private', 'maternity')),
+  status VARCHAR DEFAULT 'available' CHECK (status IN ('available', 'occupied', 'maintenance', 'reserved')),
+  current_patient_id INTEGER REFERENCES patients(patient_id),
+  admitted_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- BILLING TABLE
+CREATE TABLE billing (
+  bill_id SERIAL PRIMARY KEY,
+  patient_id INTEGER REFERENCES patients(patient_id),
+  appointment_id INTEGER REFERENCES appointments(appointment_id),
+  consultation_fee NUMERIC DEFAULT 0,
+  admission_fee NUMERIC DEFAULT 0,
+  other_charges NUMERIC DEFAULT 0,
+  total_amount NUMERIC DEFAULT 0,
+  paid_amount NUMERIC DEFAULT 0,
+  payment_status VARCHAR DEFAULT 'pending' CHECK (payment_status IN ('pending', 'partial', 'paid', 'waived')),
+  payment_mode VARCHAR CHECK (payment_mode IN ('cash', 'UPI', 'card', 'insurance', 'Ayushman')),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- MEDICAL RECORDS TABLE
+CREATE TABLE medical_records (
+  record_id SERIAL PRIMARY KEY,
+  appointment_id INTEGER REFERENCES appointments(appointment_id),
+  patient_id INTEGER REFERENCES patients(patient_id),
+  doctor_id INTEGER REFERENCES doctors(doctor_id),
+  symptoms TEXT,
+  diagnosis TEXT,
+  notes TEXT,
+  blood_pressure VARCHAR,
+  temperature NUMERIC,
+  pulse INTEGER,
+  weight NUMERIC,
+  spo2 INTEGER,
+  follow_up_date DATE,
+  deleted_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- PRESCRIPTIONS TABLE
 CREATE TABLE prescriptions (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  appointment_id UUID REFERENCES appointments(id),
-  patient_id UUID REFERENCES profiles(id),
-  doctor_id UUID REFERENCES doctors(id),
-  diagnosis TEXT,
+  prescription_id SERIAL PRIMARY KEY,
+  medical_record_id INTEGER REFERENCES medical_records(record_id),
+  patient_id INTEGER REFERENCES patients(patient_id),
+  doctor_id INTEGER REFERENCES doctors(doctor_id),
   notes TEXT,
-  valid_until DATE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  is_dispensed BOOLEAN DEFAULT false,
+  deleted_at TIMESTAMPTZ,
+  issued_at TIMESTAMPTZ DEFAULT now()
 );
 
--- PRESCRIPTION ITEMS TABLE
-CREATE TABLE prescription_items (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  prescription_id UUID REFERENCES prescriptions(id),
-  medicine_name TEXT,
-  dosage TEXT,
-  frequency TEXT,
-  duration TEXT,
-  instructions TEXT
+-- AUDIT LOGS TABLE
+CREATE TABLE audit_logs (
+  log_id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(user_id),
+  action VARCHAR NOT NULL,
+  table_name VARCHAR,
+  record_id INTEGER,
+  ip_address VARCHAR,
+  created_at TIMESTAMPTZ DEFAULT now()
 );
-
--- BILLS TABLE
-CREATE TABLE bills (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  patient_id UUID REFERENCES profiles(id),
-  appointment_id UUID REFERENCES appointments(id),
-  consultation_fee NUMERIC DEFAULT 0,
-  medicine_charges NUMERIC DEFAULT 0,
-  lab_charges NUMERIC DEFAULT 0,
-  bed_charges NUMERIC DEFAULT 0,
-  total_amount NUMERIC,
-  status TEXT DEFAULT 'pending',
-  -- status: pending, paid, overdue
-  payment_method TEXT,
-  paid_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- MEDICAL HISTORY TABLE
-CREATE TABLE medical_history (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  patient_id UUID REFERENCES profiles(id),
-  doctor_id UUID REFERENCES doctors(id),
-  visit_date DATE,
-  visit_type TEXT, -- OPD, Emergency, Surgery
-  department TEXT,
-  diagnosis TEXT,
-  notes TEXT,
-  tests_done TEXT[],
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Enable Row Level Security on all tables
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE prescriptions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE prescription_items ENABLE ROW LEVEL SECURITY;
-ALTER TABLE bills ENABLE ROW LEVEL SECURITY;
-ALTER TABLE medical_history ENABLE ROW LEVEL SECURITY;
-
--- RLS POLICIES
--- Patients can only see their own data
-CREATE POLICY "patient_own_profile" ON profiles
-  FOR ALL USING (auth.uid() = id);
-
-CREATE POLICY "patient_own_appointments" ON appointments
-  FOR ALL USING (auth.uid() = patient_id);
-
-CREATE POLICY "patient_own_prescriptions" ON prescriptions
-  FOR ALL USING (auth.uid() = patient_id);
-
-CREATE POLICY "patient_own_bills" ON bills
-  FOR ALL USING (auth.uid() = patient_id);
-
-CREATE POLICY "patient_own_history" ON medical_history
-  FOR ALL USING (auth.uid() = patient_id);
-
--- Auto-create profile on signup trigger
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO public.profiles (id, full_name, role)
-  VALUES (NEW.id, NEW.raw_user_meta_data->>'full_name', 
-          COALESCE(NEW.raw_user_meta_data->>'role', 'patient'));
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
