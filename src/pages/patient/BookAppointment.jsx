@@ -66,7 +66,7 @@ export default function BookAppointment() {
       // Fetch all active doctors
       const { data: docData, error: docError } = await supabase
         .from('doctors')
-        .select('*, departments(name)'); // Join with departments if needed
+        .select('*, departments(department_name)'); 
 
       if (docError) throw docError;
       
