@@ -13,31 +13,6 @@ export default function BookAppointment() {
   
   const [doctors, setDoctors] = useState([]);
   const [departments, setDepartments] = useState([]);
-  const [fetchError, setFetchError] = useState(null);
-  
-  const [formData, setFormData] = useState({
-    department: '',
-    doctor_id: '',
-    appointment_date: '',
-    time_slot: '',
-    reason: ''
-  });
-
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabaseClient';
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-
-export default function BookAppointment() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  
-  const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [fetchingDocs, setFetchingDocs] = useState(true);
-  
-  const [doctors, setDoctors] = useState([]);
-  const [departments, setDepartments] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [fetchError, setFetchError] = useState(null);
   
@@ -194,7 +169,7 @@ export default function BookAppointment() {
       <div className="max-w-4xl mx-auto mb-20 relative px-4">
         <div className="absolute top-6 left-0 right-0 h-[3px] bg-surface-container-high rounded-full z-0"></div>
         <div 
-          className="absolute top-6 left-0 h-[3px] bg-primary transition-all duration-1000 ease-in-out z-0 rounded-full shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" 
+          className="absolute top-6 left-0 h-[3px] bg-primary transition-all duration-1000 ease-in-out z-0 rounded-full shadow-[0_0_15px_rgba(25, 118, 210, 0.5)]" 
           style={{ width: `${((step - 1) / 2) * 100}%` }}
         ></div>
         
