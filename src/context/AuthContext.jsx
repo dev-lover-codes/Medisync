@@ -45,24 +45,25 @@ export const AuthProvider = ({ children }) => {
     getInitialSession();
 
     // Listen for auth changes
-    let authListener = null;
     if (supabase) {
-      const { data } = supabase.auth.onAuthStateChange(
+      const { data: authData } = supabase.auth.onAuthStateChange(
         async (event, newSession) => {
-          console.log("Auth State Change:", event);
-          setSession(newSession);
-          setUser(newSession?.user ?? null);
+          console.log("Auth State Change:", event, newSession?.user?.id);
           
           if (newSession?.user) {
+            setSession(newSession);
+            setUser(newSession.user);
             await fetchProfile(newSession.user.id);
           } else {
+            setSession(null);
+            setUser(null);
             setUserProfile(null);
             setRole(null);
             setLoading(false);
           }
         }
       );
-      authListener = data;
+      authListener = authData;
     } else {
       setLoading(false);
     }
@@ -79,28 +80,36 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const fetchProfile = async (userId) => {
+    if (!supabase || !userId) {
+      setLoading(false);
+      return;
+    }
+    
     try {
       console.log("Fetching profile for:", userId);
+      // Try to find the user by ID. We'll try both 'id' and 'user_id' as fallbacks
+      // given the potential mismatch between Supabase Auth and the SQL schema.
       const { data, error } = await supabase
-        .from('profiles')
+        .from('users')
         .select('*')
-        .eq('id', userId)
+        .or(`id.eq.${userId},user_id.eq.${userId}`)
         .single();
         
       if (error) {
         console.error('Error fetching profile:', error.message);
-        setRole('patient'); // Fallback role
+        // If profile not found, we still want to let the user in as a 'patient' 
+        // fallback so they aren't stuck on a loading screen.
+        setRole('patient');
       } else if (data) {
         setUserProfile(data);
         setRole(data.role || 'patient');
       } else {
-        setRole('patient'); // Fallback role
+        setRole('patient');
       }
     } catch (err) {
       console.error('Fetch profile error:', err);
-      setRole('patient'); // Fallback role
+      setRole('patient');
     } finally {
-      console.log("Profile fetch complete, setting loading false");
       setLoading(false);
     }
   };
@@ -150,19 +159,23 @@ export const AuthProvider = ({ children }) => {
         throw new Error("No user returned from Supabase after successful sign in.");
       }
       
-      // Fetch profile early so we can return the role immediately for routing
+      // Fetch profile with dual column check
       const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
+        .from('users')
         .select('*')
-        .eq('id', user.id)
+        .or(`id.eq.${user.id},user_id.eq.${user.id}`)
         .single();
         
       if (profileError) {
         console.warn("Profile fetch error during sign in:", profileError);
-        return { user, role: 'patient', error: null }; // Default to patient if profile fetch fails but auth succeeded
+        return { user, role: 'patient', error: null }; 
       }
       
-      return { user, role: profileData?.role || 'patient', error: null };
+      const sessionRole = profileData?.role || 'patient';
+      setRole(sessionRole);
+      setUserProfile(profileData);
+      
+      return { user, role: sessionRole, error: null };
     } catch (err) {
       console.error("Critical Sign In Error:", err);
       return { user: null, role: null, error: err };
