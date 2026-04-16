@@ -40,7 +40,7 @@ export default function BookAppointment() {
     try {
       const { data, error } = await supabase
         .from('appointments')
-        .select('*, doctors(full_name, specialization, image_url)')
+        .select('*, doctors(first_name, last_name, specialization, image_url)')
         .eq('patient_id', user.id)
         .eq('status', 'upcoming')
         .order('appointment_date', { ascending: true });
@@ -66,7 +66,7 @@ export default function BookAppointment() {
       // Fetch all active doctors
       const { data: docData, error: docError } = await supabase
         .from('doctors')
-        .select('*');
+        .select('*, departments(name)'); // Join with departments if needed
 
       if (docError) throw docError;
       
@@ -249,8 +249,10 @@ export default function BookAppointment() {
                             <img src={doc.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuAU0mH6_eZ92pD3S7930N7w_c9G338G8p2P1PZoy_0w3YJ_z8_a"} alt="Expert" className="w-full h-full object-cover" />
                          </div>
                          <div className="flex-1">
-                            <h5 className="font-black text-on-surface text-lg tracking-tight leading-none mb-1">Dr. {doc.full_name}</h5>
-                            <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-widest">Expertise: {doc.experience_years} Years</p>
+                            <h5 className="font-black text-on-surface text-lg tracking-tight leading-none mb-1">
+                              Dr. {doc.first_name} {doc.last_name}
+                            </h5>
+                            <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-widest">Expertise: {doc.experience_years || '5+'} Years</p>
                          </div>
                          <div className="text-right">
                             <span className="block text-sm font-black text-primary">${doc.consultation_fee}</span>
@@ -329,7 +331,9 @@ export default function BookAppointment() {
                           </div>
                           <div>
                              <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Chief Clinician</p>
-                             <h5 className="font-black text-white text-3xl tracking-tighter">Dr. {selectedDoctorInfo?.full_name}</h5>
+                             <h5 className="font-black text-white text-3xl tracking-tighter">
+                               Dr. {selectedDoctorInfo?.first_name} {selectedDoctorInfo?.last_name}
+                             </h5>
                              <span className="px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-[9px] font-black text-primary uppercase tracking-widest mt-2 inline-block">{selectedDoctorInfo?.department}</span>
                           </div>
                        </div>
@@ -385,7 +389,9 @@ export default function BookAppointment() {
                         </div>
                         <div className="flex-1">
                            <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">{apt.department}</p>
-                           <h5 className="font-black text-on-surface text-lg leading-none">Dr. {apt.doctors?.full_name}</h5>
+                           <h5 className="font-black text-on-surface text-lg leading-none">
+                             Dr. {apt.doctors?.first_name} {apt.doctors?.last_name}
+                           </h5>
                         </div>
                      </div>
                      <div className="grid grid-cols-2 gap-4">

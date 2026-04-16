@@ -29,7 +29,8 @@ export default function Bills() {
             appointment_date,
             department,
             doctors (
-              full_name,
+              first_name,
+              last_name,
               image_url
             )
           )
@@ -187,7 +188,9 @@ export default function Bills() {
                               </td>
                               <td className="py-6">
                                  <p className="font-black text-on-surface uppercase text-[11px] tracking-tight">{bill.appointments?.department || 'Medical Service'}</p>
-                                 <p className="text-[10px] text-primary font-black uppercase italic leading-none opacity-60">Dr. {bill.appointments?.doctors?.full_name || 'Staff'}</p>
+                                 <p className="text-[10px] text-primary font-black uppercase italic leading-none opacity-60">
+                                   Dr. {bill.appointments?.doctors ? `${bill.appointments.doctors.first_name} ${bill.appointments.doctors.last_name}` : 'Staff'}
+                                 </p>
                               </td>
                               <td className="py-6 text-right font-black text-lg tabular-nums text-on-surface tracking-tighter">${Number(bill.total_amount).toFixed(2)}</td>
                               <td className="py-6 px-6">

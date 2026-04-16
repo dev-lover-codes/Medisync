@@ -29,7 +29,10 @@ const Dashboard = () => {
 
         const { data: aptData, error: aptError } = await supabase
           .from('appointments')
-          .select('*, doctors(full_name, specialization, image_url)')
+          .select(`
+            *, 
+            doctors(first_name, last_name, specialization, image_url)
+          `)
           .or(`patient_id.eq.${isNumeric ? patientSearchId : -1}`) // Only query if numeric
           .eq('status', 'upcoming')
           .order('appointment_date', { ascending: true })
@@ -113,16 +116,11 @@ const Dashboard = () => {
             <div className="w-48 h-48 md:w-64 md:h-64 bg-surface-container-high rounded-[3rem] overflow-hidden p-2 ring-1 ring-white/10 shadow-inner">
                <img 
                  className="w-full h-full object-cover rounded-[2.5rem] drop-shadow-2xl" 
-                 alt="Profile Ambient" 
-                 src={userProfile?.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuD9R_8Kk9U0N0f3Z6_6y5uQ0uD1V_p7QYV_7T1W1Y_v0X8_a"}
-               />
-            </div>
+                  alt="Profile Ambient" 
+                  src={userProfile?.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuD9R_8Kk9U0N0f3Z6_6y5uQ0uD1V_p7QYV_7T1W1Y_v0X8_a"}
+                />
+             </div>
           </div>
-        </div>
-        
-        {/* Background Decorative Architecture */}
-        <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-           <span className="material-symbols-outlined text-[300px] font-light">vital_signs</span>
         </div>
       </section>
 
@@ -133,16 +131,31 @@ const Dashboard = () => {
           { label: 'Prescriptions', val: '3', sub: 'Doses due cycles', icon: 'medication', color: 'blue-500' },
           { label: 'Settlements', val: `₹${pendingBillsTotal}`, sub: 'Unresolved balances', icon: 'account_balance_wallet', color: 'orange-500' },
           { label: 'Wellness Level', val: '98%', sub: 'Aggregated vitals', icon: 'favorite', color: 'green-500' }
-        ].map((kpi, idx) => (
-          <div key={idx} className="group bg-white p-8 rounded-[2.5rem] shadow-xl shadow-black/[0.02] hover:shadow-2xl hover:shadow-primary/5 transition-all border border-outline-variant/10">
-            <div className={`w-12 h-12 rounded-2xl bg-${kpi.color}/10 flex items-center justify-center mb-6`}>
-              <span className={`material-symbols-outlined text-${kpi.color} font-black`}>{kpi.icon}</span>
+        ].map((kpi, idx) => {
+          const colorMap = {
+            'primary': 'bg-primary/10 text-primary',
+            'blue-500': 'bg-blue-500/10 text-blue-500',
+            'orange-500': 'bg-orange-500/10 text-orange-500',
+            'green-500': 'bg-green-500/10 text-green-500'
+          };
+          const textColorMap = {
+            'primary': 'text-primary',
+            'blue-500': 'text-blue-500',
+            'orange-500': 'text-orange-500',
+            'green-500': 'text-green-500'
+          };
+          
+          return (
+            <div key={idx} className="group bg-white p-8 rounded-[2.5rem] shadow-xl shadow-black/[0.02] hover:shadow-2xl hover:shadow-primary/5 transition-all border border-outline-variant/10">
+              <div className={`w-12 h-12 rounded-2xl ${colorMap[kpi.color] || 'bg-primary/10'} flex items-center justify-center mb-6`}>
+                <span className={`material-symbols-outlined ${textColorMap[kpi.color] || 'text-primary'} font-black`}>{kpi.icon}</span>
+              </div>
+              <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em] mb-1">{kpi.label}</p>
+              <h2 className="text-3xl font-black text-on-surface tracking-tighter mb-2">{kpi.val}</h2>
+              <p className="text-[9px] font-black text-on-surface-variant/60 uppercase tracking-widest">{kpi.sub}</p>
             </div>
-            <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em] mb-1">{kpi.label}</p>
-            <h2 className="text-3xl font-black text-on-surface tracking-tighter mb-2">{kpi.val}</h2>
-            <p className="text-[9px] font-black text-on-surface-variant/60 uppercase tracking-widest">{kpi.sub}</p>
-          </div>
-        ))}
+          );
+        })}
       </section>
 
       {/* Main Content Split */}
@@ -180,7 +193,9 @@ const Dashboard = () => {
                     </div>
                     <div className="flex-1">
                       <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">{apt.doctors?.specialization || 'Synchronous Ops'}</p>
-                      <h4 className="font-black text-on-surface text-xl tracking-tight leading-none mb-3">Dr. {apt.doctors?.full_name}</h4>
+                      <h4 className="font-black text-on-surface text-xl tracking-tight leading-none mb-3">
+                        Dr. {apt.doctors ? `${apt.doctors.first_name || ''} ${apt.doctors.last_name || ''}` : 'Specialist'}
+                      </h4>
                       <div className="flex items-center gap-4">
                         <div className="px-3 py-1 bg-surface-container-low rounded-lg flex items-center gap-2">
                            <span className="material-symbols-outlined text-[14px] text-on-surface-variant">calendar_month</span>

@@ -28,7 +28,8 @@ export default function Appointments() {
         .select(`
           *,
           doctors (
-            full_name,
+            first_name,
+            last_name,
             specialization,
             image_url
           )
@@ -164,14 +165,16 @@ export default function Appointments() {
                     <img 
                       className="w-20 h-20 rounded-[1.5rem] object-cover shadow-lg border-2 border-white" 
                       src={apt.doctors?.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuClef_wlPZAhy5lua2Vq5Bmaoj5U3kPFh_d_HPCR7YJESvMwH09GyDhvvVERy1qaDRy2oGwNaL2VOafKQy3viee2XE5Bm7EazgEVC35LGn7gluKrlbiD9ufrOGOhNcYuTJux6jiCNstqd63ktjl4swNP6WthtW1SOBQ0iMgrU_-mCYLM-h3YW6mWC_2V1VutwdVqhfIcOmRfF3nYpeN7l7zpP2ALJ_Q0gHZmbi383D0xxjyXJGAadX1wOrxqr-qdOoaBMXAVP8jvxw"} 
-                      alt={apt.doctors?.full_name}
+                      alt={apt.doctors ? `${apt.doctors.first_name} ${apt.doctors.last_name}` : 'Doctor'}
                     />
                     <div className="absolute -bottom-2 -right-2 bg-white p-1 rounded-full shadow-md">
                       <div className={`w-3 h-3 rounded-full ${status.dot} animate-pulse`}></div>
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-xl text-on-surface leading-tight">Dr. {apt.doctors?.full_name || 'Medical Specialist'}</h3>
+                    <h3 className="font-extrabold text-xl text-on-surface leading-tight">
+                      Dr. {apt.doctors ? `${apt.doctors.first_name} ${apt.doctors.last_name}` : 'Medical Specialist'}
+                    </h3>
                     <p className="text-primary font-black uppercase tracking-widest text-[10px] my-1">{apt.department || apt.doctors?.specialization || 'General Consultation'}</p>
                     <div className="flex flex-wrap gap-2 mt-3">
                       <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border shadow-sm ${status.color}`}>
@@ -274,7 +277,9 @@ export default function Appointments() {
                 <div className="grid grid-cols-2 gap-4">
                    <div className="bg-white p-5 rounded-3xl border border-outline-variant/10">
                      <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-2">Technician</p>
-                     <p className="font-extrabold text-on-surface">Dr. {selectedAppointment.doctors?.full_name}</p>
+                     <p className="font-extrabold text-on-surface">
+                       Dr. {selectedAppointment.doctors ? `${selectedAppointment.doctors.first_name} ${selectedAppointment.doctors.last_name}` : 'Staff'}
+                     </p>
                    </div>
                    <div className="bg-white p-5 rounded-3xl border border-outline-variant/10">
                      <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest mb-2">Department</p>

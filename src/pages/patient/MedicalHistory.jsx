@@ -25,7 +25,8 @@ export default function MedicalHistory() {
         .select(`
           *,
           doctors (
-            full_name,
+            first_name,
+            last_name,
             specialization,
             image_url
           )
@@ -46,7 +47,8 @@ export default function MedicalHistory() {
   const filteredHistory = history.filter(record => 
     record.diagnosis?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.doctors?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    record.doctors?.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.doctors?.last_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -162,13 +164,15 @@ export default function MedicalHistory() {
                   <div className="flex-1 space-y-6">
                     <div className="flex justify-between items-start">
                       <div className="flex items-center gap-4">
-                        <img 
+                         <img 
                           className="w-14 h-14 rounded-2xl object-cover border-2 border-surface-container-high shadow-md" 
                           src={record.doctors?.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuClef_wlPZAhy5lua2Vq5Bmaoj5U3kPFh_d_HPCR7YJESvMwH09GyDhvvVERy1qaDRy2oGwNaL2VOafKQy3viee2XE5Bm7EazgEVC35LGn7gluKrlbiD9ufrOGOhNcYuTJux6jiCNstqd63ktjl4swNP6WthtW1SOBQ0iMgrU_-mCYLM-h3YW6mWC_2V1VutwdVqhfIcOmRfF3nYpeN7l7zpP2ALJ_Q0gHZmbi383D0xxjyXJGAadX1wOrxqr-qdOoaBMXAVP8jvxw"} 
-                          alt={record.doctors?.full_name} 
+                          alt={record.doctors ? `${record.doctors.first_name} ${record.doctors.last_name}` : 'Doctor'} 
                         />
                         <div>
-                          <h4 className="font-extrabold text-xl text-on-surface leading-none">Dr. {record.doctors?.full_name || 'Medical Officer'}</h4>
+                          <h4 className="font-extrabold text-xl text-on-surface leading-none">
+                            Dr. {record.doctors ? `${record.doctors.first_name} ${record.doctors.last_name}` : 'Medical Officer'}
+                          </h4>
                           <p className="text-[10px] font-black text-primary uppercase tracking-[0.1em] mt-1">{record.doctors?.specialization || 'Clinical Associate'}</p>
                         </div>
                       </div>

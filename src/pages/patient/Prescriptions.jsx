@@ -25,7 +25,8 @@ export default function Prescriptions() {
         .select(`
           *,
           doctors (
-            full_name,
+            first_name,
+            last_name,
             specialization,
             image_url
           ),
@@ -171,10 +172,10 @@ export default function Prescriptions() {
 
                   {/* Physician Context Overlay */}
                   <div className="flex items-center gap-4 mb-10 p-5 rounded-3xl bg-surface-container-low/40 border border-outline-variant/5 group cursor-default">
-                    <img className="w-12 h-12 rounded-2xl object-cover border-2 border-white shadow-sm transition-transform group-hover:scale-110" src={px.doctors?.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuClef_wlPZAhy5lua2Vq5Bmaoj5U3kPFh_d_HPCR7YJESvMwH09GyDhvvVERy1qaDRy2oGwNaL2VOafKQy3viee2XE5Bm7EazgEVC35LGn7gluKrlbiD9ufrOGOhNcYuTJux6jiCNstqd63ktjl4swNP6WthtW1SOBQ0iMgrU_-mCYLM-h3YW6mWC_2V1VutwdVqhfIcOmRfF3nYpeN7l7zpP2ALJ_Q0gHZmbi383D0xxjyXJGAadX1wOrxqr-qdOoaBMXAVP8jvxw"} alt={px.doctors?.full_name} />
+                    <img className="w-12 h-12 rounded-2xl object-cover border-2 border-white shadow-sm transition-transform group-hover:scale-110" src={px.doctors?.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuClef_wlPZAhy5lua2Vq5Bmaoj5U3kPFh_d_HPCR7YJESvMwH09GyDhvvVERy1qaDRy2oGwNaL2VOafKQy3viee2XE5Bm7EazgEVC35LGn7gluKrlbiD9ufrOGOhNcYuTJux6jiCNstqd63ktjl4swNP6WthtW1SOBQ0iMgrU_-mCYLM-h3YW6mWC_2V1VutwdVqhfIcOmRfF3nYpeN7l7zpP2ALJ_Q0gHZmbi383D0xxjyXJGAadX1wOrxqr-qdOoaBMXAVP8jvxw"} alt={px.doctors ? `${px.doctors.first_name} ${px.doctors.last_name}` : 'Doctor'} />
                     <div>
                       <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] mb-0.5 opacity-60">Attending Physician</p>
-                      <p className="font-black text-on-surface tracking-tight">Dr. {px.doctors?.full_name} <span className="font-bold text-on-surface-variant/40 ml-2 uppercase text-[10px] tracking-normal">• {px.doctors?.specialization}</span></p>
+                      <p className="font-black text-on-surface tracking-tight">Dr. {px.doctors ? `${px.doctors.first_name} ${px.doctors.last_name}` : 'Specialist'} <span className="font-bold text-on-surface-variant/40 ml-2 uppercase text-[10px] tracking-normal">• {px.doctors?.specialization}</span></p>
                     </div>
                   </div>
 
