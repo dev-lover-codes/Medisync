@@ -45,6 +45,8 @@ export const AuthProvider = ({ children }) => {
     getInitialSession();
 
     // Listen for auth changes
+    let authListener = null;
+
     if (supabase) {
       const { data: authData } = supabase.auth.onAuthStateChange(
         async (event, newSession) => {
@@ -74,7 +76,7 @@ export const AuthProvider = ({ children }) => {
     }, 10000); // 10 seconds max loading
 
     return () => {
-      if (authListener) authListener.subscription.unsubscribe();
+      if (authListener?.subscription) authListener.subscription.unsubscribe();
       clearTimeout(safetyTimeout);
     };
   }, []);
