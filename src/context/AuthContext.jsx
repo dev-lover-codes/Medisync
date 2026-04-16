@@ -13,73 +13,82 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    const getInitialSession = async () => {
+    let isMounted = true;
+    let authListener = null;
+
+    const initializeAuth = async () => {
       try {
         if (!supabase) {
-          setLoading(false);
+          console.warn("AuthContext: Supabase not initialized");
+          if (isMounted) setLoading(false);
           return;
         }
 
-        const { data, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error("Error getting initial session:", error);
-          setLoading(false);
-          return;
+        // 1. Check for current session
+        const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error("AuthContext: Session Fetch Error:", sessionError);
         }
 
-        const session = data?.session;
-        if (session) {
-          setSession(session);
-          setUser(session.user);
-          await fetchProfile(session.user.id);
+        if (currentSession?.user) {
+          console.log("AuthContext: Initial session found for:", currentSession.user.id);
+          if (isMounted) {
+            setSession(currentSession);
+            setUser(currentSession.user);
+            await fetchProfile(currentSession.user.id);
+          }
         } else {
-          setLoading(false);
+          console.log("AuthContext: No initial session");
+          if (isMounted) setLoading(false);
         }
       } catch (err) {
-        console.error("Critical error in getInitialSession:", err);
-        setLoading(false);
+        console.error("AuthContext: Initialization failed:", err);
+        if (isMounted) setLoading(false);
       }
     };
 
-    getInitialSession();
+    initializeAuth();
 
-    // Listen for auth changes
-    let authListener = null;
-
+    // 2. Listen for auth changes
     if (supabase) {
-      const { data: authData } = supabase.auth.onAuthStateChange(
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
         async (event, newSession) => {
-          console.log("Auth State Change:", event, newSession?.user?.id);
+          console.log("AuthContext: Auth event:", event, newSession?.user?.id);
           
-          if (newSession?.user) {
-            setSession(newSession);
-            setUser(newSession.user);
-            await fetchProfile(newSession.user.id);
-          } else {
-            setSession(null);
-            setUser(null);
-            setUserProfile(null);
-            setRole(null);
-            setLoading(false);
+          if (isMounted) {
+            if (newSession?.user) {
+              setSession(newSession);
+              setUser(newSession.user);
+              await fetchProfile(newSession.user.id);
+            } else if (event === 'SIGNED_OUT' || !newSession) {
+              setSession(null);
+              setUser(null);
+              setUserProfile(null);
+              setRole(null);
+              setLoading(false);
+            }
           }
         }
       );
-      authListener = authData;
-    } else {
-      setLoading(false);
+      authListener = subscription;
     }
 
     // Safety timeout: ensure loading is set to false eventually
     const safetyTimeout = setTimeout(() => {
-      setLoading(false);
-    }, 10000); // 10 seconds max loading
+      if (isMounted && loading) {
+        console.warn("AuthContext: Safety timeout reached, forcing loading false");
+        setLoading(false);
+      }
+    }, 6000); // reduced to 6 seconds for better UX
 
     return () => {
-      if (authListener?.subscription) authListener.subscription.unsubscribe();
+      isMounted = false;
+      if (authListener) authListener.unsubscribe();
       clearTimeout(safetyTimeout);
     };
   }, []);
+
 
   const fetchProfile = async (userId) => {
     if (!supabase || !userId) {
