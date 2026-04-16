@@ -27,41 +27,35 @@ export default function AISymptomChecker() {
     setLoading(true);
 
     try {
-      const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
       
       if (!apiKey) {
         throw new Error('API key not found');
       }
 
-      // Anthropic API requires messages to start with 'user'
-      const apiMessages = messages
-        .concat(userMessage)
-        .filter(m => m.role === 'user' || m.role === 'assistant');
-      
-      // If the first message is 'assistant', Anthropic will return 400.
-      // We take only the messages starting from the first 'user' message for the API call.
-      const firstUserIdx = apiMessages.findIndex(m => m.role === 'user');
-      const finalApiMessages = firstUserIdx !== -1 ? apiMessages.slice(firstUserIdx) : apiMessages;
-
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerously-allow-browser': 'true'
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: 'claude-3-haiku-20240307',
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { 
+              role: 'system', 
+              content: "You are a helpful medical AI assistant for MediSync Hospital Management System. Always clarify that you are an AI and not a doctor. Provide general guidance based on symptoms but strongly recommend visiting a doctor or booking an appointment for a real diagnosis." 
+            },
+            ...messages.concat(userMessage).map(m => ({ role: m.role, content: m.content }))
+          ],
           max_tokens: 500,
-          system: "You are a helpful medical AI assistant for MediSync Hospital Management System. Always clarify that you are an AI and not a doctor. Provide general guidance based on symptoms but strongly recommend visiting a doctor or booking an appointment for a real diagnosis.",
-          messages: finalApiMessages.map(m => ({ role: m.role, content: m.content }))
+          temperature: 0.7
         })
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error("Anthropic API Error:", errorData);
+        console.error("OpenAI API Error:", errorData);
         throw new Error(errorData.error?.message || 'API Request failed');
       }
 
@@ -69,7 +63,7 @@ export default function AISymptomChecker() {
       
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: data.content[0].text 
+        content: data.choices[0].message.content 
       }]);
       setLoading(false);
 
