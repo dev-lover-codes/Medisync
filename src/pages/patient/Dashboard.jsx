@@ -22,33 +22,39 @@ const Dashboard = () => {
 
       try {
         // Fetch Upcoming Appointments
-        // We handle the possibility that the appointments table might have differently named columns
+        // We handle the possibility of UUID/INT mismatch by fetching by email or 
+        // using the linked patient record from userProfile if available.
+        const patientSearchId = userProfile?.patient_id || userProfile?.linked_id || user?.id;
+        const isNumeric = /^\d+$/.test(patientSearchId);
+
         const { data: aptData, error: aptError } = await supabase
           .from('appointments')
           .select('*, doctors(full_name, specialization, image_url)')
-          .or(`patient_id.eq.${user.id},patient_id.is.null`) // Fallback to avoid crashes on type mismatch
+          .or(`patient_id.eq.${isNumeric ? patientSearchId : -1}`) // Only query if numeric
           .eq('status', 'upcoming')
           .order('appointment_date', { ascending: true })
           .limit(3);
 
         if (!aptError && aptData) {
           setAppointments(aptData);
+        } else if (aptError) {
+          console.warn("Dashboard: Appointments fetch error (likely no matching patient_id):", aptError.message);
         }
 
-        // Fetch pending bill total (with safety for missing table)
+        // Fetch pending bill total
         try {
           const { data: billData, error: billError } = await supabase
-            .from('bills')
+            .from('billing') // Changed from 'bills' to 'billing' to match schema.sql
             .select('total_amount')
-            .eq('patient_id', user.id)
-            .eq('status', 'pending');
+            .eq('patient_id', isNumeric ? patientSearchId : -1)
+            .eq('payment_status', 'pending');
 
           if (!billError && billData) {
             const total = billData.reduce((sum, bill) => sum + (Number(bill.total_amount) || 0), 0);
             setPendingBillsTotal(total);
           }
         } catch (e) {
-          console.warn("Bills table not found or inaccessible, skipping bill total.");
+          console.warn("Dashboard: Billing table accessibility issue.");
         }
 
       } catch (err) {

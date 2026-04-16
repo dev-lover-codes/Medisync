@@ -97,28 +97,34 @@ export const AuthProvider = ({ children }) => {
     }
     
     try {
-      console.log("Fetching profile for:", userId);
-      // Try to find the user by ID. We'll try both 'id' and 'user_id' as fallbacks
-      // given the potential mismatch between Supabase Auth and the SQL schema.
+      console.log("AuthContext: Fetching profile for:", userId);
+      
+      // Get the current auth user to use email as a fallback link
+      // This is necessary because user_id in the SQL schema is an INT
+      // while userId from Supabase Auth is a UUID.
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      
+      // Try to find the user by email (most reliable link) or ID if it's numeric
+      const isNumeric = /^\d+$/.test(userId);
       const { data, error } = await supabase
         .from('users')
         .select('*')
-        .or(`id.eq.${userId},user_id.eq.${userId}`)
-        .single();
+        .or(`email.eq.${authUser?.email},user_id.eq.${isNumeric ? userId : -1}`)
+        .maybeSingle(); // maybeSingle avoids the 406/404 error if not found
         
       if (error) {
-        console.error('Error fetching profile:', error.message);
-        // If profile not found, we still want to let the user in as a 'patient' 
-        // fallback so they aren't stuck on a loading screen.
-        setRole('patient');
+        console.error('AuthContext: Profile fetch error:', error.message);
+        setRole('patient'); // Default fallback
       } else if (data) {
+        console.log("AuthContext: Profile found:", data.role);
         setUserProfile(data);
         setRole(data.role || 'patient');
       } else {
+        console.warn("AuthContext: No profile record found for user.");
         setRole('patient');
       }
     } catch (err) {
-      console.error('Fetch profile error:', err);
+      console.error('AuthContext: Fetch profile exception:', err);
       setRole('patient');
     } finally {
       setLoading(false);
@@ -170,15 +176,16 @@ export const AuthProvider = ({ children }) => {
         throw new Error("No user returned from Supabase after successful sign in.");
       }
       
-      // Fetch profile with dual column check
+      // Fetch profile with dual check (Email or ID if numeric)
+      const isNumeric = /^\d+$/.test(user.id);
       const { data: profileData, error: profileError } = await supabase
         .from('users')
         .select('*')
-        .or(`id.eq.${user.id},user_id.eq.${user.id}`)
-        .single();
+        .or(`email.eq.${user.email},user_id.eq.${isNumeric ? user.id : -1}`)
+        .maybeSingle(); 
         
-      if (profileError) {
-        console.warn("Profile fetch error during sign in:", profileError);
+      if (profileError || !profileData) {
+        console.warn("AuthContext: Profile fetch issue during sign in:", profileError?.message || "No record found");
         return { user, role: 'patient', error: null }; 
       }
       
