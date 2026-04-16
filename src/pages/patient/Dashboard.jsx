@@ -13,6 +13,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!user) return;
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
       setLoading(true);
 
       try {
