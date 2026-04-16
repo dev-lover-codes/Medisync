@@ -45,7 +45,6 @@ export default function BookAppointment() {
       const docs = data || [];
       setDoctors(docs);
       
-      // Extract unique departments
       const depts = [...new Set(docs.map(d => d.department))];
       setDepartments(depts);
       
@@ -60,14 +59,8 @@ export default function BookAppointment() {
   };
 
   const handleNext = () => {
-    if (step === 1 && (!formData.department || !formData.doctor_id)) {
-      alert("Please select a department and a doctor.");
-      return;
-    }
-    if (step === 2 && (!formData.appointment_date || !formData.time_slot)) {
-      alert("Please select a date and time slot.");
-      return;
-    }
+    if (step === 1 && (!formData.department || !formData.doctor_id)) return;
+    if (step === 2 && (!formData.appointment_date || !formData.time_slot)) return;
     setStep(prev => prev + 1);
   };
 
@@ -76,15 +69,10 @@ export default function BookAppointment() {
   };
 
   const handleSubmit = async () => {
-    if (!formData.reason) {
-      alert("Please provide a reason for the visit.");
-      return;
-    }
+    if (!formData.reason) return;
     
     try {
       setLoading(true);
-      
-      // Get doctor fee
       const selectedDoc = doctors.find(d => d.id === formData.doctor_id);
       const fee = selectedDoc ? selectedDoc.consultation_fee : 0;
       
@@ -102,243 +90,291 @@ export default function BookAppointment() {
         }]);
 
       if (error) throw error;
-      
-      // Normally redirect to a success page, but we'll redirect to appointments for now
       navigate('/patient/appointments');
       
     } catch (err) {
       console.error("Error booking appointment:", err);
-      alert("Failed to book appointment. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Get doctors specific to selected department
   const filteredDoctors = doctors.filter(d => d.department === formData.department);
   const selectedDoctorInfo = doctors.find(d => d.id === formData.doctor_id);
 
   if (fetchingDocs) {
     return (
-      <div className="p-8 flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#6f5673]"></div>
+      <div className="p-8 flex flex-col justify-center items-center h-screen bg-surface">
+        <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-6"></div>
+        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/40 animate-pulse">Initializing clinician grid</p>
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-8 pb-24 bg-[#faf9fa] min-h-screen flex justify-center items-start">
-      <div className="max-w-3xl w-full">
+    <div className="p-4 md:p-8 pb-32 bg-surface min-h-screen font-body max-w-7xl mx-auto overflow-x-hidden">
+      {/* Page Header */}
+      <div className="flex flex-col items-center text-center mb-16 space-y-4">
+        <h1 className="text-4xl md:text-5xl font-black font-headline text-on-surface tracking-tighter leading-none px-4">Clinician Synchronization</h1>
+        <p className="text-on-surface-variant/60 font-medium max-w-lg">Initiate a formal diagnostic request through our secure scheduling protocol.</p>
+      </div>
+
+      {/* Progress Architecture */}
+      <div className="max-w-4xl mx-auto mb-20 relative px-4">
+        <div className="absolute top-6 left-0 right-0 h-[2px] bg-surface-container-high z-0"></div>
+        <div 
+          className="absolute top-6 left-0 h-[2px] bg-primary transition-all duration-700 ease-in-out z-0" 
+          style={{ width: `${((step - 1) / 2) * 100}%` }}
+        ></div>
         
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold font-manrope text-gray-800 mb-2">Book Appointment</h1>
-          <p className="text-gray-500 font-inter">Schedule your visit in three easy steps</p>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mb-8 relative">
-          <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-100 -translate-y-1/2 z-0 rounded-full"></div>
-          <div 
-            className="absolute top-1/2 left-0 h-1 bg-[#bc9ebf] transition-all duration-300 -translate-y-1/2 z-0 rounded-full" 
-            style={{ width: `${((step - 1) / 2) * 100}%` }}
-          ></div>
-          
-          <div className="relative z-10 flex justify-between">
-            {[1, 2, 3].map(num => (
-              <div key={num} className="flex flex-col items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors border-4 border-[#faf9fa]
-                  ${step > num ? 'bg-[#6f5673] text-white' : 
-                    step === num ? 'bg-[#bc9ebf] text-white border-white shadow-lg' : 
-                    'bg-white border-gray-200 text-gray-400'}`}>
-                  {num}
-                </div>
-                <span className={`text-xs mt-2 font-inter font-medium ${step >= num ? 'text-[#6f5673]' : 'text-gray-400'}`}>
-                  {num === 1 ? 'Doctor' : num === 2 ? 'Time' : 'Details'}
-                </span>
+        <div className="relative z-10 flex justify-between">
+          {[1, 2, 3].map(num => (
+            <div key={num} className="flex flex-col items-center group">
+              <div className={`w-12 h-12 rounded-[1.25rem] flex items-center justify-center font-black text-xs transition-all duration-500 border-4 ${
+                step >= num 
+                  ? 'bg-primary text-white border-surface shadow-2xl shadow-primary/40 scale-110' 
+                  : 'bg-surface-container-high text-on-surface-variant/40 border-surface'
+              }`}>
+                {step > num ? (
+                  <span className="material-symbols-outlined text-lg">check</span>
+                ) : num}
               </div>
-            ))}
-          </div>
+              <span className={`text-[10px] mt-4 font-black uppercase tracking-[0.2em] transition-colors duration-500 ${
+                step >= num ? 'text-primary' : 'text-on-surface-variant/20'
+              }`}>
+                {num === 1 ? 'Expertise' : num === 2 ? 'Temporal' : 'Validation'}
+              </span>
+            </div>
+          ))}
         </div>
+      </div>
 
-        {/* Form Container */}
-        <div className="bg-white rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.05)] border border-gray-50 p-6 md:p-10 mb-8 min-h-[400px]">
-          
-          {/* STEP 1 */}
-          {step === 1 && (
-            <div className="animate-fade-in">
-              <h2 className="text-xl font-bold font-manrope text-gray-800 mb-6 border-b border-gray-100 pb-2">Select Speciality & Doctor</h2>
-              
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2 font-inter">Department</label>
-                <div className="flex border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="bg-gray-50 p-4 border-r border-gray-200 flex items-center justify-center text-gray-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
-                  </div>
-                  <select 
-                    value={formData.department}
-                    onChange={(e) => {
-                      setFormData(prev => ({ 
-                        ...prev, 
-                        department: e.target.value, 
-                        doctor_id: '' // reset doctor selection
-                      }));
-                    }}
-                    className="w-full p-4 bg-transparent focus:outline-none font-inter text-gray-800"
-                  >
-                    {departments.length === 0 && <option value="">No departments available</option>}
-                    {departments.map((d, i) => (
-                      <option key={i} value={d}>{d}</option>
-                    ))}
-                  </select>
-                </div>
+      {/* Interface Modules */}
+      <div className="max-w-4xl mx-auto">
+        
+        {/* STEP 1: EXPERTISE SELECTION */}
+        {step === 1 && (
+          <div className="animate-fade-in space-y-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              {/* Department Vector */}
+              <div className="bg-surface-container-lowest p-10 rounded-[3rem] border border-outline-variant/10 shadow-sm space-y-8">
+                 <h4 className="font-headline font-black text-sm uppercase tracking-[0.2em] text-on-surface-variant/60 flex items-center gap-3">
+                   <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>medical_services</span>
+                   Clinical Domain
+                 </h4>
+                 <div className="grid grid-cols-1 gap-4">
+                   {departments.map((dept, idx) => (
+                     <button
+                        key={idx}
+                        onClick={() => setFormData(prev => ({ ...prev, department: dept, doctor_id: '' }))}
+                        className={`w-full p-6 rounded-3xl border text-left transition-all relative overflow-hidden group ${
+                          formData.department === dept 
+                            ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-[0.98]' 
+                            : 'bg-surface-container-low border-transparent hover:border-primary/20 text-on-surface'
+                        }`}
+                     >
+                        <div className="relative z-10">
+                          <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${formData.department === dept ? 'text-white/60' : 'text-primary'}`}>Module {idx+1}</p>
+                          <h5 className="font-black text-lg tracking-tight uppercase">{dept}</h5>
+                        </div>
+                        <div className={`absolute right-[-20px] bottom-[-20px] opacity-10 transition-transform duration-700 group-hover:scale-150 ${formData.department === dept ? 'text-white' : 'text-primary'}`}>
+                           <span className="material-symbols-outlined text-8xl">clinical_notes</span>
+                        </div>
+                     </button>
+                   ))}
+                 </div>
               </div>
 
-              {formData.department && (
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 font-inter">Available Doctors</label>
-                  <div className="grid gap-3">
-                    {filteredDoctors.length === 0 && (
-                      <div className="p-4 bg-gray-50 rounded-lg text-gray-500 font-inter text-center text-sm border border-gray-100">
-                        No doctors currently available in this department.
-                      </div>
-                    )}
-                    {filteredDoctors.map(doc => (
-                      <label 
+              {/* Doctor Registry */}
+              <div className="bg-white p-10 rounded-[3rem] shadow-2xl shadow-black/5 space-y-8 min-h-[500px]">
+                 <h4 className="font-headline font-black text-sm uppercase tracking-[0.2em] text-on-surface-variant/60 flex items-center gap-3">
+                   <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>person_search</span>
+                   Expertise Registry
+                 </h4>
+                 <div className="space-y-6">
+                   {filteredDoctors.map(doc => (
+                     <button
                         key={doc.id}
-                        className={`flex items-center p-4 rounded-xl border cursor-pointer transition-all ${formData.doctor_id === doc.id ? 'border-[#6f5673] bg-[#bc9ebf]/10 shadow-[0_4px_12px_rgba(111,86,115,0.1)]' : 'border-gray-200 hover:border-[#bc9ebf]/50 bg-white'}`}
-                      >
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-4 ${formData.doctor_id === doc.id ? 'border-[#6f5673]' : 'border-gray-300'}`}>
-                          {formData.doctor_id === doc.id && <div className="w-2.5 h-2.5 bg-[#6f5673] rounded-full"></div>}
+                        onClick={() => setFormData(prev => ({ ...prev, doctor_id: doc.id }))}
+                        className={`w-full p-6 rounded-[2.5rem] border transition-all text-left flex items-center gap-6 ${
+                          formData.doctor_id === doc.id 
+                            ? 'bg-primary/5 border-primary ring-4 ring-primary/5' 
+                            : 'bg-transparent border-outline-variant/10 hover:border-primary/30'
+                        }`}
+                     >
+                        <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-surface shadow-inner">
+                           <img src={doc.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuAU0mH6_eZ92pD3S7930N7w_c9G338G8p2P1PZoy_0w3YJ_z8_a"} alt="Expert" className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-bold text-gray-800 font-manrope">Dr. {doc.full_name}</h4>
-                          <p className="text-sm text-gray-500 font-inter">{doc.specialization} • {doc.experience_years} Years Exp.</p>
+                           <h5 className="font-black text-on-surface text-lg tracking-tight leading-none mb-1">Dr. {doc.full_name}</h5>
+                           <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-widest">Expertise: {doc.experience_years} Years</p>
                         </div>
                         <div className="text-right">
-                          <span className="block font-bold text-[#6f5673] font-inter">${doc.consultation_fee}</span>
-                          <span className="text-xs text-gray-400">Consultation Fee</span>
+                           <span className="block text-sm font-black text-primary">${doc.consultation_fee}</span>
+                           <span className="text-[9px] font-black text-on-surface-variant/30 uppercase tracking-tighter">FEE</span>
                         </div>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* STEP 2 */}
-          {step === 2 && (
-            <div className="animate-fade-in">
-              <h2 className="text-xl font-bold font-manrope text-gray-800 mb-6 border-b border-gray-100 pb-2">Select Date & Time</h2>
-              
-              <div className="mb-8">
-                <label className="block text-sm font-semibold text-gray-700 mb-2 font-inter">Preferred Date</label>
-                <div className="flex border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="bg-gray-50 p-4 border-r border-gray-200 flex items-center justify-center text-gray-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <input 
-                    type="date"
-                    min={new Date().toISOString().split('T')[0]}
-                    value={formData.appointment_date}
-                    onChange={(e) => setFormData(prev => ({ ...prev, appointment_date: e.target.value }))}
-                    className="w-full p-4 bg-transparent focus:outline-none font-inter text-gray-800"
-                  />
-                </div>
+                     </button>
+                   ))}
+                 </div>
               </div>
-
-              {formData.appointment_date && (
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3 font-inter">Available Time Slots</label>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                    {timeSlots.map(time => (
-                      <button
-                        key={time}
-                        onClick={() => setFormData(prev => ({ ...prev, time_slot: time }))}
-                        className={`py-3 rounded-lg text-sm font-semibold font-inter transition-all ${formData.time_slot === time ? 'bg-[#6f5673] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-                      >
-                        {time}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
-          )}
+          </div>
+        )}
 
-          {/* STEP 3 */}
-          {step === 3 && (
-            <div className="animate-fade-in">
-              <h2 className="text-xl font-bold font-manrope text-gray-800 mb-6 border-b border-gray-100 pb-2">Final Details</h2>
-              
-              <div className="bg-[#bc9ebf]/10 rounded-xl p-5 mb-8 border border-[#e9d7f1]">
-                <h3 className="font-bold text-[#6f5673] font-manrope mb-3 text-lg">Appointment Summary</h3>
-                <div className="grid grid-cols-2 gap-y-3 font-inter text-sm">
-                  <div className="text-gray-500">Doctor:</div>
-                  <div className="font-semibold text-gray-800">Dr. {selectedDoctorInfo?.full_name} ({selectedDoctorInfo?.department})</div>
+        {/* STEP 2: TEMPORAL SELECTION */}
+        {step === 2 && (
+          <div className="animate-fade-in space-y-12">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                {/* Date Grid */}
+                <div className="bg-surface-container-lowest p-10 rounded-[4rem] border border-outline-variant/10 shadow-sm space-y-10">
+                   <h4 className="font-headline font-black text-sm uppercase tracking-[0.2em] text-on-surface-variant/60 flex items-center gap-3">
+                     <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>calendar_today</span>
+                     Target Date
+                   </h4>
+                   <div className="relative group/field">
+                      <input 
+                        type="date"
+                        min={new Date().toISOString().split('T')[0]}
+                        value={formData.appointment_date}
+                        onChange={(e) => setFormData(prev => ({ ...prev, appointment_date: e.target.value }))}
+                        className="w-full bg-surface-container-low border-none rounded-[2rem] h-20 px-10 text-lg font-black text-on-surface focus:ring-4 focus:ring-primary/5 transition-all cursor-pointer"
+                      />
+                      <div className="mt-8 p-8 bg-primary/5 rounded-[2.5rem] border border-primary/10">
+                         <p className="text-[10px] text-primary/60 font-black uppercase tracking-widest leading-loose">The selected temporal window will be reserved upon confirmation. Same-day cancellations require identity verification.</p>
+                      </div>
+                   </div>
+                </div>
+
+                {/* Time Registry */}
+                <div className="bg-white p-10 rounded-[4rem] shadow-2xl shadow-black/5 space-y-10">
+                   <h4 className="font-headline font-black text-sm uppercase tracking-[0.2em] text-on-surface-variant/60 flex items-center gap-3">
+                     <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>schedule</span>
+                     Available Windows
+                   </h4>
+                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                     {timeSlots.map(time => (
+                       <button
+                         key={time}
+                         onClick={() => setFormData(prev => ({ ...prev, time_slot: time }))}
+                         className={`py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                           formData.time_slot === time 
+                             ? 'bg-primary text-white shadow-xl shadow-primary/20 scale-95' 
+                             : 'bg-surface-container-low text-on-surface-variant/60 hover:bg-primary/5 hover:text-primary'
+                         }`}
+                       >
+                         {time}
+                       </button>
+                     ))}
+                   </div>
+                </div>
+             </div>
+          </div>
+        )}
+
+        {/* STEP 3: FINAL VALIDATION */}
+        {step === 3 && (
+          <div className="animate-fade-in space-y-12">
+             <div className="bg-on-surface p-12 rounded-[5rem] relative overflow-hidden group shadow-2xl">
+               <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none transition-transform duration-[3s] group-hover:scale-110">
+                  <span className="material-symbols-outlined text-[300px] text-white font-light">verified_user</span>
+               </div>
+               <div className="relative z-10 space-y-12">
+                  <h4 className="font-headline font-black text-xl uppercase tracking-[0.3em] text-white/40 flex items-center gap-4">
+                    <span className="w-12 h-[2px] bg-white/20"></span>
+                    Identity Triage Summary
+                  </h4>
                   
-                  <div className="text-gray-500">Date & Time:</div>
-                  <div className="font-semibold text-gray-800">{new Date(formData.appointment_date).toLocaleDateString()} at {formData.time_slot}</div>
-                  
-                  <div className="text-gray-500">Consultation Fee:</div>
-                  <div className="font-semibold text-gray-800">${selectedDoctorInfo?.consultation_fee} (Payable at clinic)</div>
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2 font-inter">Reason for Visit</label>
-                <textarea 
-                  value={formData.reason}
-                  onChange={(e) => setFormData(prev => ({ ...prev, reason: e.target.value }))}
-                  rows={4}
-                  placeholder="Please describe your symptoms or reason for consultation..."
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#bc9ebf] transition-all resize-none font-inter text-gray-800"
-                ></textarea>
-                <p className="text-xs text-gray-400 mt-2 font-inter">Your information is secure and will only be shared with your assigned doctor.</p>
-              </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div className="space-y-10">
+                       <div className="flex items-center gap-8">
+                          <div className="w-24 h-24 rounded-[2.5rem] overflow-hidden border-4 border-white/10 ring-8 ring-white/5">
+                             <img src={selectedDoctorInfo?.image_url} alt="Clinician" className="w-full h-full object-cover" />
+                          </div>
+                          <div>
+                             <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Chief Clinician</p>
+                             <h5 className="font-black text-white text-3xl tracking-tighter">Dr. {selectedDoctorInfo?.full_name}</h5>
+                             <span className="px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-[9px] font-black text-primary uppercase tracking-widest mt-2 inline-block">{selectedDoctorInfo?.department}</span>
+                          </div>
+                       </div>
+                       <div className="grid grid-cols-2 gap-8">
+                          <div>
+                             <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-2">Synchrony Window</p>
+                             <p className="text-white font-black text-lg">{new Date(formData.appointment_date).toLocaleDateString()}</p>
+                             <p className="text-primary font-black text-sm uppercase tracking-widest">{formData.time_slot}</p>
+                          </div>
+                          <div>
+                             <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-2">Resource Fee</p>
+                             <p className="text-white font-black text-3xl">${selectedDoctorInfo?.consultation_fee}</p>
+                             <p className="text-primary font-black text-[9px] uppercase tracking-widest">Clinic Settlement</p>
+                          </div>
+                       </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <label className="block text-[10px] font-black text-white/40 uppercase tracking-[0.2em] ml-1">Symptomatic Description</label>
+                      <div className="p-8 rounded-[3rem] bg-white/5 border border-white/10 ring-4 ring-white/0 focus-within:ring-white/5 transition-all">
+                         <textarea 
+                           className="w-full bg-transparent border-none p-0 focus:ring-0 text-lg font-black text-white placeholder-white/10 resize-none min-h-[160px]"
+                           value={formData.reason}
+                           onChange={(e) => setFormData(prev => ({ ...prev, reason: e.target.value }))}
+                           placeholder="Identify primary symptomatic vectors..."
+                         ></textarea>
+                      </div>
+                    </div>
+                  </div>
+               </div>
             </div>
-          )}
+          </div>
+        )}
 
-        </div>
-
-        {/* Footer Navigation */}
-        <div className="flex justify-between">
+        {/* Global Footer Navigation */}
+        <div className="fixed bottom-0 left-0 md:left-64 right-0 z-50 bg-white/80 backdrop-blur-3xl px-8 py-8 border-t border-outline-variant/10 flex justify-between items-center max-w-4xl mx-auto rounded-t-[3rem] md:rounded-t-none md:max-w-none">
           <button
             onClick={handleBack}
             disabled={step === 1 || loading}
-            className={`px-8 py-3 rounded-full font-inter font-medium transition-colors ${step === 1 ? 'opacity-0 pointer-events-none' : 'border border-gray-300 text-gray-600 hover:bg-gray-50 bg-white shadow-sm'}`}
+            className={`px-10 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40 hover:text-on-surface transition-all ${
+              step === 1 ? 'opacity-0 pointer-events-none' : ''
+            }`}
           >
-            Back
+            Revert Step
           </button>
           
           {step < 3 ? (
             <button
               onClick={handleNext}
-              className="bg-[#6f5673] text-white px-8 py-3 rounded-full font-inter font-medium hover:bg-[#bc9ebf] transition-colors shadow-lg shadow-[#6f5673]/20"
+              disabled={step === 1 ? (!formData.department || !formData.doctor_id) : (!formData.appointment_date || !formData.time_slot)}
+              className="px-16 py-6 bg-primary text-white rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-primary/40 hover:scale-95 disabled:opacity-20 transition-all flex items-center gap-4"
             >
-              Continue
+              Analyze & Continue
+              <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>
           ) : (
             <button
               onClick={handleSubmit}
-              disabled={loading}
-              className="bg-[#6f5673] text-white px-8 py-3 rounded-full font-inter font-medium hover:bg-[#bc9ebf] transition-colors shadow-lg shadow-[#6f5673]/20 flex items-center min-w-[140px] justify-center"
+              disabled={loading || !formData.reason}
+              className="px-16 py-6 bg-primary text-white rounded-[2rem] font-black text-[12px] uppercase tracking-[0.3em] shadow-2xl shadow-primary/40 hover:scale-95 disabled:opacity-20 transition-all flex items-center gap-4"
             >
               {loading ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
               ) : (
-                "Confirm Booking"
+                <>
+                  <span className="material-symbols-outlined text-lg">verified</span>
+                  Commit Triage Request
+                </>
               )}
             </button>
           )}
         </div>
 
       </div>
+
+      {/* Decorative Ambience */}
+      <div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-40">
+        <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-primary/5 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[-10%] left-[-20%] w-[50%] h-[50%] bg-secondary-container/20 rounded-full blur-[100px]"></div>
+      </div>
     </div>
   );
+}
+
 }

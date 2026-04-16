@@ -36,17 +36,26 @@ const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background relative">
+    <div className="flex h-screen overflow-hidden bg-surface relative font-body selection:bg-primary/10 selection:text-primary">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <div className="flex-1 flex flex-col w-full h-full min-w-0">
+      
+      <div className="flex-1 flex flex-col w-full h-full min-w-0 relative">
         <Navbar onMenuClick={() => setIsSidebarOpen(true)} />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-surface-container-low p-4 md:p-6 pb-20 md:pb-6">
-          <Outlet />
+        
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-transparent relative custom-scrollbar">
+          <div className="min-h-full">
+            <Outlet />
+          </div>
         </main>
+
+        {/* Global Ambient Glow */}
+        <div className="fixed bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+        <div className="fixed top-0 left-0 w-[300px] h-[300px] bg-secondary-container/10 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
       </div>
     </div>
   );
 };
+
 
 function App() {
   return (

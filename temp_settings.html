@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile Settings | MediSync</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#47464b",
+                        "primary-fixed-dim": "#dcbcdf",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e3e2e3",
+                        "on-secondary-fixed": "#22172a",
+                        "surface-container-highest": "#e3e2e3",
+                        "primary-container": "#bc9ebf",
+                        "on-tertiary-fixed": "#1b1b1f",
+                        "on-tertiary-container": "#3d3c41",
+                        "on-primary-container": "#4c3550",
+                        "on-surface-variant": "#4c454b",
+                        "inverse-surface": "#2f3032",
+                        "surface": "#faf9fa",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#f9d8fb",
+                        "secondary-container": "#e9d7f1",
+                        "on-secondary-container": "#6a5c72",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#1a1c1d",
+                        "on-primary": "#ffffff",
+                        "secondary": "#67596f",
+                        "outline": "#7d747c",
+                        "on-secondary-fixed-variant": "#4f4257",
+                        "background": "#faf9fa",
+                        "surface-container-low": "#f4f3f4",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#f1f0f1",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#5f5e63",
+                        "secondary-fixed": "#efdcf6",
+                        "inverse-primary": "#dcbcdf",
+                        "on-primary-fixed-variant": "#563e5b",
+                        "on-error": "#ffffff",
+                        "on-background": "#1a1c1d",
+                        "outline-variant": "#cec3cc",
+                        "secondary-fixed-dim": "#d2c1da",
+                        "primary": "#6f5673",
+                        "tertiary-fixed": "#e4e1e7",
+                        "surface-tint": "#6f5673",
+                        "on-primary-fixed": "#28142d",
+                        "tertiary-fixed-dim": "#c8c5cb",
+                        "tertiary-container": "#a9a7ad",
+                        "surface-bright": "#faf9fa",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#eeedee",
+                        "surface-dim": "#dadadb",
+                        "surface-container-high": "#e9e8e9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #6f5673 0%, #bc9ebf 100%);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e3e2e3;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased overflow-hidden flex h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-screen w-64 z-50 flex flex-col p-6 space-y-2 bg-slate-50 dark:bg-slate-950 border-r-0">
+<div class="text-xl font-black text-purple-700 dark:text-purple-300 mb-8 font-headline">MediSync</div>
+<div class="flex items-center space-x-3 p-3 mb-6">
+<div class="w-10 h-10 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a male patient in a light blue shirt with a friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPX0O9dOPskob5ayew_9Wwk_Z3Q1bXTvnFNrKWA3w6MvYarnTnd66nIprHoYYJyRZ3yM3OwLzWsxgzE21Oidq0tTD54fKIKOJX8vDN1aVCR1VcUtYqeXdU0uKMvwey3RJy7tNC-MBB7cpzoW0h9QQP7MwUad__tLc8Jf9nXuZH8a4ADUnMpAkvVpMrDHnBpvMod6wgqXD_gBfBVOerFU_vxluyhy_yDqw7lvCaNaFdp_rIud1jTNTiRQ8q_OFGtBAxlG0G2yDnrKI"/>
+</div>
+<div>
+<p class="font-manrope font-semibold text-sm text-on-surface">Alex Rivera</p>
+<p class="text-xs text-slate-500">Patient #99210</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-500 hover:bg-purple-50 transition-all rounded-xl font-manrope font-semibold text-sm" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-500 hover:bg-purple-50 transition-all rounded-xl font-manrope font-semibold text-sm" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span>Appointments</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-500 hover:bg-purple-50 transition-all rounded-xl font-manrope font-semibold text-sm" href="#">
+<span class="material-symbols-outlined">folder_shared</span>
+<span>Medical Records</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-500 hover:bg-purple-50 transition-all rounded-xl font-manrope font-semibold text-sm" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span>Messages</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 bg-white text-purple-600 rounded-xl shadow-sm font-bold font-manrope font-semibold text-sm transition-transform duration-200 scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 space-y-1">
+<button class="w-full bg-gradient-primary text-white py-3 px-4 rounded-full text-sm font-bold shadow-sm mb-4 hover:opacity-90 transition-opacity">Book Appointment</button>
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-500 hover:bg-purple-50 transition-all rounded-xl font-manrope font-semibold text-sm" href="#">
+<span class="material-symbols-outlined">help</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-500 hover:bg-purple-50 transition-all rounded-xl font-manrope font-semibold text-sm" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 ml-64 flex flex-col h-screen relative">
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-64 z-40 flex justify-between items-center h-20 px-8 w-[calc(100%-16rem)] bg-white/80 backdrop-blur-2xl shadow-[0_20px_40px_-15px_rgba(188,158,191,0.15)]">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full w-96">
+<span class="material-symbols-outlined text-slate-400 mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder-slate-400" placeholder="Search records, doctors..." type="text"/>
+</div>
+<div class="flex items-center space-x-6">
+<div class="flex space-x-4">
+<button class="material-symbols-outlined text-slate-500 hover:bg-slate-50 p-2 rounded-full transition-colors active:scale-95 duration-300">notifications</button>
+<button class="material-symbols-outlined text-slate-500 hover:bg-slate-50 p-2 rounded-full transition-colors active:scale-95 duration-300">help_outline</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/30"></div>
+<div class="flex items-center space-x-3">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-bold text-on-surface">Alex Rivera</p>
+<p class="text-[10px] text-slate-400 tracking-wider uppercase font-bold">Standard Patient</p>
+</div>
+<div class="w-10 h-10 rounded-xl overflow-hidden ring-2 ring-purple-100 ring-offset-2">
+<img class="w-full h-full object-cover" data-alt="close up headshot of Alex Rivera with a calm patient expression in a medical clinic environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwfI3BpPZZmY1N3tcehtrjKSKIf1Xkkkpi9jZJyB-W3q6gR2bPOw-CMgIA1uz24qxl3V-5zoz2z_T-WCp90dSrqHm9DheCqZDTkItCwPUnzbFexOXFJ16XllIY2zXsrZnGSaxHn2JQ5fQPoTIrEmC32PcXnfTsBby7Lw9YcRIw-xeNafycMF21Hf_22S5Rj-k8XQlFUEIlEzPFTy9SfYiOkH2ffa0f88nUFanmaIKQC9tPsqfvulYeUHoIOFhEYLVEQ5abLwD6cQw"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Scrollable Content -->
+<main class="mt-20 flex-1 overflow-y-auto p-8 bg-surface">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-10">
+<div>
+<h1 class="text-4xl font-extrabold font-headline text-on-surface tracking-tight">Profile Settings</h1>
+<p class="text-on-surface-variant mt-2">Manage your account preferences and medical details.</p>
+</div>
+<div class="text-right">
+<p class="text-sm text-slate-400 font-medium">Last updated: 10 Apr 2026</p>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex space-x-8 border-b border-outline-variant/20 mb-8 overflow-x-auto pb-1">
+<button class="pb-4 text-sm font-bold text-purple-700 border-b-2 border-purple-400 whitespace-nowrap">Personal Info</button>
+<button class="pb-4 text-sm font-semibold text-slate-500 hover:text-purple-600 transition-colors whitespace-nowrap">Security</button>
+<button class="pb-4 text-sm font-semibold text-slate-500 hover:text-purple-600 transition-colors whitespace-nowrap">Notifications</button>
+<button class="pb-4 text-sm font-semibold text-slate-500 hover:text-purple-600 transition-colors whitespace-nowrap">Payment Methods</button>
+</div>
+<div class="max-w-5xl space-y-12 pb-24">
+<!-- PERSONAL INFO SECTION -->
+<section class="space-y-8">
+<!-- Profile Photo Card -->
+<div class="bg-surface-container-lowest rounded-2xl p-8 flex items-center space-x-8 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)]">
+<div class="relative group cursor-pointer">
+<div class="w-24 h-24 rounded-full overflow-hidden border-4 border-surface-container-low shadow-inner">
+<img class="w-full h-full object-cover" data-alt="High quality headshot of a person with calm expression used for medical profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7o7SfP3cfxPJ9TiO7IaX06Ho1Hr5oVlORJEUVlTr3dPGmDCNuFiz5WZFU3ZHP7CClaJX8EwXS81xbsYLuSW_F7hmOXY0y81R_6vU1l-rDZ0e6BiufusErK1suH4uLe2bq2rprmJYR_j8yHb72uJjn0Nq1BvhkuPzJXpxo2kiX8z4OTMUlnpZta62-7IYQDsQ9lt9b0JV5TiS0pNxQg2NTNbdiGMX6t0-IkRleT3IX7ph23GwPDr7JaZrq42n7TWpUxteta60iJ78"/>
+</div>
+<div class="absolute inset-0 bg-primary/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white text-2xl">photo_camera</span>
+</div>
+</div>
+<div class="space-y-3">
+<h3 class="font-headline font-bold text-lg">Your Profile Picture</h3>
+<div class="flex items-center space-x-4">
+<button class="px-6 py-2 border border-outline-variant rounded-full text-sm font-bold text-primary hover:bg-surface-container-low transition-colors">Change Photo</button>
+<button class="text-sm font-semibold text-error hover:underline">Remove Photo</button>
+</div>
+<p class="text-xs text-on-surface-variant">JPG, GIF or PNG. Max size of 800K</p>
+</div>
+</div>
+<!-- Personal Form Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Details -->
+<div class="space-y-6 bg-surface-container-lowest p-8 rounded-2xl">
+<h4 class="font-headline font-bold text-secondary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">person</span> Personal Details
+                            </h4>
+<div class="space-y-4">
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-1 ml-1">Full Name</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-sm font-medium" type="text" value="Alex Rivera"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-1 ml-1">Phone Number</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-sm font-medium" type="text" value="+91 98765 43210"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-1 ml-1">Date of Birth</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-sm font-medium" type="date" value="1992-04-12"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-2 ml-1">Gender</label>
+<div class="flex items-center space-x-4 h-10">
+<label class="flex items-center cursor-pointer">
+<input checked="" class="text-primary focus:ring-primary h-4 w-4 mr-2" name="gender" type="radio"/>
+<span class="text-sm">Male</span>
+</label>
+<label class="flex items-center cursor-pointer">
+<input class="text-primary focus:ring-primary h-4 w-4 mr-2" name="gender" type="radio"/>
+<span class="text-sm">Female</span>
+</label>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-1 ml-1">Blood Group</label>
+<select class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-sm font-medium">
+<option>A Positive (A+)</option>
+<option>B Positive (B+)</option>
+<option selected="">O Positive (O+)</option>
+<option>AB Positive (AB+)</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+<!-- Address -->
+<div class="space-y-6 bg-surface-container-lowest p-8 rounded-2xl">
+<h4 class="font-headline font-bold text-secondary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">home</span> Residential Address
+                            </h4>
+<div class="space-y-4">
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-1 ml-1">Street Address</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-sm font-medium" type="text" value="Flat 402, Green Meadows, MG Road"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-1 ml-1">City &amp; State</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-sm font-medium" type="text" value="Bangalore, KA"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-1 ml-1">Pincode</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-sm font-medium" type="text" value="560001"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Medical Info -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl space-y-8">
+<h4 class="font-headline font-bold text-secondary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">medical_information</span> Clinical Overview
+                        </h4>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="space-y-3">
+<label class="block text-xs font-bold text-on-surface-variant ml-1">Known Allergies</label>
+<div class="flex flex-wrap gap-2 p-4 bg-surface-container-low rounded-xl min-h-[80px]">
+<span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold flex items-center gap-1">Peanuts <button class="material-symbols-outlined text-[10px]">close</button></span>
+<span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold flex items-center gap-1">Penicillin <button class="material-symbols-outlined text-[10px]">close</button></span>
+<button class="w-6 h-6 flex items-center justify-center rounded-full bg-red-200 text-red-700"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+</div>
+<div class="space-y-3">
+<label class="block text-xs font-bold text-on-surface-variant ml-1">Chronic Conditions</label>
+<div class="flex flex-wrap gap-2 p-4 bg-surface-container-low rounded-xl min-h-[80px]">
+<span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-bold flex items-center gap-1">Hypertension <button class="material-symbols-outlined text-[10px]">close</button></span>
+<button class="w-6 h-6 flex items-center justify-center rounded-full bg-orange-200 text-orange-700"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+</div>
+<div class="space-y-3">
+<label class="block text-xs font-bold text-on-surface-variant ml-1">Current Medications</label>
+<div class="flex flex-wrap gap-2 p-4 bg-surface-container-low rounded-xl min-h-[80px]">
+<span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold flex items-center gap-1">Lisinopril <button class="material-symbols-outlined text-[10px]">close</button></span>
+<span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold flex items-center gap-1">Atorvastatin <button class="material-symbols-outlined text-[10px]">close</button></span>
+<button class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-200 text-blue-700"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Emergency Contact -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl">
+<h4 class="font-headline font-bold text-secondary flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-sm">contact_emergency</span> Emergency Contact
+                        </h4>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-1 ml-1">Full Name</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-sm font-medium" type="text" value="Elena Rivera"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-1 ml-1">Relationship</label>
+<select class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-sm font-medium">
+<option>Spouse</option>
+<option>Parent</option>
+<option>Sibling</option>
+<option>Friend</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-1 ml-1">Phone Number</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-sm font-medium" type="text" value="+91 91234 56789"/>
+</div>
+</div>
+</div>
+<!-- Action Footer -->
+<div class="flex justify-end space-x-4 border-t border-outline-variant/10 pt-8">
+<button class="px-8 py-3 border border-outline-variant rounded-full text-sm font-bold text-slate-600 hover:bg-surface-container-low transition-colors">Discard Changes</button>
+<button class="px-10 py-3 bg-gradient-primary text-white rounded-full text-sm font-bold shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-transform">Save Changes</button>
+</div>
+</section>
+<!-- SECURITY SECTION (Scrollable part of main) -->
+<section class="space-y-8">
+<h2 class="text-2xl font-headline font-extrabold text-on-surface flex items-center gap-3">
+<span class="material-symbols-outlined">verified_user</span> Security &amp; Access
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Password Card -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl space-y-6">
+<h4 class="font-headline font-bold text-on-surface">Change Password</h4>
+<div class="space-y-4">
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-1">Current Password</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 text-sm" placeholder="••••••••" type="password"/>
+</div>
+<div class="relative">
+<label class="block text-xs font-bold text-on-surface-variant mb-1">New Password</label>
+<input class="w-full bg-surface-container-highest border-none rounded-xl px-4 py-3 text-sm" placeholder="••••••••" type="password"/>
+<div class="mt-2 h-1 w-full bg-surface-container-low rounded-full overflow-hidden">
+<div class="bg-green-500 h-full w-3/4"></div>
+</div>
+<p class="text-[10px] mt-1 text-green-600 font-bold">Password Strength: Strong</p>
+</div>
+<div class="relative">
+<label class="block text-xs font-bold text-on-surface-variant mb-1">Confirm Password</label>
+<div class="flex items-center bg-surface-container-highest rounded-xl pr-4">
+<input class="w-full bg-transparent border-none rounded-xl px-4 py-3 text-sm" placeholder="••••••••" type="password"/>
+<span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 2FA Card -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h4 class="font-headline font-bold text-on-surface">Two-Factor Authentication</h4>
+<p class="text-xs text-on-surface-variant mt-1">Add an extra layer of security to your account.</p>
+</div>
+<div class="relative inline-block w-12 h-6 transition duration-200 ease-in bg-purple-600 rounded-full cursor-pointer">
+<div class="absolute top-1 left-1 w-4 h-4 transition duration-200 ease-in transform translate-x-6 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center gap-6 mt-auto">
+<div class="bg-surface-container-low p-2 rounded-xl">
+<div class="w-20 h-20 bg-white p-2 border border-outline-variant/30 rounded flex items-center justify-center">
+<!-- Placeholder QR -->
+<div class="w-full h-full bg-slate-100 flex items-center justify-center overflow-hidden opacity-50">
+<span class="material-symbols-outlined text-4xl">qr_code_2</span>
+</div>
+</div>
+</div>
+<div class="space-y-2">
+<p class="text-xs font-bold text-on-surface">Backup Codes</p>
+<code class="block text-xs font-mono bg-surface-container-high px-2 py-1 rounded">MSYN-4921-X901</code>
+<button class="text-xs text-primary font-bold hover:underline">Download all codes</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Sessions -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl">
+<div class="flex justify-between items-center mb-6">
+<h4 class="font-headline font-bold text-on-surface">Active Sessions</h4>
+<button class="text-sm font-bold text-error border border-error/20 px-4 py-2 rounded-full hover:bg-error/5 transition-colors">Logout All Devices</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">laptop_mac</span>
+</div>
+<div>
+<p class="text-sm font-bold">MacBook Pro 14" • Chrome</p>
+<p class="text-xs text-on-surface-variant">Bangalore, India • <span class="text-green-600 font-semibold">Active now</span></p>
+</div>
+</div>
+<button class="text-xs text-error font-bold hover:underline">Logout</button>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl opacity-70">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+<span class="material-symbols-outlined">smartphone</span>
+</div>
+<div>
+<p class="text-sm font-bold">iPhone 15 Pro • MediSync App</p>
+<p class="text-xs text-on-surface-variant">Bangalore, India • 2 hours ago</p>
+</div>
+</div>
+<button class="text-xs text-error font-bold hover:underline">Logout</button>
+</div>
+</div>
+</div>
+</section>
+<!-- NOTIFICATIONS SECTION -->
+<section class="space-y-8">
+<h2 class="text-2xl font-headline font-extrabold text-on-surface flex items-center gap-3">
+<span class="material-symbols-outlined">notifications_active</span> Notification Preferences
+                    </h2>
+<div class="bg-surface-container-lowest p-8 rounded-2xl overflow-hidden">
+<table class="w-full">
+<thead>
+<tr class="text-left">
+<th class="pb-6 font-bold text-xs uppercase tracking-widest text-on-surface-variant">Notification Type</th>
+<th class="pb-6 font-bold text-xs uppercase tracking-widest text-on-surface-variant text-center">Push</th>
+<th class="pb-6 font-bold text-xs uppercase tracking-widest text-on-surface-variant text-center">SMS</th>
+<th class="pb-6 font-bold text-xs uppercase tracking-widest text-on-surface-variant text-center">Email</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="group">
+<td class="py-5">
+<p class="text-sm font-bold">Appointments</p>
+<p class="text-xs text-on-surface-variant">Reminders, reschedules, and booking confirmations.</p>
+</td>
+<td class="py-5 text-center">
+<input checked="" class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+<td class="py-5 text-center">
+<input checked="" class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+<td class="py-5 text-center">
+<input checked="" class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+</tr>
+<tr class="group">
+<td class="py-5">
+<p class="text-sm font-bold">Medical Updates</p>
+<p class="text-xs text-on-surface-variant">Lab results, summary reports, and prescription refills.</p>
+</td>
+<td class="py-5 text-center">
+<input checked="" class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+<td class="py-5 text-center">
+<input class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+<td class="py-5 text-center">
+<input checked="" class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+</tr>
+<tr class="group">
+<td class="py-5">
+<p class="text-sm font-bold">AI Health Insights</p>
+<p class="text-xs text-on-surface-variant">Personalized health tips and preventative screening alerts.</p>
+</td>
+<td class="py-5 text-center">
+<input checked="" class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+<td class="py-5 text-center">
+<input class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+<td class="py-5 text-center">
+<input class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+</tr>
+<tr class="group">
+<td class="py-5">
+<p class="text-sm font-bold">Billing &amp; Insurance</p>
+<p class="text-xs text-on-surface-variant">Invoices, payment receipts, and claim status.</p>
+</td>
+<td class="py-5 text-center">
+<input class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+<td class="py-5 text-center">
+<input class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+<td class="py-5 text-center">
+<input checked="" class="rounded text-primary focus:ring-primary/20 w-5 h-5 border-outline-variant" type="checkbox"/>
+</td>
+</tr>
+<tr class="group bg-red-50/30">
+<td class="py-5 px-2">
+<p class="text-sm font-bold text-red-800 flex items-center gap-2"><span class="material-symbols-outlined text-sm">error</span> Emergency Alerts</p>
+<p class="text-xs text-red-600/80">Critical system alerts and urgent healthcare notifications.</p>
+</td>
+<td class="py-5 text-center">
+<input checked="" class="rounded text-slate-300 w-5 h-5 cursor-not-allowed" disabled="" type="checkbox"/>
+</td>
+<td class="py-5 text-center">
+<input checked="" class="rounded text-slate-300 w-5 h-5 cursor-not-allowed" disabled="" type="checkbox"/>
+</td>
+<td class="py-5 text-center">
+<input checked="" class="rounded text-slate-300 w-5 h-5 cursor-not-allowed" disabled="" type="checkbox"/>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="mt-10 space-y-4">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Appointment Reminder Timing</p>
+<div class="flex flex-wrap gap-3">
+<button class="px-4 py-2 rounded-full text-xs font-bold border border-outline-variant text-slate-500 hover:border-primary hover:text-primary transition-all">1 hour before</button>
+<button class="px-4 py-2 rounded-full text-xs font-bold border border-primary bg-primary/5 text-primary">2 hours before</button>
+<button class="px-4 py-2 rounded-full text-xs font-bold border border-primary bg-primary/5 text-primary">1 day before</button>
+<button class="px-4 py-2 rounded-full text-xs font-bold border border-outline-variant text-slate-500 hover:border-primary hover:text-primary transition-all">2 days before</button>
+</div>
+</div>
+<div class="mt-10 flex justify-end">
+<button class="px-10 py-3 bg-gradient-primary text-white rounded-full text-sm font-bold shadow-lg hover:opacity-90 transition-opacity">Save Preferences</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Floating Success Toast -->
+<div class="fixed bottom-8 right-8 z-[100] flex items-center bg-white/90 backdrop-blur shadow-2xl rounded-2xl p-4 border-l-4 border-green-500 animate-slide-up">
+<div class="bg-green-100 rounded-full p-2 mr-4">
+<span class="material-symbols-outlined text-green-600" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Preferences saved successfully</p>
+<p class="text-xs text-on-surface-variant">All your settings are now synchronized.</p>
+</div>
+<button class="ml-6 material-symbols-outlined text-slate-400 hover:text-slate-600 text-sm">close</button>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#faf9fa",
+                        "secondary-fixed-dim": "#d2c1da",
+                        "outline-variant": "#cec3cc",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#faf9fa",
+                        "inverse-primary": "#dcbcdf",
+                        "surface-dim": "#dadadb",
+                        "outline": "#7d747c",
+                        "on-tertiary-container": "#3d3c41",
+                        "on-tertiary-fixed-variant": "#47464b",
+                        "primary-container": "#bc9ebf",
+                        "on-secondary-fixed-variant": "#4f4257",
+                        "tertiary-fixed-dim": "#c8c5cb",
+                        "on-surface-variant": "#4c454b",
+                        "surface-variant": "#e3e2e3",
+                        "primary-fixed-dim": "#dcbcdf",
+                        "on-tertiary-fixed": "#1b1b1f",
+                        "surface-container-low": "#f4f3f4",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f1f0f1",
+                        "on-secondary-fixed": "#22172a",
+                        "secondary": "#67596f",
+                        "on-secondary-container": "#6a5c72",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#2f3032",
+                        "surface-container-highest": "#e3e2e3",
+                        "secondary-container": "#e9d7f1",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e9e8e9",
+                        "error-container": "#ffdad6",
+                        "primary": "#6f5673",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#a9a7ad",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#4c3550",
+                        "on-background": "#1a1c1d",
+                        "on-primary-fixed": "#28142d",
+                        "background": "#faf9fa",
+                        "surface-container": "#eeedee",
+                        "surface-tint": "#6f5673",
+                        "secondary-fixed": "#efdcf6",
+                        "on-surface": "#1a1c1d",
+                        "tertiary-fixed": "#e4e1e7",
+                        "on-primary-fixed-variant": "#563e5b",
+                        "tertiary": "#5f5e63",
+                        "primary-fixed": "#f9d8fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar (Fixed) -->
+<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-slate-50 dark:bg-slate-950 flex flex-col border-r-0 pt-8 z-40">
+<div class="px-6 mb-10">
+<h1 class="text-xl font-bold text-purple-900 dark:text-white font-headline">MediSync</h1>
+<p class="text-xs text-slate-500 font-label">Patient Sanctuary</p>
+</div>
+<nav class="flex-1">
+<ul class="space-y-2">
+<li>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-6 py-3 hover:text-purple-600 dark:hover:text-purple-200 hover:translate-x-1 transition-transform font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+                        Dashboard
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-purple-900 dark:text-purple-100 font-bold border-r-4 border-purple-400 px-6 py-3 hover:translate-x-1 transition-transform font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined text-purple-400" data-icon="calendar_today">calendar_today</span>
+                        Appointments
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-6 py-3 hover:text-purple-600 dark:hover:text-purple-200 hover:translate-x-1 transition-transform font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+                        History
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-6 py-3 hover:text-purple-600 dark:hover:text-purple-200 hover:translate-x-1 transition-transform font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                        Settings
+                    </a>
+</li>
+</ul>
+</nav>
+<div class="p-6 mt-auto">
+<button class="w-full py-3 px-4 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-bold shadow-lg active:scale-[0.98] transition-all">
+                Book Appointment
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="sticky top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl shadow-[0_20px_50px_rgba(188,158,191,0.1)] flex items-center justify-between px-8 py-4">
+<div class="flex items-center gap-4">
+<span class="text-2xl font-black text-purple-900 dark:text-purple-100 tracking-tight font-manrope">MediSync</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" data-icon="search">search</span>
+<input class="bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 w-64" placeholder="Search medical records..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors text-slate-500">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="Patient avatar" class="h-full w-full object-cover" data-alt="close up headshot of a friendly professional woman with a soft smile in a bright clinical setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiqCAyj6zOiRXAWz0TOzi454loqp9UBTa4XgVabMFYFsq49jtQefvHhPxF8OKXz4KHnsROa82BMb29XRe-EynS9YfKvI89hWz9JkScg3XDHSVaMV0HBsBZWnUiMVOqUBXY9RlMRVfftr28mr5kGRqeCcjOjADNxtQT1u8fh9bazI-aDr42vXBS-wsqQdDQ61HxhooUIYsy7b7jL9F-IY7T_xYC1m7Y818BEf3jbrJj7kwHuJqLjUnj18VQKa7ZtsomakQH-0-xwmQ"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="flex-1 p-10 max-w-7xl mx-auto w-full">
+<!-- Breadcrumb & Title -->
+<div class="mb-10">
+<nav class="flex items-center gap-2 text-sm text-on-surface-variant mb-2">
+<span>Dashboard</span>
+<span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
+<span>My Appointments</span>
+<span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-semibold">Book</span>
+</nav>
+<h2 class="text-4xl font-extrabold font-manrope text-on-surface tracking-tight">Book Appointment</h2>
+</div>
+<!-- Progress Stepper -->
+<div class="relative flex justify-between items-center mb-16 px-4">
+<div class="absolute top-1/2 left-0 w-full h-[2px] bg-surface-container-highest -translate-y-1/2 -z-10"></div>
+<!-- Step 1 (Active) -->
+<div class="flex flex-col items-center gap-3 bg-surface px-4">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shadow-[0_0_20px_rgba(111,86,115,0.3)]">
+<span class="font-bold">1</span>
+</div>
+<span class="text-sm font-bold text-on-surface">Select Doctor</span>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center gap-3 bg-surface px-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="font-bold">2</span>
+</div>
+<span class="text-sm font-medium text-on-surface-variant">Choose Date &amp; Time</span>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center gap-3 bg-surface px-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="font-bold">3</span>
+</div>
+<span class="text-sm font-medium text-on-surface-variant">Confirm Booking</span>
+</div>
+</div>
+<!-- Step 1 Content -->
+<section class="space-y-8">
+<!-- Search & Filters -->
+<div class="space-y-4">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary text-2xl group-focus-within:scale-110 transition-transform" data-icon="search">search</span>
+<input class="w-full bg-surface-container-highest/50 border-none rounded-xl pl-14 pr-6 py-5 text-lg focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-on-surface-variant/50" placeholder="Search by doctor name, specialty, or hospital..." type="text"/>
+</div>
+<div class="flex flex-wrap items-center gap-4">
+<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-full border border-transparent hover:border-outline-variant transition-all cursor-pointer">
+<span class="material-symbols-outlined text-sm" data-icon="medical_services">medical_services</span>
+<span class="text-sm font-medium">Department: All</span>
+<span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</div>
+<div class="flex items-center gap-2 bg-secondary-container px-4 py-2 rounded-full border border-transparent cursor-pointer">
+<span class="material-symbols-outlined text-sm" data-icon="event_available">event_available</span>
+<span class="text-sm font-medium text-on-secondary-container">Available Today</span>
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-full border border-transparent hover:border-outline-variant transition-all cursor-pointer">
+<span class="material-symbols-outlined text-sm" data-icon="star">star</span>
+<span class="text-sm font-medium">Rating: 4.5+</span>
+<span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</div>
+<button class="ml-auto text-primary font-semibold flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                            More Filters
+                        </button>
+</div>
+</div>
+<!-- Doctor Cards Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Doctor Card 1 (Selected) -->
+<div class="relative bg-surface-container-lowest rounded-xl p-6 ring-2 ring-primary shadow-[0_20px_50px_rgba(111,86,115,0.08)] transition-all flex gap-6">
+<div class="absolute top-4 right-4 bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-base" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="w-32 h-40 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Dr. Anjali Sharma" class="w-full h-full object-cover" data-alt="portrait of a confident female doctor in medical scrubs with a stethoscope around her neck in a modern clinic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCM_agmrl-g4Z1s2wSO2K2MGasx5PGncy-rhzL6t5MehA_ef2NyOkn8fiC3hCjo3BOuPiRa-iMEjBfS27tvjQo7YSU7VLEC3o0ksNBgfbMbCXDIsp7Y4T3SVlUuOCiXGAUjk6Y9yAgSTz5T7nODrBk71ha5DtDpI62Quwg1CBCbKtvJkbHsCElJQ26OBB3JBxAK2D5giRzWf60sIVk58mXqyB2MhG4HjX2rl2jc_38JWMcS7uxLOTmz5mQpe4_z6v-MWagtN8wDKgY"/>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="mb-2">
+<h3 class="text-xl font-bold font-manrope">Dr. Anjali Sharma</h3>
+<p class="text-primary font-semibold text-sm">Cardiologist</p>
+</div>
+<div class="flex items-center gap-4 mb-4 text-xs text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-amber-400 text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-bold text-on-surface">4.8</span>
+<span>(120 reviews)</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="work_history">work_history</span>
+<span>12 years exp.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-6">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-xs font-medium text-emerald-600 uppercase tracking-wider">Available Today</span>
+<span class="ml-auto text-lg font-bold text-on-surface">₹500</span>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 py-2 text-sm font-bold border-2 border-outline-variant text-on-surface rounded-full hover:bg-surface-container-high transition-colors">View Profile</button>
+<button class="flex-1 py-2 text-sm font-bold bg-gradient-to-r from-primary to-primary-container text-white rounded-full shadow-md shadow-primary/20">Selected</button>
+</div>
+</div>
+</div>
+<!-- Doctor Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm hover:shadow-xl transition-all flex gap-6 group border border-transparent hover:border-primary-container/30">
+<div class="w-32 h-40 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Dr. Vikram Seth" class="w-full h-full object-cover" data-alt="professional male doctor in a white coat smiling in a bright hospital office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOIVIF3joXgvfA8ZCT75AI9UOlo0t4V8Y8TGXOzIhbYfKR-jfI8TGXWD5gt-bCXiQKH8Z0eSsOTLZlLZj-4OgBtsgDxRMBNaqJ0rVK60zRz-gyNCDCp9LNPFiAyKmrn4bFblEJh3g9qf078689BKuCF_Kp-RSvtoVvxCkpUbG5nCSNLND1I9fE_MCGl_OvrA2vUtgo_sF_bWzO6A_3Y4kVIXsPaG5EB93wq3dNRjtpDPjbtnzbq7iLy1sJ7xHEzQHqBGHQffrf_Cc"/>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="mb-2">
+<h3 class="text-xl font-bold font-manrope">Dr. Vikram Seth</h3>
+<p class="text-primary font-semibold text-sm">Neurologist</p>
+</div>
+<div class="flex items-center gap-4 mb-4 text-xs text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-amber-400 text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-bold text-on-surface">4.6</span>
+<span>(95 reviews)</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="work_history">work_history</span>
+<span>15 years exp.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-6">
+<span class="w-2 h-2 rounded-full bg-slate-400"></span>
+<span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Next available: Tomorrow</span>
+<span class="ml-auto text-lg font-bold text-on-surface">₹750</span>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 py-2 text-sm font-bold border-2 border-outline-variant text-on-surface rounded-full hover:bg-surface-container-high transition-colors">View Profile</button>
+<button class="flex-1 py-2 text-sm font-bold bg-surface-container-high text-primary rounded-full hover:bg-primary hover:text-white transition-all">Select Doctor</button>
+</div>
+</div>
+</div>
+<!-- Doctor Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm hover:shadow-xl transition-all flex gap-6 group border border-transparent hover:border-primary-container/30">
+<div class="w-32 h-40 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Dr. Priya Verma" class="w-full h-full object-cover" data-alt="female pediatrician in a colorful doctor's office holding a tablet and smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwUQJzvo1d7k9DMAxa8BGlOzFeqNTrbpIZ6oMfIA2zb2XsYI_1Y-5yW6TjImPw7EysgarzRuZsLLtL1GbU5Jq_GA2EX7kpohrkmrdWIul-zHOoPU7kh2bew7lEW2PQ8okRCCAPcXagvP_EjLKhYEOmeWib8_Ytoq2I0QjJA1VnUx4QzuDUd4PEzIM92dGdM52J3i2kWV3jJhSVIbex0MKtoRlENKLUQHZv2C8OdnuRtxT8jT1A7GrZIXnA1g_ok4_IKR7ouz85cyU"/>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="mb-2">
+<h3 class="text-xl font-bold font-manrope">Dr. Priya Verma</h3>
+<p class="text-primary font-semibold text-sm">Pediatrician</p>
+</div>
+<div class="flex items-center gap-4 mb-4 text-xs text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-amber-400 text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-bold text-on-surface">4.9</span>
+<span>(210 reviews)</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="work_history">work_history</span>
+<span>8 years exp.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-6">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-xs font-medium text-emerald-600 uppercase tracking-wider">Available Today</span>
+<span class="ml-auto text-lg font-bold text-on-surface">₹400</span>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 py-2 text-sm font-bold border-2 border-outline-variant text-on-surface rounded-full hover:bg-surface-container-high transition-colors">View Profile</button>
+<button class="flex-1 py-2 text-sm font-bold bg-surface-container-high text-primary rounded-full hover:bg-primary hover:text-white transition-all">Select Doctor</button>
+</div>
+</div>
+</div>
+<!-- Doctor Card 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm hover:shadow-xl transition-all flex gap-6 group border border-transparent hover:border-primary-container/30">
+<div class="w-32 h-40 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Dr. Rahul Mehta" class="w-full h-full object-cover" data-alt="middle aged male surgeon in hospital attire standing in a brightly lit hallway" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0AwH0CHNt2W7bU4409IliygbRScIhex771Zg5KXj4j-lS7Al3c498yebC3w9tfd_pAh4q0YhqSRCfYB-4C89iILioMFPxYcuPyVMaUUC9WY1R8xen8yrmM4JDXduSXAM5ibVIybx22uCpcZR8kpjZ6wXxYixez34_C937cLTh_93UpnKskZP4QPZIJ3jVl0LpB1p-64QnLviZGgCSPvPixJzBe0t3G9hv6GxK5eAvxagDugSeWkifj2BEgA2AZUiWxfHBxTv91FA"/>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="mb-2">
+<h3 class="text-xl font-bold font-manrope">Dr. Rahul Mehta</h3>
+<p class="text-primary font-semibold text-sm">Orthopedic</p>
+</div>
+<div class="flex items-center gap-4 mb-4 text-xs text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-amber-400 text-sm" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-bold text-on-surface">4.7</span>
+<span>(156 reviews)</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="work_history">work_history</span>
+<span>20 years exp.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-6">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-xs font-medium text-emerald-600 uppercase tracking-wider">Available Today</span>
+<span class="ml-auto text-lg font-bold text-on-surface">₹600</span>
+</div>
+<div class="mt-auto flex gap-3">
+<button class="flex-1 py-2 text-sm font-bold border-2 border-outline-variant text-on-surface rounded-full hover:bg-surface-container-high transition-colors">View Profile</button>
+<button class="flex-1 py-2 text-sm font-bold bg-surface-container-high text-primary rounded-full hover:bg-primary hover:text-white transition-all">Select Doctor</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination/Load More -->
+<div class="flex justify-center pt-8">
+<button class="px-8 py-3 bg-surface-container-high text-on-surface font-semibold rounded-full hover:bg-surface-container-highest transition-all flex items-center gap-2">
+                        Load More Doctors
+                        <span class="material-symbols-outlined" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</section>
+<!-- Navigation Actions -->
+<div class="mt-12 pt-8 border-t border-surface-container-high flex justify-between items-center">
+<button class="px-6 py-3 text-on-surface-variant font-bold flex items-center gap-2 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+                    Back to Appointments
+                </button>
+<button class="px-10 py-4 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-bold shadow-[0_10px_30px_rgba(111,86,115,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+                    Continue to Step 2
+                    <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Footer Overlay Decorative -->
+<div class="pointer-events-none fixed bottom-0 right-0 w-64 h-64 bg-gradient-to-tl from-primary-container/20 to-transparent rounded-full blur-3xl -z-10"></div>
+</main>
+</body></html>

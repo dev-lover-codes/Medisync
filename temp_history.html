@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#ffffff",
+                        "surface-container": "#eeedee",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#4f4257",
+                        "on-secondary-container": "#6a5c72",
+                        "on-tertiary-container": "#3d3c41",
+                        "surface-container-high": "#e9e8e9",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#563e5b",
+                        "inverse-primary": "#dcbcdf",
+                        "primary-fixed-dim": "#dcbcdf",
+                        "primary": "#6f5673",
+                        "on-surface-variant": "#4c454b",
+                        "on-background": "#1a1c1d",
+                        "secondary-container": "#e9d7f1",
+                        "primary-container": "#bc9ebf",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#6f5673",
+                        "surface-dim": "#dadadb",
+                        "on-primary-container": "#4c3550",
+                        "surface-container-highest": "#e3e2e3",
+                        "tertiary-fixed": "#e4e1e7",
+                        "on-tertiary-fixed-variant": "#47464b",
+                        "tertiary-fixed-dim": "#c8c5cb",
+                        "tertiary-container": "#a9a7ad",
+                        "inverse-on-surface": "#f1f0f1",
+                        "secondary": "#67596f",
+                        "outline-variant": "#cec3cc",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#5f5e63",
+                        "secondary-fixed": "#efdcf6",
+                        "outline": "#7d747c",
+                        "on-primary-fixed": "#28142d",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#faf9fa",
+                        "background": "#faf9fa",
+                        "surface-variant": "#e3e2e3",
+                        "on-secondary-fixed": "#22172a",
+                        "secondary-fixed-dim": "#d2c1da",
+                        "inverse-surface": "#2f3032",
+                        "primary-fixed": "#f9d8fb",
+                        "surface-container-low": "#f4f3f4",
+                        "on-surface": "#1a1c1d",
+                        "surface": "#faf9fa",
+                        "on-tertiary-fixed": "#1b1b1f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #faf9fa; }
+        h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 119px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #bc9ebf;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="text-on-background">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full shadow-sm shadow-purple-900/5">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-bold tracking-tighter text-purple-900 dark:text-purple-100">MediSync</span>
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-highest border-none rounded-full text-sm w-64 focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search records..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors rounded-full">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="Patient Profile Picture" data-alt="close-up portrait of a middle-aged male patient with a friendly smile in a bright medical setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDizd4jP3PrSVW59uYi8AXJDXM-_mUT8qPxHNrrZDFnD9Mc5LwG-BzzwRuFACvclEhbmhzBczy2P31WJ7gVWMCsZNkQYMRw2K4-0DN6TxDaUZ0qAqSTOeOOgOOl1bYI0rsqEa_hA4mkVeyxyFOdLWtIV8iB1DBrWA_4FNflM2XVUP8WN_TuGXsHpWB5bqn_RihLEg4Q1omoVIOe0R3G0BdQw8FoYuvuvonsidaydoMR8SFnkdQUMxrsngzUBV91kxar6AEgqR7kE14"/>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-zinc-50 dark:bg-zinc-900 flex flex-col p-4 gap-2">
+<div class="flex items-center gap-3 p-3 mb-6">
+<div class="h-10 w-10 rounded-xl overflow-hidden bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+<div>
+<p class="font-headline font-bold text-sm text-on-surface">Alex Rivera</p>
+<p class="text-xs text-zinc-500 font-body">Patient ID: MS-8821</p>
+</div>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-600 dark:text-zinc-400 hover:bg-purple-50 dark:hover:bg-zinc-800/50 rounded-xl transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-headline text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-600 dark:text-zinc-400 hover:bg-purple-50 dark:hover:bg-zinc-800/50 rounded-xl transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-headline text-sm">Appointments</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-zinc-800 text-purple-700 dark:text-purple-300 font-bold shadow-sm rounded-xl transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-headline text-sm">Medical History</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-600 dark:text-zinc-400 hover:bg-purple-50 dark:hover:bg-zinc-800/50 rounded-xl transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">medication</span>
+<span class="font-headline text-sm">Prescriptions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-600 dark:text-zinc-400 hover:bg-purple-50 dark:hover:bg-zinc-800/50 rounded-xl transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-headline text-sm">Bills</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-600 dark:text-zinc-400 hover:bg-purple-50 dark:hover:bg-zinc-800/50 rounded-xl transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-headline text-sm">Settings</span>
+</a>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 mt-16 p-8 min-h-screen">
+<div class="max-w-5xl mx-auto space-y-8">
+<!-- Header Section -->
+<div class="flex justify-between items-end">
+<div>
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface">Medical History</h1>
+<p class="text-on-surface-variant mt-1">Access and manage your complete clinical records</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-full border-2 border-primary text-primary font-semibold hover:bg-primary/5 transition-colors group">
+<span class="material-symbols-outlined text-[20px]">download</span>
+<span>Download Full History PDF</span>
+</button>
+</div>
+<!-- Filter Bar -->
+<div class="bg-surface-container-low p-4 rounded-3xl flex flex-wrap items-center gap-4">
+<div class="flex-1 min-w-[240px] relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-lowest border-none rounded-2xl text-sm focus:ring-2 focus:ring-primary/20" placeholder="Search by condition..." type="text"/>
+</div>
+<select class="bg-surface-container-lowest border-none rounded-2xl px-6 py-3 text-sm font-medium focus:ring-2 focus:ring-primary/20">
+<option>2026</option>
+<option>2025</option>
+<option>2024</option>
+</select>
+<select class="bg-surface-container-lowest border-none rounded-2xl px-6 py-3 text-sm font-medium focus:ring-2 focus:ring-primary/20">
+<option>All Doctors</option>
+<option>Dr. Sarah Miller</option>
+<option>Dr. James Chen</option>
+</select>
+<button class="bg-primary text-white px-8 py-3 rounded-2xl font-bold hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20">
+                    Apply Filters
+                </button>
+</div>
+<!-- Sticky-style Banner -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-3xl flex items-start gap-4 border-l-4 border-error shadow-sm">
+<span class="material-symbols-outlined text-error mt-1" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div>
+<h3 class="font-headline font-bold text-sm text-error uppercase tracking-wider mb-3">Known Allergies</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-error-container text-on-error-container rounded-full text-xs font-bold">Penicillin</span>
+<span class="px-3 py-1 bg-error-container text-on-error-container rounded-full text-xs font-bold">Dust</span>
+<span class="px-3 py-1 bg-error-container text-on-error-container rounded-full text-xs font-bold">Pollen</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-3xl flex items-start gap-4 border-l-4 border-orange-400 shadow-sm">
+<span class="material-symbols-outlined text-orange-400 mt-1" style="font-variation-settings: 'FILL' 1;">medical_information</span>
+<div>
+<h3 class="font-headline font-bold text-sm text-orange-600 uppercase tracking-wider mb-3">Chronic Conditions</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-bold">Hypertension</span>
+<span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-bold">Type 2 Diabetes</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Vertical Timeline -->
+<div class="relative timeline-line pl-4 space-y-12">
+<!-- Entry 1 -->
+<div class="relative flex gap-8 items-start">
+<div class="w-24 pt-2 text-right">
+<p class="text-xs font-bold text-zinc-400 uppercase tracking-widest">2026</p>
+<p class="text-sm font-bold text-on-surface">14 Mar</p>
+</div>
+<!-- Timeline Dot -->
+<div class="absolute left-[97px] top-3 w-4 h-4 rounded-full border-4 border-background bg-primary z-10"></div>
+<!-- Card Content -->
+<div class="flex-1 bg-surface-container-lowest rounded-[2rem] p-8 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<img alt="Doctor Avatar" class="w-12 h-12 rounded-xl object-cover" data-alt="professional portrait of a female doctor with glasses in a clinical setting, smiling confidently" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXkB0PLMY6AYCzWlyuz97yas6PYaYPQAx0gm83uln1Bst2ehgcn2Ycom-FOeoj5VYU8912KO7v_HGHZMTZL7pzi2rnRwno0eTqOZkq8FJPwCdxkIEQi8FDzz7R6kGsRwYImqgzhHWZV0oG3HpoKxeU8Tbb_PMwOOpNys51ATkq4-9UOFoDipG2r4hURvLgD4HI6bsuu2Ts6thF4xOMymJ4kfyDqioZQHk_83rn3mcWVzXFbeSNEZbCgqIJv55Yrf4o9Fb2q7nM2L8"/>
+<div>
+<h4 class="font-headline font-bold text-on-surface">Dr. Sarah Miller</h4>
+<p class="text-xs text-zinc-500 font-body">Internal Medicine • General Health</p>
+</div>
+</div>
+<span class="px-4 py-1 bg-surface-container text-on-surface-variant rounded-full text-xs font-semibold">OPD - Dept 4</span>
+</div>
+<div class="mb-6">
+<h2 class="text-2xl font-bold text-on-surface mb-3">Acute Bronchitis</h2>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container-low text-on-surface-variant rounded-full text-xs font-medium">Persistent Cough</span>
+<span class="px-3 py-1 bg-surface-container-low text-on-surface-variant rounded-full text-xs font-medium">Fever</span>
+<span class="px-3 py-1 bg-surface-container-low text-on-surface-variant rounded-full text-xs font-medium">Chest Pain</span>
+</div>
+</div>
+<!-- Vitals Grid -->
+<div class="grid grid-cols-5 gap-4 mb-8">
+<div class="bg-surface-container-low p-3 rounded-2xl text-center">
+<span class="material-symbols-outlined text-primary mb-1">blood_pressure</span>
+<p class="text-[10px] text-zinc-500 uppercase">BP</p>
+<p class="text-sm font-bold">120/80</p>
+</div>
+<div class="bg-surface-container-low p-3 rounded-2xl text-center">
+<span class="material-symbols-outlined text-primary mb-1">favorite</span>
+<p class="text-[10px] text-zinc-500 uppercase">Pulse</p>
+<p class="text-sm font-bold">72 bpm</p>
+</div>
+<div class="bg-surface-container-low p-3 rounded-2xl text-center">
+<span class="material-symbols-outlined text-primary mb-1">thermometer</span>
+<p class="text-[10px] text-zinc-500 uppercase">Temp</p>
+<p class="text-sm font-bold">38.2°C</p>
+</div>
+<div class="bg-surface-container-low p-3 rounded-2xl text-center">
+<span class="material-symbols-outlined text-primary mb-1">weight</span>
+<p class="text-[10px] text-zinc-500 uppercase">Weight</p>
+<p class="text-sm font-bold">78 kg</p>
+</div>
+<div class="bg-surface-container-low p-3 rounded-2xl text-center">
+<span class="material-symbols-outlined text-primary mb-1">air</span>
+<p class="text-[10px] text-zinc-500 uppercase">SpO2</p>
+<p class="text-sm font-bold">96%</p>
+</div>
+</div>
+<div class="space-y-6">
+<div>
+<h5 class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Treatment Plan</h5>
+<p class="text-sm text-on-surface leading-relaxed">
+                                    Patient presented with acute respiratory distress and productive cough. Recommended aggressive hydration, prescribed a 5-day course of antibiotics, and advised 3 days of bed rest. Follow-up scheduled in 10 days if symptoms persist.
+                                </p>
+</div>
+<div>
+<h5 class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Prescribed Medicines</h5>
+<div class="flex flex-wrap gap-2">
+<span class="px-4 py-1.5 bg-primary-container text-on-primary-container rounded-full text-xs font-bold">Amoxicillin 500mg</span>
+<span class="px-4 py-1.5 bg-primary-container text-on-primary-container rounded-full text-xs font-bold">Guaifenesin</span>
+<span class="px-4 py-1.5 bg-primary-container text-on-primary-container rounded-full text-xs font-bold">Paracetamol</span>
+</div>
+</div>
+<div>
+<h5 class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">Lab Results</h5>
+<div class="bg-surface-container-low rounded-2xl overflow-hidden">
+<div class="p-4 flex justify-between border-b border-surface-container text-xs font-bold text-zinc-400">
+<span>TEST NAME</span>
+<div class="flex gap-12">
+<span>VALUE</span>
+<span class="w-20">STATUS</span>
+</div>
+</div>
+<div class="p-4 flex justify-between items-center text-sm border-b border-white/50">
+<span class="font-medium">Complete Blood Count (CBC)</span>
+<div class="flex gap-12 items-center">
+<span>WBC: 12.4</span>
+<span class="w-20 px-2 py-0.5 bg-red-100 text-red-700 rounded text-[10px] font-bold text-center">ABNORMAL</span>
+</div>
+</div>
+<div class="p-4 flex justify-between items-center text-sm">
+<span class="font-medium">C-Reactive Protein (CRP)</span>
+<div class="flex gap-12 items-center">
+<span>8.2 mg/L</span>
+<span class="w-20 px-2 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-bold text-center">NORMAL</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-secondary-container/30 p-5 rounded-2xl relative italic text-on-secondary-container text-sm leading-relaxed">
+<span class="material-symbols-outlined absolute -top-3 -left-3 text-primary-container text-4xl opacity-50">format_quote</span>
+                                Patient showed good response to initial examination but appears fatigued. Advised to avoid cold beverages and maintain humidity in sleeping quarters.
+                            </div>
+</div>
+</div>
+</div>
+<!-- Entry 2 (Simplified for vertical flow) -->
+<div class="relative flex gap-8 items-start opacity-70">
+<div class="w-24 pt-2 text-right">
+<p class="text-xs font-bold text-zinc-400 uppercase tracking-widest">2026</p>
+<p class="text-sm font-bold text-on-surface">02 Feb</p>
+</div>
+<div class="absolute left-[97px] top-3 w-4 h-4 rounded-full border-4 border-background bg-primary-container z-10"></div>
+<div class="flex-1 bg-surface-container-lowest rounded-[2rem] p-8 shadow-sm">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<img alt="Doctor Avatar" class="w-12 h-12 rounded-xl object-cover" data-alt="close-up of a smiling male doctor in his 40s wearing a stethoscope in a modern hospital hallway" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2Byhj8FVTZtcV0OBO9YTj5z28Fp6qxb0nNlpLKRqFQF4mGQQUT3xwWqn0JHqzOpIv2rwobiwBSI9aPfAOWnsuJOu1i8x6MME1p2niGK8a8C_BzeKZloDKuyalg45k19NUtFguOgS4PN2sd3QYuvC2U6Q_eWTdMIOdkwVlKomNT4H5318LKKQYuPH6Ra5jwC0GS1DW9d_7C1c8elbTSw56ObrfbKQdYW6z7x0iiG3lFW1O2tHmWE3ifJ0rzWANxV_f_4S3NKbpalI"/>
+<div>
+<h4 class="font-headline font-bold text-on-surface">Dr. James Chen</h4>
+<p class="text-xs text-zinc-500 font-body">Cardiology • Specialist</p>
+</div>
+</div>
+</div>
+<div>
+<h2 class="text-2xl font-bold text-on-surface mb-3">Routine Cardiac Checkup</h2>
+<p class="text-sm text-on-surface leading-relaxed">Overall cardiac health is stable. Hypertension managed effectively through medication. EKG showed normal sinus rhythm. Next comprehensive review in 6 months.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Spacing -->
+<div class="h-12"></div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MediSync AI Symptom Checker</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#f1f0f1",
+                    "tertiary-fixed": "#e4e1e7",
+                    "on-secondary-fixed": "#22172a",
+                    "on-primary-container": "#4c3550",
+                    "secondary-fixed": "#efdcf6",
+                    "background": "#faf9fa",
+                    "surface-variant": "#e3e2e3",
+                    "surface-container": "#eeedee",
+                    "outline": "#7d747c",
+                    "on-error": "#ffffff",
+                    "inverse-primary": "#dcbcdf",
+                    "secondary-fixed-dim": "#d2c1da",
+                    "on-tertiary-fixed-variant": "#47464b",
+                    "on-tertiary-fixed": "#1b1b1f",
+                    "primary-fixed": "#f9d8fb",
+                    "primary-fixed-dim": "#dcbcdf",
+                    "tertiary-container": "#a9a7ad",
+                    "surface-dim": "#dadadb",
+                    "outline-variant": "#cec3cc",
+                    "surface-tint": "#6f5673",
+                    "on-surface": "#1a1c1d",
+                    "on-secondary-fixed-variant": "#4f4257",
+                    "inverse-surface": "#2f3032",
+                    "surface-container-high": "#e9e8e9",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#4c454b",
+                    "primary": "#6f5673",
+                    "on-secondary-container": "#6a5c72",
+                    "surface": "#faf9fa",
+                    "primary-container": "#bc9ebf",
+                    "on-background": "#1a1c1d",
+                    "on-tertiary-container": "#3d3c41",
+                    "surface-container-low": "#f4f3f4",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#67596f",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#563e5b",
+                    "tertiary": "#5f5e63",
+                    "tertiary-fixed-dim": "#c8c5cb",
+                    "secondary-container": "#e9d7f1",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e3e2e3",
+                    "surface-bright": "#faf9fa",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#28142d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cec3cc;
+        border-radius: 10px;
+      }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Anchor (from JSON) -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full max-w-full">
+<div class="flex items-center gap-3">
+<span class="text-xl font-black text-zinc-900 dark:text-zinc-50 font-headline tracking-tight">MediSync</span>
+<div class="h-6 w-[1px] bg-outline-variant/30"></div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+<span class="font-headline font-bold text-lg tracking-tight text-purple-400">AI Assistant</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-medium hover:bg-zinc-100 transition-colors scale-95 active:scale-90 duration-300">
+<span class="material-symbols-outlined text-sm">delete_sweep</span>
+                Clear Conversation
+            </button>
+<button class="p-2 rounded-full hover:bg-zinc-100 transition-colors">
+<span class="material-symbols-outlined text-zinc-900" data-icon="close">close</span>
+</button>
+</div>
+</header>
+<!-- Emergency Disclaimer -->
+<div class="fixed top-16 w-full z-40 bg-amber-50 border-b border-amber-100 px-6 py-2 flex items-center justify-center gap-3">
+<span class="material-symbols-outlined text-amber-600 scale-90" style="font-variation-settings: 'FILL' 1;">warning</span>
+<p class="text-xs md:text-sm font-medium text-amber-800 tracking-tight">
+            FOR MEDICAL EMERGENCIES, PLEASE CALL <span class="font-bold underline">108</span> IMMEDIATELY. This AI is for guidance only.
+        </p>
+</div>
+<!-- Main Content Canvas -->
+<main class="pt-28 pb-40 min-h-screen flex flex-col items-center px-4 md:px-0">
+<div class="w-full max-w-[900px] flex flex-col gap-8 custom-scrollbar">
+<!-- AI Intro -->
+<div class="flex items-start gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+<div class="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-white flex-shrink-0 shadow-lg">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="bg-surface-container-lowest border border-outline-variant/20 p-5 rounded-tr-3xl rounded-br-3xl rounded-bl-3xl max-w-[80%] shadow-sm">
+<p class="text-on-surface-variant leading-relaxed">
+                            Hello! I am your MediSync triage assistant. Please describe your symptoms in detail so I can help guide you to the right care.
+                        </p>
+</div>
+<span class="text-[10px] text-zinc-400 ml-2 font-medium">MediSync AI • Just now</span>
+</div>
+</div>
+<!-- Patient Message -->
+<div class="flex items-start gap-4 flex-row-reverse animate-in fade-in slide-in-from-bottom-4 duration-700">
+<div class="w-10 h-10 rounded-2xl bg-surface-container-high flex items-center justify-center overflow-hidden flex-shrink-0">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="professional headshot of a friendly man with a slight smile and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdI_MGJhfieVChOj1rZmG9Ni-Y58vWBIpMCMMukDWttPrpB_EvtXWIa9WrUWu7eLx2Nqb51YCdbTvUy2L19fvDxkniay73mA9YPQwPWSvhRDsWunBdEjvRnjzUKMsI7ZaPNZuclN7KlXtz0YziqleDSTvfSqlFVclzv5LUIBc-hyJrSzAaj4x2Q-65gBXaTL58EX2L2Pg3BEkkpXLGzqZKbng6Bgr6jBc428j341gxN5V-wz_hJ9zvV0mYhvxZmoGC_AELkWPFbKw"/>
+</div>
+<div class="flex flex-col items-end gap-1">
+<div class="bg-primary p-5 rounded-tl-3xl rounded-bl-3xl rounded-br-3xl max-w-[80%] shadow-xl shadow-primary/10">
+<p class="text-white leading-relaxed font-medium">
+                            I have had a sharp pain in my lower back and a slight fever since yesterday.
+                        </p>
+</div>
+<span class="text-[10px] text-zinc-400 mr-2 font-medium">Sent • 10:42 AM</span>
+</div>
+</div>
+<!-- AI Response Card (Advanced UI Pattern) -->
+<div class="flex items-start gap-4 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+<div class="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-white flex-shrink-0 shadow-lg">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex flex-col gap-4 w-full">
+<div class="bg-surface-container-lowest border-l-4 border-primary rounded-3xl overflow-hidden shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)]">
+<div class="p-6 md:p-8">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-headline font-extrabold text-xl text-on-surface mb-1">Preliminary Assessment</h3>
+<p class="text-on-surface-variant text-sm">Based on your reported symptoms of back pain and fever.</p>
+</div>
+<div class="bg-amber-100 text-amber-800 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                                    MEDIUM URGENCY
+                                </div>
+</div>
+<div class="space-y-6">
+<div class="p-4 bg-surface-container-low rounded-2xl border border-outline-variant/10">
+<p class="text-on-surface leading-relaxed text-sm">
+                                        The combination of localized lower back pain and a fever suggests a potential inflammatory response. While this could be muscular, a clinical evaluation is recommended to rule out internal involvement.
+                                    </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="space-y-3">
+<h4 class="text-xs font-bold text-zinc-400 uppercase tracking-widest">Potential Conditions</h4>
+<ul class="space-y-2">
+<li class="flex items-center gap-3 text-sm font-medium text-on-surface">
+<span class="material-symbols-outlined text-primary text-lg">medical_information</span>
+                                                Kidney Infection (Pyelonephritis)
+                                            </li>
+<li class="flex items-center gap-3 text-sm font-medium text-on-surface">
+<span class="material-symbols-outlined text-primary text-lg">fitness_center</span>
+                                                Severe Muscle Strain
+                                            </li>
+</ul>
+</div>
+<div class="space-y-3">
+<h4 class="text-xs font-bold text-zinc-400 uppercase tracking-widest">Recommended Department</h4>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold">Nephrology</span>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold">General Medicine</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/10 flex flex-col md:flex-row items-center justify-between gap-4">
+<p class="text-xs text-on-surface-variant italic">Would you like to speak with a doctor today?</p>
+<button class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-bold shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all duration-300">
+                                    Book Appointment Now
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Input Area -->
+<div class="fixed bottom-0 left-0 w-full z-50 bg-white/90 backdrop-blur-2xl px-4 py-6 md:py-8 border-t border-outline-variant/10">
+<div class="max-w-[900px] mx-auto flex flex-col gap-4">
+<!-- Quick Suggestion Chips -->
+<div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-high rounded-full text-xs font-semibold text-on-secondary-container hover:bg-primary-container/20 transition-colors">
+                    Headache
+                </button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-high rounded-full text-xs font-semibold text-on-secondary-container hover:bg-primary-container/20 transition-colors">
+                    Feverish
+                </button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-high rounded-full text-xs font-semibold text-on-secondary-container hover:bg-primary-container/20 transition-colors">
+                    Dizziness
+                </button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-high rounded-full text-xs font-semibold text-on-secondary-container hover:bg-primary-container/20 transition-colors">
+                    Cough &amp; Cold
+                </button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-high rounded-full text-xs font-semibold text-on-secondary-container hover:bg-primary-container/20 transition-colors">
+                    Stomach Pain
+                </button>
+</div>
+<!-- Input Bar -->
+<div class="relative flex items-center group">
+<input class="w-full bg-surface-container-low border-0 rounded-full h-14 pl-6 pr-32 text-on-surface placeholder:text-zinc-400 focus:ring-2 focus:ring-primary/20 transition-all shadow-inner" placeholder="Describe your symptoms..." type="text"/>
+<div class="absolute right-2 flex items-center gap-2">
+<button class="p-2 text-zinc-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">mic</span>
+</button>
+<button class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-all duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 600;">send</span>
+</button>
+</div>
+</div>
+<p class="text-[10px] text-center text-zinc-400 mt-2 font-medium tracking-wide">
+                AI can make mistakes. Please consult a professional for serious medical concerns.
+            </p>
+</div>
+</div>
+<!-- Background Decoration -->
+<div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
+<div class="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-5%] left-[-5%] w-[30%] h-[30%] bg-secondary-container/20 rounded-full blur-[100px]"></div>
+</div>
+</body></html>

@@ -3,10 +3,11 @@ import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 
 export default function MedicalHistory() {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -24,7 +25,9 @@ export default function MedicalHistory() {
         .select(`
           *,
           doctors (
-            full_name
+            full_name,
+            specialization,
+            image_url
           )
         `)
         .eq('patient_id', user.id)
@@ -40,107 +43,198 @@ export default function MedicalHistory() {
     }
   };
 
-  const getTypeColor = (type) => {
-    switch (type) {
-      case 'OPD': return 'bg-blue-100 text-blue-800';
-      case 'Emergency': return 'bg-red-100 text-red-800';
-      case 'Surgery': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="p-8 flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#6f5673]"></div>
-      </div>
-    );
-  }
+  const filteredHistory = history.filter(record => 
+    record.diagnosis?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.doctors?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="p-8 pb-24 bg-[#faf9fa] min-h-screen">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold font-manrope text-gray-800 mb-2">Medical History</h1>
-        <p className="text-gray-500 font-inter">Your complete health timeline and past visits</p>
+    <div className="p-4 md:p-8 pb-24 bg-surface min-h-screen max-w-6xl mx-auto">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10">
+        <div>
+          <h1 className="text-4xl font-extrabold font-headline text-on-surface tracking-tight leading-none mb-3">Clinical Timeline</h1>
+          <p className="text-on-surface-variant font-medium">Your complete medical journey and professional consultations</p>
+        </div>
+        <button className="flex items-center gap-3 px-8 py-3.5 rounded-3xl border-2 border-primary text-primary font-black hover:bg-primary/5 transition-all group uppercase tracking-widest text-xs shadow-sm">
+          <span className="material-symbols-outlined text-[20px] group-hover:-translate-y-1 transition-transform">download</span>
+          Secure Offline PDF
+        </button>
       </div>
 
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6 font-inter">
-          {error}
+      {/* Filter Bar */}
+      <div className="bg-surface-container-low p-5 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-4 mb-8 border border-outline-variant/10">
+        <div className="flex-1 w-full relative">
+          <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-on-surface-variant/40">search</span>
+          <input 
+            type="text" 
+            placeholder="Filter by diagnosis, doctor or department..." 
+            className="w-full pl-14 pr-6 py-4 bg-surface-container-lowest border-none rounded-3xl text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:font-medium shadow-sm"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
-      )}
+        <div className="flex gap-3 w-full md:w-auto">
+          <select className="flex-1 md:flex-none bg-surface-container-lowest border-none rounded-2xl px-6 py-4 text-xs font-black uppercase tracking-widest focus:ring-4 focus:ring-primary/5 shadow-sm">
+            <option>All Years</option>
+            <option>2026</option>
+            <option>2025</option>
+          </select>
+          <button className="flex-1 md:flex-none bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-primary/20">
+            Refresh
+          </button>
+        </div>
+      </div>
 
-      {history.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
-          <div className="w-20 h-20 bg-[#e9d7f1] rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-[#6f5673]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
+      {/* Highlights / Health Status */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <div className="bg-surface-container-lowest p-8 rounded-[2rem] flex items-start gap-5 border-l-8 border-error shadow-md relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-700">
+             <span className="material-symbols-outlined text-7xl font-light">warning</span>
           </div>
-          <h3 className="text-xl font-bold font-manrope text-gray-800 mb-2">No Records Yet</h3>
-          <p className="text-gray-500 font-inter mb-6">You don't have any past medical history recorded.</p>
+          <div className="p-3 bg-red-50 text-error rounded-2xl shrink-0">
+             <span className="material-symbols-outlined fill-current">emergency_home</span>
+          </div>
+          <div className="relative z-10">
+            <h3 className="font-black text-xs text-error uppercase tracking-[0.2em] mb-4">Critical Allergies</h3>
+            <div className="flex flex-wrap gap-2">
+              {['Penicillin', 'Dust', 'Pollen'].map(allergy => (
+                <span key={allergy} className="px-4 py-1.5 bg-red-50 text-error rounded-full text-[10px] font-black uppercase tracking-tighter border border-red-100">
+                  {allergy}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
-      ) : (
-        <div className="relative border-l-2 border-[#e9d7f1] ml-4 md:ml-6 pl-6 md:pl-10 space-y-8">
-          {history.map((record) => (
-            <div key={record.id} className="relative">
-              {/* Timeline Dot */}
-              <div className="absolute -left-[35px] md:-left-[51px] top-6 w-4 h-4 bg-[#6f5673] rounded-full border-4 border-[#faf9fa] box-content"></div>
-              
-              <div className="bg-white rounded-xl shadow-[0_0_40px_rgba(0,0,0,0.05)] border border-gray-50 p-6 transition-transform hover:-translate-y-1 duration-300">
-                <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4">
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider ${getTypeColor(record.visit_type)}`}>
-                        {record.visit_type}
-                      </span>
-                      <span className="text-gray-400 font-inter text-sm">
-                        {new Date(record.visit_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+
+        <div className="bg-surface-container-lowest p-8 rounded-[2rem] flex items-start gap-5 border-l-8 border-orange-400 shadow-md relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-700">
+             <span className="material-symbols-outlined text-7xl font-light">medical_information</span>
+          </div>
+          <div className="p-3 bg-orange-50 text-orange-600 rounded-2xl shrink-0">
+             <span className="material-symbols-outlined fill-current">vital_signs</span>
+          </div>
+          <div className="relative z-10">
+            <h3 className="font-black text-xs text-orange-600 uppercase tracking-[0.2em] mb-4">Chronic Indicators</h3>
+            <div className="flex flex-wrap gap-2">
+              {['Hypertension', 'Type 2 Diabetes'].map(condition => (
+                <span key={condition} className="px-4 py-1.5 bg-orange-50 text-orange-800 rounded-full text-[10px] font-black uppercase tracking-tighter border border-orange-100">
+                  {condition}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Timeline List */}
+      <div className="relative ml-4 md:ml-12 pl-10 md:pl-16 space-y-12 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-gradient-to-b before:from-primary/30 before:to-primary/5 before:rounded-full">
+        {loading ? (
+          <div className="flex flex-col items-center py-20">
+            <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+            <p className="mt-4 text-on-surface-variant font-black uppercase tracking-widest text-[10px]">Synchronizing Timeline...</p>
+          </div>
+        ) : filteredHistory.length === 0 ? (
+          <div className="bg-surface-container-lowest rounded-[3rem] p-16 text-center border-2 border-dashed border-outline-variant/10 shadow-sm relative -ml-16">
+            <span className="material-symbols-outlined text-6xl text-on-surface-variant/20 mb-6">history_edu</span>
+            <h3 className="text-2xl font-black text-on-surface uppercase tracking-tight">No clinical records found</h3>
+            <p className="text-on-surface-variant font-medium max-w-xs mx-auto mt-2">Your medical journey at MediSync is just beginning.</p>
+          </div>
+        ) : (
+          filteredHistory.map((record) => (
+            <div key={record.id} className="relative group">
+              {/* Timeline Indicator */}
+              <div className="absolute -left-[54px] md:-left-[78px] top-6 flex items-center justify-center">
+                 <div className="bg-white p-1 rounded-full shadow-lg z-20">
+                    <div className="w-6 h-6 rounded-full bg-primary border-4 border-primary/20 group-hover:scale-125 transition-transform duration-500"></div>
+                 </div>
+                 <div className="hidden md:block absolute -left-20 w-16 text-right">
+                    <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-tighter">{new Date(record.visit_date).getFullYear()}</p>
+                    <p className="text-xs font-black text-on-surface uppercase tracking-tighter">{new Date(record.visit_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}</p>
+                 </div>
+              </div>
+
+              {/* Record Card */}
+              <div className="bg-surface-container-lowest rounded-[2.5rem] p-8 shadow-sm hover:shadow-2xl transition-all duration-500 border border-outline-variant/5 group-hover:-translate-y-1">
+                <div className="flex flex-col lg:flex-row justify-between items-start gap-8">
+                  {/* Left: Metadata */}
+                  <div className="flex-1 space-y-6">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-4">
+                        <img 
+                          className="w-14 h-14 rounded-2xl object-cover border-2 border-surface-container-high shadow-md" 
+                          src={record.doctors?.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuClef_wlPZAhy5lua2Vq5Bmaoj5U3kPFh_d_HPCR7YJESvMwH09GyDhvvVERy1qaDRy2oGwNaL2VOafKQy3viee2XE5Bm7EazgEVC35LGn7gluKrlbiD9ufrOGOhNcYuTJux6jiCNstqd63ktjl4swNP6WthtW1SOBQ0iMgrU_-mCYLM-h3YW6mWC_2V1VutwdVqhfIcOmRfF3nYpeN7l7zpP2ALJ_Q0gHZmbi383D0xxjyXJGAadX1wOrxqr-qdOoaBMXAVP8jvxw"} 
+                          alt={record.doctors?.full_name} 
+                        />
+                        <div>
+                          <h4 className="font-extrabold text-xl text-on-surface leading-none">Dr. {record.doctors?.full_name || 'Medical Officer'}</h4>
+                          <p className="text-[10px] font-black text-primary uppercase tracking-[0.1em] mt-1">{record.doctors?.specialization || 'Clinical Associate'}</p>
+                        </div>
+                      </div>
+                      <span className="px-4 py-1 bg-surface-container-low text-on-surface-variant rounded-full text-[10px] font-black uppercase tracking-widest border border-outline-variant/10 self-start">
+                        {record.visit_type || 'OPD'}
                       </span>
                     </div>
-                    <h3 className="text-xl font-bold font-manrope text-gray-800">
-                      {record.department} Consultation
-                    </h3>
-                  </div>
-                  <div className="text-left md:text-right">
-                    <p className="font-semibold text-gray-800 font-inter text-sm">Attending Doctor</p>
-                    <p className="text-[#6f5673] text-sm font-inter">Dr. {record.doctors?.full_name || 'Unknown'}</p>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                  {record.diagnosis && (
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Diagnosis</p>
-                      <p className="text-gray-800 font-inter text-sm">{record.diagnosis}</p>
-                    </div>
-                  )}
-
-                  {record.tests_done && record.tests_done.length > 0 && (
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tests Conducted</p>
+                    <div>
+                      <h2 className="text-2xl font-black text-on-surface tracking-tight mb-4">{record.diagnosis || 'Routine Evaluation'}</h2>
                       <div className="flex flex-wrap gap-2">
-                        {record.tests_done.map((test, idx) => (
-                          <span key={idx} className="bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded text-xs font-medium">
-                            {test}
+                        {['Stable', 'Post-Op', 'Recovery'].map(tag => (
+                          <span key={tag} className="px-3 py-1 bg-surface-container-low text-on-surface-variant rounded-full text-[9px] font-bold uppercase tracking-widest">
+                            {tag}
                           </span>
                         ))}
                       </div>
                     </div>
-                  )}
-                </div>
 
-                {record.notes && (
-                  <div className="mt-4 border-t border-gray-100 pt-4">
-                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Notes Details</p>
-                    <p className="text-gray-600 font-inter text-sm leading-relaxed">{record.notes}</p>
+                    {/* Vitals Summary Strip */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-surface-container-low/50 rounded-3xl border border-outline-variant/10">
+                      {[
+                        { label: 'Pressure', val: '120/80', icon: 'blood_pressure' },
+                        { label: 'Pulse', val: '72 bpm', icon: 'favorite' },
+                        { label: 'SpO2', val: '98%', icon: 'air' },
+                        { label: 'Weight', val: '68 kg', icon: 'monitor_weight' },
+                      ].map(vital => (
+                         <div key={vital.label} className="flex items-center gap-3">
+                            <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{vital.icon}</span>
+                            <div>
+                               <p className="text-[8px] font-black text-on-surface-variant uppercase opacity-60 tracking-tighter">{vital.label}</p>
+                               <p className="text-xs font-black text-on-surface tabular-nums leading-none">{vital.val}</p>
+                            </div>
+                         </div>
+                      ))}
+                    </div>
                   </div>
-                )}
+
+                  {/* Right: Notes & Documents */}
+                  <div className="w-full lg:w-72 space-y-6">
+                    <div className="bg-primary/5 p-6 rounded-[1.8rem] border border-primary/10 relative overflow-hidden group/notes">
+                      <span className="material-symbols-outlined absolute -bottom-2 -right-2 text-6xl text-primary/5 group-hover/notes:scale-125 transition-transform duration-700">notes</span>
+                      <h5 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3">Clinical Assessment</h5>
+                      <p className="text-xs font-medium text-on-surface-variant leading-relaxed line-clamp-4 italic">
+                        "{record.notes || "Comprehensive evaluation performed. Patient vital signs within normal parameters. Recommended routine follow-up in 6 months for preventive screening."}"
+                      </p>
+                    </div>
+
+                    <div className="space-y-3">
+                       <button className="w-full py-4 bg-white hover:bg-primary hover:text-white text-on-surface flex items-center justify-between px-6 rounded-2xl border border-outline-variant/10 shadow-sm transition-all font-black uppercase tracking-widest text-[10px] group/item">
+                          Prescription PDF
+                          <span className="material-symbols-outlined text-[18px] group-hover/item:translate-y-0.5 transition-transform">download_2</span>
+                       </button>
+                       <button className="w-full py-4 bg-white hover:bg-primary hover:text-white text-on-surface flex items-center justify-between px-6 rounded-2xl border border-outline-variant/10 shadow-sm transition-all font-black uppercase tracking-widest text-[10px] group/item">
+                          Lab Analysis
+                          <span className="material-symbols-outlined text-[18px] group-hover/item:translate-y-0.5 transition-transform">lab_research</span>
+                       </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 }
+

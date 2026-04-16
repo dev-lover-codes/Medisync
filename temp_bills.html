@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Bills | MedPay Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#4c454b",
+                        "primary-fixed-dim": "#dcbcdf",
+                        "on-error": "#ffffff",
+                        "background": "#faf9fa",
+                        "secondary-fixed": "#efdcf6",
+                        "on-tertiary-container": "#3d3c41",
+                        "tertiary-fixed-dim": "#c8c5cb",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e3e2e3",
+                        "secondary": "#67596f",
+                        "inverse-surface": "#2f3032",
+                        "surface": "#faf9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#bc9ebf",
+                        "secondary-fixed-dim": "#d2c1da",
+                        "on-secondary-fixed-variant": "#4f4257",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#6a5c72",
+                        "on-background": "#1a1c1d",
+                        "on-surface": "#1a1c1d",
+                        "on-secondary-fixed": "#22172a",
+                        "on-primary-container": "#4c3550",
+                        "inverse-primary": "#dcbcdf",
+                        "outline-variant": "#cec3cc",
+                        "tertiary-fixed": "#e4e1e7",
+                        "on-tertiary-fixed": "#1b1b1f",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#eeedee",
+                        "on-tertiary-fixed-variant": "#47464b",
+                        "surface-container-high": "#e9e8e9",
+                        "primary": "#6f5673",
+                        "on-primary-fixed": "#28142d",
+                        "surface-dim": "#dadadb",
+                        "surface-container-low": "#f4f3f4",
+                        "tertiary-container": "#a9a7ad",
+                        "secondary-container": "#e9d7f1",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#5f5e63",
+                        "surface-container-highest": "#e3e2e3",
+                        "primary-fixed": "#f9d8fb",
+                        "error": "#ba1a1a",
+                        "outline": "#7d747c",
+                        "surface-tint": "#6f5673",
+                        "surface-bright": "#faf9fa",
+                        "on-primary-fixed-variant": "#563e5b",
+                        "inverse-on-surface": "#f1f0f1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, .font-headline { font-family: 'Manrope', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar (Shared Component) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 dark:bg-slate-900 flex flex-col p-4 z-50">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+</div>
+<span class="text-2xl font-bold text-purple-800">MediSync</span>
+</div>
+<div class="flex-1 space-y-1">
+<!-- Invoices is the Active Tab -->
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-purple-600 transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white text-purple-700 rounded-xl font-semibold shadow-sm" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-medium">Invoices</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-purple-600 transition-colors" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-medium">Payments</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-purple-600 transition-colors" href="#">
+<span class="material-symbols-outlined">health_and_safety</span>
+<span class="font-medium">Insurance</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-purple-600 transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-medium">Statements</span>
+</a>
+</div>
+<div class="pt-4 mt-4 border-t border-slate-200">
+<div class="flex items-center gap-3 p-3 bg-slate-100 rounded-xl mb-4">
+<img alt="Patient profile picture" class="w-10 h-10 rounded-full object-cover" data-alt="Professional headshot of a young male patient with a friendly expression in a bright clinical setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCooXhjQc9ihQuGIJfIYqQr6BilrPgj_9sExVkCZkuO-HsYQ_yYXppanPjANafFKowJyyI1NLoM38pqQdjLBRmkD85tLi0DwAdoVRsIE096XIVG2Tm2UiQ2DO4wuUQzY1VG3rs5ori3ZwZEThv7jYzEu_01MlzbLte-ai2DqtO7cUTwF7Mr0l2Etd7Wnd1IY2MCCZYeyAn9rZkqWr-48ff5mHw64jn0q2ynuQTkiZICSrXmP8syUZ410zv0D6qNGKZnax5PIzhP2Ds"/>
+<div>
+<p class="text-sm font-bold">Alex Rivers</p>
+<p class="text-[10px] text-slate-500">ID: 994021</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary py-3 rounded-full font-bold text-sm shadow-md hover:scale-[0.98] transition-transform">
+                Make a Payment
+            </button>
+<div class="mt-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-purple-600 text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-purple-600 text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">help</span>
+<span>Support</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-white/80 backdrop-blur-xl flex items-center justify-between px-8 z-40">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-slate-50 border-none rounded-full text-sm focus:ring-2 focus:ring-primary-container" placeholder="Search bills or reports..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-xl font-black text-purple-900">MedPay Portal</span>
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors relative">
+<span class="material-symbols-outlined text-slate-600">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined text-slate-600">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-purple-100 border border-purple-200 overflow-hidden">
+<img alt="Alex Rivers" class="w-full h-full object-cover" data-alt="Portrait of Alex Rivers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPA3li-OV2C5KGK66oaHMaOAt1QxvQquwn7gXwQ-wmxsTXp6WFj1qgLmFwz824_UxesH4g1jLSUvWuZRLfw6iGvPICykZCbtd4KHSxx_2uu3kMCVHyp0Y5WllVTXQeo0NtOsTdhLc1aV_anmB1-qNQvRCK4MMb44Mva_Q4_11ujAFjR8mtc63jrDA4XY5_2SVNJ36-gX54GSmLBfuMtnF5-G-lNMRYy5zUqRjFElOBqL8-s2pIURvYbYJhL9qfl5FUkCIV5MHz8bU"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 p-8 min-h-screen">
+<!-- Header Row -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+<h1 class="text-4xl font-extrabold text-on-surface tracking-tight">My Bills</h1>
+<div class="flex flex-wrap items-center gap-3">
+<div class="flex items-center bg-surface-container-low rounded-xl px-4 py-2.5 gap-2">
+<span class="material-symbols-outlined text-slate-400 text-sm">filter_list</span>
+<select class="bg-transparent border-none text-sm font-medium focus:ring-0 cursor-pointer">
+<option>All Statuses</option>
+<option>Paid</option>
+<option>Pending</option>
+<option>Overdue</option>
+</select>
+</div>
+<div class="flex items-center bg-surface-container-low rounded-xl px-4 py-2.5 gap-2">
+<span class="material-symbols-outlined text-slate-400 text-sm">calendar_today</span>
+<span class="text-sm font-medium">Oct 2023 - Dec 2023</span>
+</div>
+<button class="flex items-center gap-2 px-5 py-2.5 border-2 border-primary text-primary rounded-full font-bold text-sm hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-lg">download</span>
+                    Download All PDF
+                </button>
+</div>
+</div>
+<!-- Summary Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+<!-- Paid Card -->
+<div class="bg-emerald-50 rounded-2xl p-6 flex items-center gap-5 transition-transform hover:scale-[1.02] duration-300">
+<div class="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+<span class="material-symbols-outlined text-3xl" data-weight="fill">check_circle</span>
+</div>
+<div>
+<p class="text-emerald-700 text-sm font-bold uppercase tracking-wider mb-1">Total Paid</p>
+<h3 class="text-3xl font-extrabold text-emerald-900">₹8,500</h3>
+</div>
+</div>
+<!-- Pending Card -->
+<div class="bg-orange-50 rounded-2xl p-6 flex items-center gap-5 transition-transform hover:scale-[1.02] duration-300">
+<div class="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600">
+<span class="material-symbols-outlined text-3xl">schedule</span>
+</div>
+<div>
+<p class="text-orange-700 text-sm font-bold uppercase tracking-wider mb-1">Pending Bills</p>
+<h3 class="text-3xl font-extrabold text-orange-900">₹1,200</h3>
+</div>
+</div>
+<!-- Overdue Card -->
+<div class="bg-rose-50 rounded-2xl p-6 flex items-center gap-5 transition-transform hover:scale-[1.02] duration-300">
+<div class="w-14 h-14 rounded-2xl bg-rose-100 flex items-center justify-center text-rose-600">
+<span class="material-symbols-outlined text-3xl" data-weight="fill">warning</span>
+</div>
+<div>
+<p class="text-rose-700 text-sm font-bold uppercase tracking-wider mb-1">Overdue</p>
+<h3 class="text-3xl font-extrabold text-rose-900">₹500</h3>
+</div>
+</div>
+</div>
+<!-- Bills Table (Asymmetric Bento-ish container) -->
+<div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+<div class="xl:col-span-3 bg-surface-container-lowest rounded-[2rem] shadow-sm overflow-hidden p-2">
+<div class="p-6 pb-2">
+<h2 class="text-xl font-bold text-on-surface">Recent Billing Activity</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full border-separate border-spacing-y-2 px-4">
+<thead>
+<tr class="text-left text-on-surface-variant/60 text-xs font-bold uppercase tracking-widest">
+<th class="pb-4 pl-4">Bill ID</th>
+<th class="pb-4">Date</th>
+<th class="pb-4">Description</th>
+<th class="pb-4">Doctor</th>
+<th class="pb-4">Amount</th>
+<th class="pb-4">Status</th>
+<th class="pb-4 text-center">Actions</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<!-- Paid Row -->
+<tr class="bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<td class="py-4 pl-4 rounded-l-2xl font-mono font-medium">#INV-9942</td>
+<td class="py-4 text-on-surface-variant">24 Oct, 2023</td>
+<td class="py-4 font-semibold">General Consultation</td>
+<td class="py-4">Dr. Sarah Miller</td>
+<td class="py-4 font-bold">₹1,500</td>
+<td class="py-4">
+<span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Paid</span>
+</td>
+<td class="py-4 rounded-r-2xl text-center">
+<div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-primary hover:bg-primary/10 p-2 rounded-lg" title="View"><span class="material-symbols-outlined text-lg">visibility</span></button>
+<button class="text-primary hover:bg-primary/10 p-2 rounded-lg" title="Download"><span class="material-symbols-outlined text-lg">download</span></button>
+</div>
+</td>
+</tr>
+<!-- Overdue Row -->
+<tr class="bg-rose-50/50 hover:bg-rose-50 transition-colors group">
+<td class="py-4 pl-4 rounded-l-2xl font-mono font-medium">#INV-9851</td>
+<td class="py-4 text-on-surface-variant">12 Oct, 2023</td>
+<td class="py-4 font-semibold">Diagnostic Lab Tests</td>
+<td class="py-4">Dr. Robert Chen</td>
+<td class="py-4 font-bold">₹500</td>
+<td class="py-4">
+<span class="flex items-center gap-1 w-fit px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-xs font-bold">
+                                        Overdue <span class="material-symbols-outlined text-[12px]" data-weight="fill">priority_high</span>
+</span>
+</td>
+<td class="py-4 rounded-r-2xl text-center">
+<div class="flex items-center justify-center gap-2">
+<button class="bg-primary text-on-primary px-4 py-1.5 rounded-full text-xs font-bold shadow-md hover:scale-95 transition-transform">Pay Now</button>
+<button class="text-primary hover:bg-primary/10 p-2 rounded-lg"><span class="material-symbols-outlined text-lg">visibility</span></button>
+</div>
+</td>
+</tr>
+<!-- Pending Row -->
+<tr class="bg-orange-50/30 hover:bg-orange-50/50 transition-colors group">
+<td class="py-4 pl-4 rounded-l-2xl font-mono font-medium">#INV-9802</td>
+<td class="py-4 text-on-surface-variant">05 Oct, 2023</td>
+<td class="py-4 font-semibold">Follow-up Session</td>
+<td class="py-4">Dr. Sarah Miller</td>
+<td class="py-4 font-bold">₹1,200</td>
+<td class="py-4">
+<span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-bold">Pending</span>
+</td>
+<td class="py-4 rounded-r-2xl text-center">
+<div class="flex items-center justify-center gap-2">
+<button class="bg-primary text-on-primary px-4 py-1.5 rounded-full text-xs font-bold shadow-md hover:scale-95 transition-transform">Pay Now</button>
+<button class="text-primary hover:bg-primary/10 p-2 rounded-lg opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined text-lg">visibility</span></button>
+</div>
+</td>
+</tr>
+<!-- Paid Row -->
+<tr class="bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<td class="py-4 pl-4 rounded-l-2xl font-mono font-medium">#INV-9720</td>
+<td class="py-4 text-on-surface-variant">28 Sep, 2023</td>
+<td class="py-4 font-semibold">Pharmacy Prescription</td>
+<td class="py-4">—</td>
+<td class="py-4 font-bold">₹7,000</td>
+<td class="py-4">
+<span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Paid</span>
+</td>
+<td class="py-4 rounded-r-2xl text-center">
+<div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-primary hover:bg-primary/10 p-2 rounded-lg"><span class="material-symbols-outlined text-lg">visibility</span></button>
+<button class="text-primary hover:bg-primary/10 p-2 rounded-lg"><span class="material-symbols-outlined text-lg">download</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Payment History Timeline -->
+<div class="xl:col-span-1 flex flex-col gap-8">
+<div class="bg-surface-container-low rounded-[2rem] p-6 h-full border border-surface-container">
+<h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">history</span>
+                        Payment History
+                    </h2>
+<div class="space-y-6 relative before:absolute before:left-5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
+<!-- Timeline Item 1 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 z-10 border-4 border-surface-container-low">
+<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">24 Oct, 2:30 PM</p>
+<p class="font-bold text-sm">₹1,500 Paid via UPI</p>
+<p class="text-[10px] text-on-surface-variant font-mono mt-1">TXN: 9942203114</p>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 z-10 border-4 border-surface-container-low">
+<span class="material-symbols-outlined text-xl">credit_card</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">28 Sep, 11:15 AM</p>
+<p class="font-bold text-sm">₹7,000 Paid via Card</p>
+<p class="text-[10px] text-on-surface-variant font-mono mt-1">TXN: 9720044812</p>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative pl-12">
+<div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 z-10 border-4 border-surface-container-low">
+<span class="material-symbols-outlined text-xl">language</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">15 Sep, 09:45 AM</p>
+<p class="font-bold text-sm">₹3,200 Paid via NetBanking</p>
+<p class="text-[10px] text-on-surface-variant font-mono mt-1">TXN: 8840221990</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Section for Visualization: Visualizing Modals/Detailed Views -->
+<div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-12">
+<!-- Visualized Invoice Modal -->
+<div class="relative">
+<div class="absolute -top-4 -left-4 bg-primary text-on-primary px-4 py-1 rounded-full text-xs font-bold z-10 shadow-lg">Component Preview: Invoice</div>
+<div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+<div class="p-8 border-b border-slate-100 flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">medical_services</span>
+</div>
+<div>
+<h3 class="text-xl font-extrabold text-purple-900">MediSync Clinic</h3>
+<p class="text-xs text-slate-400">123 Health Ave, Central District</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-2xl font-black text-on-surface">TAX INVOICE</p>
+<p class="text-sm font-mono text-slate-500">#INV-9942</p>
+</div>
+</div>
+<div class="p-8">
+<div class="grid grid-cols-2 gap-8 mb-8">
+<div>
+<p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Billed To</p>
+<p class="font-bold text-on-surface">Alex Rivers</p>
+<p class="text-xs text-on-surface-variant">ID: 994021</p>
+<p class="text-xs text-on-surface-variant">alex.rivers@email.com</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Invoice Details</p>
+<p class="text-xs font-medium">Date: 24 Oct, 2023</p>
+<p class="text-xs font-medium">Due Date: Immediate</p>
+</div>
+</div>
+<table class="w-full text-sm mb-8">
+<thead>
+<tr class="text-left border-b border-slate-100">
+<th class="py-3 font-bold text-slate-400 uppercase text-[10px]">Description</th>
+<th class="py-3 font-bold text-slate-400 uppercase text-[10px] text-center">Qty</th>
+<th class="py-3 font-bold text-slate-400 uppercase text-[10px] text-right">Price</th>
+<th class="py-3 font-bold text-slate-400 uppercase text-[10px] text-right">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-slate-50">
+<td class="py-4 font-semibold text-on-surface">Consultation (General Physician)</td>
+<td class="py-4 text-center">1</td>
+<td class="py-4 text-right">₹800.00</td>
+<td class="py-4 text-right">₹800.00</td>
+</tr>
+<tr class="border-b border-slate-50">
+<td class="py-4 font-semibold text-on-surface">Pathology (Blood Panel)</td>
+<td class="py-4 text-center">1</td>
+<td class="py-4 text-right">₹600.00</td>
+<td class="py-4 text-right">₹600.00</td>
+</tr>
+</tbody>
+</table>
+<div class="flex flex-col items-end gap-2">
+<div class="w-64 flex justify-between text-xs text-slate-500">
+<span>Subtotal</span>
+<span class="font-medium">₹1,400.00</span>
+</div>
+<div class="w-64 flex justify-between text-xs text-slate-500">
+<span>GST (approx 7%)</span>
+<span class="font-medium">₹100.00</span>
+</div>
+<div class="w-64 h-[1px] bg-slate-100 my-2"></div>
+<div class="w-64 flex justify-between items-center">
+<span class="text-sm font-bold text-on-surface">Grand Total</span>
+<span class="text-xl font-extrabold text-primary">₹1,500.00</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Visualized Payment Modal -->
+<div class="relative">
+<div class="absolute -top-4 -left-4 bg-primary text-on-primary px-4 py-1 rounded-full text-xs font-bold z-10 shadow-lg">Component Preview: Checkout</div>
+<div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden h-full flex flex-col">
+<div class="p-8 pb-4">
+<h3 class="text-xl font-extrabold text-on-surface mb-1">Make Payment</h3>
+<p class="text-sm text-on-surface-variant">Securely pay for Invoice #INV-9851</p>
+</div>
+<div class="px-8 mb-6">
+<div class="flex p-1 bg-surface-container-low rounded-2xl">
+<button class="flex-1 py-2 rounded-xl text-xs font-bold bg-white shadow-sm text-primary">UPI</button>
+<button class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-600">Card</button>
+<button class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-600">Net Banking</button>
+</div>
+</div>
+<div class="px-8 flex-1 space-y-6">
+<div class="bg-surface-container-lowest border-2 border-primary-container p-4 rounded-2xl flex items-center justify-between">
+<div class="flex items-center gap-4">
+<img alt="UPI Logo" class="w-10 h-10 object-contain" data-alt="Official logo of a UPI payment gateway with sharp clean design" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5pJoxFsw5MLDv6ah5Pqk_QzRB64db9benqrsgswmqd9JRYunmB3LD-o7B4KkLLBes3bU6ITLvMlY_WLr0erdiBnoyYFWEpKoyj4p4dPLxg2ed4IPqc7g2yfDyfMoExTjzFE9VT0_QIxGyM5B7S_LmPIKg4wvj9sd0VvbobYCRYSERofw-6LTCJMm3b-xp_KEKSpzbfnLE8ScXDOYRTRnW0s4BepQIyCkG3NkRvlhs62nF03M8m5o8F4dK0mbm6B6Ulrv7kpyAUNI"/>
+<div>
+<p class="text-sm font-bold">Google Pay / PhonePe</p>
+<p class="text-xs text-slate-400">Scan QR or enter VPA</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-weight="fill">radio_button_checked</span>
+</div>
+<div class="relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors pointer-events-none rounded-2xl"></div>
+<div class="p-8 flex flex-col items-center justify-center border-2 border-dashed border-primary/20 rounded-2xl bg-white">
+<div class="w-48 h-48 bg-slate-50 flex items-center justify-center rounded-xl mb-4 border border-slate-100">
+<span class="material-symbols-outlined text-6xl text-slate-300">qr_code_2</span>
+</div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Scan to Pay ₹500</p>
+</div>
+</div>
+</div>
+<div class="p-8 mt-auto border-t border-slate-100 flex items-center justify-between">
+<div>
+<p class="text-xs text-slate-400">Final Amount</p>
+<p class="text-lg font-extrabold text-on-surface">₹500.00</p>
+</div>
+<button class="bg-primary text-on-primary px-10 py-3 rounded-full font-bold shadow-lg hover:scale-95 transition-transform">
+                            Confirm Payment
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
