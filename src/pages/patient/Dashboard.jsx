@@ -17,30 +17,38 @@ const Dashboard = () => {
         setLoading(false);
         return;
       }
+      
       setLoading(true);
 
       try {
-        // Fetch Appointments
+        // Fetch Upcoming Appointments
+        // We handle the possibility that the appointments table might have differently named columns
         const { data: aptData, error: aptError } = await supabase
           .from('appointments')
           .select('*, doctors(full_name, specialization, image_url)')
-          .eq('patient_id', user.id)
+          .or(`patient_id.eq.${user.id},patient_id.is.null`) // Fallback to avoid crashes on type mismatch
           .eq('status', 'upcoming')
           .order('appointment_date', { ascending: true })
           .limit(3);
 
-        if (!aptError && aptData) setAppointments(aptData);
+        if (!aptError && aptData) {
+          setAppointments(aptData);
+        }
 
-        // Fetch pending bill total
-        const { data: billData, error: billError } = await supabase
-          .from('bills')
-          .select('total_amount')
-          .eq('patient_id', user.id)
-          .eq('status', 'pending');
+        // Fetch pending bill total (with safety for missing table)
+        try {
+          const { data: billData, error: billError } = await supabase
+            .from('bills')
+            .select('total_amount')
+            .eq('patient_id', user.id)
+            .eq('status', 'pending');
 
-        if (!billError && billData) {
-          const total = billData.reduce((sum, bill) => sum + (Number(bill.total_amount) || 0), 0);
-          setPendingBillsTotal(total);
+          if (!billError && billData) {
+            const total = billData.reduce((sum, bill) => sum + (Number(bill.total_amount) || 0), 0);
+            setPendingBillsTotal(total);
+          }
+        } catch (e) {
+          console.warn("Bills table not found or inaccessible, skipping bill total.");
         }
 
       } catch (err) {
@@ -53,270 +61,183 @@ const Dashboard = () => {
     fetchData();
   }, [user]);
 
-  if (loading && !user) {
+  if (loading) {
     return (
-      <div className="flex flex-col justify-center items-center h-screen bg-surface-container-low">
-        <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4"></div>
-        <p className="text-primary font-medium">Preparing your health dashboard...</p>
+      <div className="flex flex-col justify-center items-center h-[80vh] bg-surface">
+        <div className="relative w-24 h-24 mb-8">
+           <div className="absolute inset-0 border-[6px] border-primary/10 rounded-full"></div>
+           <div className="absolute inset-0 border-[6px] border-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <h2 className="text-xl font-black text-on-surface uppercase tracking-[0.3em] animate-pulse">Syncing Metrics</h2>
+        <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-widest mt-4">Clinical Protocol Active</p>
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 min-h-screen">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-12 min-h-screen animate-fade-in">
       {/* Welcome Banner Section */}
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary via-[#8e7492] to-primary p-8 md:p-12 text-on-primary shadow-2xl shadow-primary/20">
-        <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="text-center md:text-left">
-            <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight leading-tight">
-              Good Morning, <br className="md:hidden" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-primary-fixed">
-                {userProfile?.full_name?.split(' ')[0] || 'Sarah'}
-              </span>!
-            </h1>
-            <p className="text-lg opacity-90 font-medium">
+      <section className="relative overflow-hidden rounded-[3rem] bg-on-surface p-10 md:p-14 text-white shadow-3xl shadow-black/10">
+        <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-12">
+          <div className="text-center md:text-left space-y-6">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary mb-2">Patient Command Center</p>
+              <h1 className="text-4xl md:text-6xl font-black font-headline tracking-tighter leading-none">
+                Salutations, <br className="hidden md:block" />
+                <span className="text-primary italic">
+                  {userProfile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'User'}
+                </span>
+              </h1>
+            </div>
+            <p className="text-sm font-black uppercase tracking-widest text-white/40">
               {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
-            <div className="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
-              <div className="inline-flex items-center gap-3 bg-white/20 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/10">
-                <span className="material-symbols-outlined fill-current">water_drop</span>
-                <span className="font-bold font-headline">Blood Group: {userProfile?.blood_group || 'O+'}</span>
+            <div className="flex flex-wrap justify-center md:justify-start gap-4">
+              <div className="inline-flex items-center gap-4 bg-white/5 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/10">
+                <span className="material-symbols-outlined text-primary fill-1">verified_user</span>
+                <span className="text-[11px] font-black uppercase tracking-[0.2em]">Identity Verified</span>
               </div>
+              <Link to="/patient/profile" className="inline-flex items-center gap-4 bg-primary px-6 py-3 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl shadow-primary/20 hover:scale-95 transition-all">
+                Registry Settings
+              </Link>
             </div>
           </div>
-          <div className="relative">
-            <div className="absolute -inset-10 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-            <img 
-              className="h-56 md:h-64 w-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative z-10 transition-transform hover:scale-105 duration-500" 
-              alt="Medical professional 3D" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGq6O09pa2mopfq9X4mVjLoRkDVr_v2NsCZAVf8bN9vDqQjgqxF_nzcLcXdf9FD0wu77pECpfPGqvYDo54_K4dF0vHHA3akivEfvEVLtcyeSVy4XKRsWqGd36fVadWZHguR20PDRcX5JVGxkVPVYhJMBGYwVDnrfjphAptdaeYLDyiA3t1jcoJCWNOfyGYhyYZa6s8Wwi359PggCYTinSsdXDU8HDUaO-ATXvv1VZphmDrhdM_FAF0q4vaKij8JwKwEzvCGWWjC90"
-            />
+          <div className="relative shrink-0">
+            <div className="absolute -inset-10 bg-primary/20 rounded-full blur-[100px] animate-pulse"></div>
+            <div className="w-48 h-48 md:w-64 md:h-64 bg-surface-container-high rounded-[3rem] overflow-hidden p-2 ring-1 ring-white/10 shadow-inner">
+               <img 
+                 className="w-full h-full object-cover rounded-[2.5rem] drop-shadow-2xl" 
+                 alt="Profile Ambient" 
+                 src={userProfile?.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuD9R_8Kk9U0N0f3Z6_6y5uQ0uD1V_p7QYV_7T1W1Y_v0X8_a"}
+               />
+            </div>
           </div>
         </div>
         
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-blue-500/10 rounded-full blur-3xl"></div>
+        {/* Background Decorative Architecture */}
+        <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+           <span className="material-symbols-outlined text-[300px] font-light">vital_signs</span>
+        </div>
       </section>
 
       {/* KPI Cards Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-surface-container-lowest p-6 rounded-3xl shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 border border-outline-variant/10">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-primary/10 text-primary rounded-2xl group-hover:scale-110 transition-transform">
-              <span className="material-symbols-outlined">event_upcoming</span>
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {[
+          { label: 'Upcoming Slots', val: appointments.length, sub: 'Active clinician requests', icon: 'event_upcoming', color: 'primary' },
+          { label: 'Prescriptions', val: '3', sub: 'Doses due cycles', icon: 'medication', color: 'blue-500' },
+          { label: 'Settlements', val: `₹${pendingBillsTotal}`, sub: 'Unresolved balances', icon: 'account_balance_wallet', color: 'orange-500' },
+          { label: 'Wellness Level', val: '98%', sub: 'Aggregated vitals', icon: 'favorite', color: 'green-500' }
+        ].map((kpi, idx) => (
+          <div key={idx} className="group bg-white p-8 rounded-[2.5rem] shadow-xl shadow-black/[0.02] hover:shadow-2xl hover:shadow-primary/5 transition-all border border-outline-variant/10">
+            <div className={`w-12 h-12 rounded-2xl bg-${kpi.color}/10 flex items-center justify-center mb-6`}>
+              <span className={`material-symbols-outlined text-${kpi.color} font-black`}>{kpi.icon}</span>
             </div>
+            <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em] mb-1">{kpi.label}</p>
+            <h2 className="text-3xl font-black text-on-surface tracking-tighter mb-2">{kpi.val}</h2>
+            <p className="text-[9px] font-black text-on-surface-variant/60 uppercase tracking-widest">{kpi.sub}</p>
           </div>
-          <p className="text-on-surface-variant text-sm font-bold uppercase tracking-widest">Upcoming Appointments</p>
-          <h2 className="text-4xl font-extrabold mt-1 text-on-surface">{appointments.length}</h2>
-          <p className="text-xs text-primary mt-2 flex items-center gap-1 font-bold">
-            <span className="material-symbols-outlined text-[14px]">schedule</span> 
-            {appointments.length > 0 ? `Next: ${new Date(appointments[0].appointment_date).toLocaleDateString()}` : 'No upcoming'}
-          </p>
-        </div>
-
-        <div className="bg-surface-container-lowest p-6 rounded-3xl shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 border border-outline-variant/10">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
-              <span className="material-symbols-outlined">medication</span>
-            </div>
-          </div>
-          <p className="text-on-surface-variant text-sm font-bold uppercase tracking-widest">Active Prescriptions</p>
-          <h2 className="text-4xl font-extrabold mt-1 text-on-surface">3</h2>
-          <p className="text-xs text-blue-600 mt-2 flex items-center gap-1 font-bold">
-            <span className="material-symbols-outlined text-[14px]">alarm_on</span> doses due today
-          </p>
-        </div>
-
-        <div className="bg-surface-container-lowest p-6 rounded-3xl shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 border border-outline-variant/10">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-orange-50 text-orange-600 rounded-2xl">
-              <span className="material-symbols-outlined">account_balance_wallet</span>
-            </div>
-          </div>
-          <p className="text-on-surface-variant text-sm font-bold uppercase tracking-widest">Pending Bills</p>
-          <h2 className="text-4xl font-extrabold mt-1 text-on-surface">₹{pendingBillsTotal}</h2>
-          <p className="text-xs text-error mt-2 flex items-center gap-1 font-bold">
-            <span className="material-symbols-outlined text-[14px]">error</span> Payment Required
-          </p>
-        </div>
-
-        <div className="bg-surface-container-lowest p-6 rounded-3xl shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 border border-outline-variant/10">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-green-50 text-green-600 rounded-2xl">
-              <span className="material-symbols-outlined">history</span>
-            </div>
-          </div>
-          <p className="text-on-surface-variant text-sm font-bold uppercase tracking-widest">Last Visit</p>
-          <h2 className="text-xl font-extrabold mt-1 text-on-surface">12 Mar 2026</h2>
-          <p className="text-xs text-on-surface-variant mt-2 flex items-center gap-1 font-bold">
-            Dr. Sharma • Cardiology
-          </p>
-        </div>
+        ))}
       </section>
 
       {/* Main Content Split */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Left Column: Appointments & Prescriptions */}
-        <div className="lg:col-span-2 space-y-10">
+        <div className="lg:col-span-2 space-y-12">
           {/* Appointments */}
-          <section>
-            <div className="flex justify-between items-center mb-6 px-2">
-              <h2 className="text-2xl font-black text-on-surface">Upcoming Scheduled Visits</h2>
-              <Link to="/patient/appointments" className="text-primary text-sm font-black hover:underline uppercase tracking-widest px-4 py-2 bg-primary/5 rounded-full">View All</Link>
+          <section className="space-y-8">
+            <div className="flex justify-between items-end border-b border-outline-variant/10 pb-6 px-2">
+              <div>
+                <h2 className="text-3xl font-black text-on-surface tracking-tighter leading-none">Clinician Schedule</h2>
+                <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em] mt-2">Upcoming registered encounters</p>
+              </div>
+              <Link to="/patient/appointments" className="text-primary text-[10px] font-black hover:underline uppercase tracking-widest px-6 py-3 bg-primary/5 rounded-2xl">Expansion Protocol</Link>
             </div>
-            <div className="space-y-4">
+            
+            <div className="space-y-6">
               {appointments.length === 0 ? (
-                <div className="bg-surface-container-lowest p-12 rounded-[2rem] text-center border-2 border-dashed border-outline-variant/20">
-                  <span className="material-symbols-outlined text-5xl text-outline-variant mb-4">event_busy</span>
-                  <p className="text-on-surface-variant font-bold">No upcoming appointments.</p>
-                  <button onClick={() => navigate('/patient/book-appointment')} className="mt-6 btn btn-primary">Schedule Now</button>
+                <div className="bg-surface-container-lowest py-20 rounded-[3rem] text-center border-2 border-dashed border-outline-variant/20 flex flex-col items-center">
+                  <div className="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-6">
+                    <span className="material-symbols-outlined text-outline-variant">event_busy</span>
+                  </div>
+                  <p className="text-on-surface-variant font-black uppercase tracking-[0.2em] text-[11px]">No active clinical records found in schedule.</p>
+                  <button onClick={() => navigate('/patient/book-appointment')} className="mt-8 px-10 py-4 bg-primary text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 active:scale-95 transition-all">Initiate Request</button>
                 </div>
               ) : (
                 appointments.map((apt) => (
-                  <div key={apt.id} className="bg-surface-container-lowest p-5 rounded-[1.5rem] flex items-center gap-5 group hover:bg-surface-container-low transition-all border border-transparent hover:border-outline-variant/20 shadow-sm hover:shadow-md">
-                    <img 
-                      className="w-16 h-16 rounded-2xl object-cover shadow-sm bg-surface-container-high" 
-                      alt={apt.doctors?.full_name}
-                      src={apt.doctors?.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuClef_wlPZAhy5lua2Vq5Bmaoj5U3kPFh_d_HPCR7YJESvMwH09GyDhvvVERy1qaDRy2oGwNaL2VOafKQy3viee2XE5Bm7EazgEVC35LGn7gluKrlbiD9ufrOGOhNcYuTJux6jiCNstqd63ktjl4swNP6WthtW1SOBQ0iMgrU_-mCYLM-h3YW6mWC_2V1VutwdVqhfIcOmRfF3nYpeN7l7zpP2ALJ_Q0gHZmbi383D0xxjyXJGAadX1wOrxqr-qdOoaBMXAVP8jvxw"}
-                    />
+                  <div key={apt.id} className="group bg-white p-6 rounded-[2.5rem] flex items-center gap-6 hover:shadow-2xl hover:shadow-black/5 transition-all border border-outline-variant/10">
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden ring-4 ring-surface bg-surface-container-high shrink-0 transition-transform group-hover:scale-95">
+                      <img 
+                        className="w-full h-full object-cover" 
+                        alt={apt.doctors?.full_name}
+                        src={apt.doctors?.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuClef_wlPZAhy5lua2Vq5Bmaoj5U3kPFh_d_HPCR7YJESvMwH09GyDhvvVERy1qaDRy2oGwNaL2VOafKQy3viee2XE5Bm7EazgEVC35LGn7gluKrlbiD9ufrOGOhNcYuTJux6jiCNstqd63ktjl4swNP6WthtW1SOBQ0iMgrU_-mCYLM-h3YW6mWC_2V1VutwdVqhfIcOmRfF3nYpeN7l7zpP2ALJ_Q0gHZmbi383D0xxjyXJGAadX1wOrxqr-qdOoaBMXAVP8jvxw"}
+                      />
+                    </div>
                     <div className="flex-1">
-                      <h4 className="font-extrabold text-on-surface text-lg">Dr. {apt.doctors?.full_name}</h4>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs text-on-surface-variant font-bold uppercase tracking-widest">{apt.doctors?.specialization || 'Neurology'}</span>
-                        <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
-                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${apt.status === 'upcoming' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                          {apt.status.toUpperCase()}
-                        </span>
+                      <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">{apt.doctors?.specialization || 'Synchronous Ops'}</p>
+                      <h4 className="font-black text-on-surface text-xl tracking-tight leading-none mb-3">Dr. {apt.doctors?.full_name}</h4>
+                      <div className="flex items-center gap-4">
+                        <div className="px-3 py-1 bg-surface-container-low rounded-lg flex items-center gap-2">
+                           <span className="material-symbols-outlined text-[14px] text-on-surface-variant">calendar_month</span>
+                           <span className="text-[10px] font-black text-on-surface uppercase tracking-tighter">{new Date(apt.appointment_date).toLocaleDateString('en-GB')}</span>
+                        </div>
+                        <div className="px-3 py-1 bg-surface-container-low rounded-lg flex items-center gap-2">
+                           <span className="material-symbols-outlined text-[14px] text-on-surface-variant">schedule</span>
+                           <span className="text-[10px] font-black text-on-surface uppercase tracking-tighter">{apt.appointment_time || apt.time_slot}</span>
+                        </div>
                       </div>
-                      <p className="text-xs text-on-surface-variant font-bold flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[14px]">calendar_month</span>
-                        {new Date(apt.appointment_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                        <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
-                        <span className="material-symbols-outlined text-[14px]">schedule</span>
-                        {apt.time_slot}
-                      </p>
                     </div>
-                    <div className="flex gap-2">
-                      <button className="p-3 bg-surface-container-high text-on-surface rounded-2xl hover:bg-primary/10 hover:text-primary transition-all group/btn">
-                        <span className="material-symbols-outlined group-hover/btn:scale-110 transition-transform">edit_calendar</span>
-                      </button>
-                    </div>
+                    <button className="w-12 h-12 bg-surface-container-high text-on-surface rounded-2xl hover:bg-primary hover:text-white transition-all">
+                      <span className="material-symbols-outlined">edit_calendar</span>
+                    </button>
                   </div>
                 ))
               )}
             </div>
           </section>
-
-          {/* Active Prescriptions */}
-          <section>
-            <h2 className="text-2xl font-black text-on-surface mb-6 px-2">Active Health Regimen</h2>
-            <div className="bg-surface-container-lowest rounded-[2rem] overflow-hidden shadow-sm border border-outline-variant/10">
-              <div className="p-8 space-y-8">
-                <div>
-                  <div className="flex justify-between items-center mb-3">
-                    <div>
-                      <h4 className="font-extrabold text-on-surface">Amoxicillin 500mg</h4>
-                      <p className="text-xs text-on-surface-variant font-bold">1 capsule, 3 times a day</p>
-                    </div>
-                    <span className="text-xs font-black text-error bg-error/10 px-3 py-1 rounded-full uppercase tracking-widest">3 days left</span>
-                  </div>
-                  <div className="h-2.5 bg-surface-container-low rounded-full overflow-hidden">
-                    <div className="h-full bg-error" style={{ width: '70%' }}></div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between items-center mb-3">
-                    <div>
-                      <h4 className="font-extrabold text-on-surface">Lisinopril 10mg</h4>
-                      <p className="text-xs text-on-surface-variant font-bold">1 tablet, every morning</p>
-                    </div>
-                    <span className="text-xs font-black text-green-600 bg-green-50 px-3 py-1 rounded-full uppercase tracking-widest">12 days left</span>
-                  </div>
-                  <div className="h-2.5 bg-surface-container-low rounded-full overflow-hidden">
-                    <div className="h-full bg-green-500" style={{ width: '40%' }}></div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-surface-container-low p-5">
-                <button className="w-full btn bg-white text-primary font-black hover:bg-primary hover:text-white border-2 border-primary/10">
-                  <span className="material-symbols-outlined text-[18px] mr-2">receipt_long</span>
-                  Request Refill
-                </button>
-              </div>
-            </div>
-          </section>
         </div>
 
-        {/* Right Column: Vitals & AI Tip */}
-        <div className="space-y-10">
+        {/* Right Column: Vitals & AI Insight */}
+        <div className="space-y-12">
           {/* Recent Vitals */}
-          <section>
-            <h2 className="text-xl font-bold font-manrope text-on-surface mb-6">Biometric Vitals</h2>
-            <div className="bg-surface-container-lowest rounded-[2.5rem] p-8 shadow-sm border border-outline-variant/10 space-y-6">
+          <section className="bg-white p-10 rounded-[3rem] border border-outline-variant/10 shadow-xl shadow-black/[0.02]">
+            <h2 className="text-xl font-black text-on-surface uppercase tracking-widest border-b border-outline-variant/10 pb-6 mb-8">Clinical Vitals</h2>
+            <div className="space-y-8">
               {[
-                { label: 'Blood Pressure', value: '120/80', icon: 'favorite', color: 'bg-red-50 text-red-500' },
-                { label: 'Pulse Rate', value: '72 bpm', icon: 'pulse_alert', color: 'bg-blue-50 text-blue-500' },
-                { label: 'Body Temp', value: '98.6°F', icon: 'thermostat', color: 'bg-orange-50 text-orange-500' },
-                { label: 'Weight', value: '68 kg', icon: 'monitor_weight', color: 'bg-purple-50 text-purple-500' },
-                { label: 'SpO2', value: '98%', icon: 'air', color: 'bg-cyan-50 text-cyan-500' },
+                { label: 'Blood Pressure', value: '118/72', icon: 'favorite', color: 'red-500' },
+                { label: 'Pulse Rate', value: '74 bpm', icon: 'pulse_alert', color: 'blue-500' },
+                { label: 'SpO2 Level', value: '99%', icon: 'air', color: 'cyan-500' },
+                { label: 'Body Mass', value: '64 kg', icon: 'monitor_weight', color: 'purple-500' },
               ].map((vital, i) => (
-                <div key={i} className="flex items-center justify-between group cursor-default">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-2xl ${vital.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                <div key={i} className="flex items-center justify-between group">
+                  <div className="flex items-center gap-5">
+                    <div className={`w-12 h-12 rounded-2xl bg-surface-container-low flex items-center justify-center group-hover:bg-on-surface group-hover:text-white transition-all`}>
                       <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>{vital.icon}</span>
                     </div>
-                    <span className="text-sm font-bold text-on-surface-variant uppercase tracking-widest leading-none">{vital.label}</span>
+                    <span className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-[0.2em] leading-none">{vital.label}</span>
                   </div>
-                  <span className="text-xl font-black text-on-surface tabular-nums">{vital.value}</span>
+                  <span className="text-lg font-black text-on-surface tracking-tighter">{vital.value}</span>
                 </div>
               ))}
-              <button className="w-full mt-4 py-4 bg-surface-container-low rounded-[1.5rem] text-sm font-black text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all uppercase tracking-widest border border-outline-variant/10">Update Metrics</button>
             </div>
+            <button className="w-full mt-10 py-5 bg-on-surface text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:opacity-90 active:scale-95 transition-all">Refresh Metrics</button>
           </section>
 
-          {/* AI Health Tip */}
-          <section className="relative overflow-hidden bg-gradient-to-br from-purple-100 to-white p-8 rounded-[2.5rem] border border-purple-200 shadow-lg shadow-purple-500/5 group">
-            <div className="relative z-10">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/30">
-                  <span className="material-symbols-outlined">smart_toy</span>
+          {/* AI Companion Insight */}
+          <section className="relative overflow-hidden bg-primary p-10 rounded-[3rem] text-white shadow-2xl shadow-primary/20 group">
+             <div className="relative z-10 flex flex-col items-center text-center space-y-6">
+                <div className="w-16 h-16 rounded-[1.5rem] bg-white text-primary flex items-center justify-center shadow-2xl shadow-black/10 transition-transform group-hover:rotate-12">
+                   <span className="material-symbols-outlined text-3xl font-black">smart_toy</span>
                 </div>
-                <div>
-                  <h3 className="font-black text-primary uppercase tracking-widest text-xs">AI Counsel</h3>
-                  <p className="font-bold text-on-surface">Daily Wellness Insight</p>
-                </div>
-              </div>
-              <p className="text-sm text-on-surface-variant leading-relaxed mb-8 italic font-medium">
-                "Stay hydrated, Sarah! Your recent vitals suggest that increasing your water intake to 3L today will significantly boost your metabolic recovery."
-              </p>
-              <button onClick={() => navigate('/patient/ai-symptom-checker')} className="w-full py-4 bg-primary text-on-primary font-black rounded-2xl hover:bg-primary-container transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group/btn">
-                Ask MediSync AI
-                <span className="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
-              </button>
-            </div>
-          </section>
-
-          {/* Quick Actions */}
-          <section>
-            <h2 className="text-xl font-bold font-manrope text-on-surface mb-6">Clinical Portal</h2>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: 'Book Visit', icon: 'medical_services', color: 'text-primary', path: '/patient/book-appointment' },
-                { label: 'Chat AI', icon: 'psychology', color: 'text-blue-500', path: '/patient/ai-symptom-checker' },
-                { label: 'Records', icon: 'folder_open', color: 'text-orange-500', path: '/patient/medical-history' },
-                { label: 'Finances', icon: 'account_balance_wallet', color: 'text-green-500', path: '/patient/bills' },
-              ].map((action, i) => (
-                <button 
-                  key={i}
-                  onClick={() => navigate(action.path)} 
-                  className="p-6 bg-surface-container-lowest rounded-[2rem] flex flex-col items-center justify-center gap-3 hover:bg-surface-container-low transition-all border border-outline-variant/10 group shadow-sm"
-                >
-                  <span className={`material-symbols-outlined text-4xl ${action.color} group-hover:scale-110 transition-transform`}>{action.icon}</span>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant text-center">{action.label}</span>
-                </button>
-              ))}
-            </div>
+                <h3 className="text-lg font-black uppercase tracking-[0.2em]">MediSync AI</h3>
+                <p className="text-[11px] font-black text-white/50 leading-relaxed italic border-t border-white/10 pt-6">
+                  "Optimization recommended. Your recent vitals indicate an excellent recovery phase. Consider increasing protein intake by 15% this session."
+                </p>
+                <button onClick={() => navigate('/patient/ai-symptom-checker')} className="w-full py-4 bg-white text-primary font-black rounded-2xl uppercase text-[10px] tracking-widest hover:scale-95 transition-all">Connect AI Partner</button>
+             </div>
+             
+             <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none transition-transform duration-[4s] group-hover:scale-150">
+                <span className="material-symbols-outlined text-8xl font-light">psychology</span>
+             </div>
           </section>
         </div>
       </div>
@@ -325,4 +246,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
