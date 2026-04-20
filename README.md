@@ -1,6 +1,13 @@
 # 🏥 MediSync: Next-Gen Digital Healthcare Ecosystem
 
+![MediSync Hero Banner](medisync_hero_banner_1776698583274.png)
+
 MediSync is a premium, full-stack Hospital Management System (HMS) designed to bridge the gap between patients, doctors, and healthcare administrators. Built with a focus on **Visual Excellence**, **AI-Driven Insights**, and **Security**, MediSync transforms clinical workflows into a seamless digital experience.
+
+---
+
+## 🌐 Live Demo
+**Deployed on Google Cloud Run:** [https://medisync-738373994270.us-central1.run.app](https://medisync-738373994270.us-central1.run.app)
 
 ---
 
@@ -21,20 +28,15 @@ Manage hospital logistics with precision.
 *   **Bed Management:** Real-time tracking of occupancy, bed types, and department allocation.
 *   **Smart Inventory:** Automated stock tracking for essential medicines and medical supplies.
 
-### 5. 💳 Patient Empowerment Portal
-A sleek, user-centric dashboard for patients to:
-*   Book appointments with top-rated specialists.
-*   Access digital prescriptions instantly.
-*   Manage medical bills and history in one place.
-
 ---
 
 ## 🛠 Tech Stack
 
 *   **Frontend:** React.js, Tailwind CSS (Velvet Clinical Design System)
 *   **Backend & DB:** Supabase (PostgreSQL)
+*   **Infrastructure:** Google Cloud Run (Containerized with Docker & Nginx)
 *   **Authentication:** Supabase Auth with Role-Based Access Control (RBAC)
-*   **Styles:** Modern aesthetics featuring glassmorphism, smooth transitions, and a premium dark-mode-first approach.
+*   **Aesthetics:** Modern glassmorphism, smooth transitions, and a premium dark-mode-first approach.
 
 ---
 
@@ -50,7 +52,8 @@ MediSync is built with a "Privacy by Design" philosophy:
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v18+)
+- Node.js (v20+)
+- Google Cloud SDK (for deployment)
 - Supabase Project
 
 ### Installation
@@ -66,21 +69,33 @@ MediSync is built with a "Privacy by Design" philosophy:
     ```
 
 3.  **Configure Environment Variables:**
-    Create a `.env` file and add your Supabase credentials:
+    Create a `.env` file in the root directory:
     ```env
     VITE_SUPABASE_URL=your_supabase_url
     VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
     ```
 
-4.  **Launch the app:**
+4.  **Launch Local Development:**
     ```bash
     npm run dev
     ```
 
 ---
 
+## ☁️ Deployment (Google Cloud Run)
+
+The project is configured for seamless deployment to Cloud Run using Docker.
+
+1.  **Build and Deploy:**
+    ```bash
+    gcloud run deploy medisync --source . --region us-central1 --allow-unauthenticated
+    ```
+2.  **Important Note:** Ensure `.gcloudignore` includes your `.env` file during the build process so Vite can bake the environment variables into the static build.
+
+---
+
 ## 📐 Database Architecture
-The system relies on a robust schema containing tables for `profiles`, `doctors`, `appointments`, `prescriptions`, `bills`, and `medical_history`. See `database_schema.sql` for full details.
+The system relies on a robust schema containing tables for `profiles`, `doctors`, `appointments`, `prescriptions`, `bills`, and `medical_history`. Full schema available in `database_schema.sql`.
 
 ---
 
