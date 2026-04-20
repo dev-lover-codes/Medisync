@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
 import { Link } from 'react-router-dom';
+import logger from './utils/logger';
 
 /**
  * DoctorDashboard Component
@@ -68,7 +69,7 @@ export default function DoctorDashboard() {
       });
 
     } catch (err) {
-      console.error('Error fetching doctor data:', err);
+      logger.error('Error fetching doctor data:', err);
     } finally {
       setLoading(false);
     }

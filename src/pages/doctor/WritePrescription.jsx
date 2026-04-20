@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
+import logger from './utils/logger';
 
 /**
  * WritePrescription Component
@@ -120,7 +121,7 @@ const handleMedChange = (index, field, value) => {
       navigate('/doctor/dashboard');
 
     } catch (err) {
-      console.error('Error issuing prescription:', err);
+      logger.error('Error issuing prescription:', err);
       alert('Failed to issue prescription: ' + err.message);
     } finally {
       setLoading(false);

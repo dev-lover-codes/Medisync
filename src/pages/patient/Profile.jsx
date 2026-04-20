@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
+import logger from './utils/logger';
 
 /**
  * Profile Component
@@ -69,7 +70,7 @@ export default function Profile() {
         });
       }
     } catch (error) {
-      console.error("Error fetching profile:", error);
+      logger.error("Error fetching profile:", error);
     }
   };
 
@@ -112,7 +113,7 @@ const handleChange = (e) => {
       
       setTimeout(() => setMessage({ text: '', type: '' }), 5000);
     } catch (error) {
-      console.error("Error updating profile:", error);
+      logger.error("Error updating profile:", error);
       setMessage({ text: error.message || 'Synchronization failed.', type: 'error' });
     } finally {
       setLoading(false);

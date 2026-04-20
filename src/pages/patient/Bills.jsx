@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
+import logger from './utils/logger';
 
 /**
  * Bills Component
@@ -11,7 +12,7 @@ export default function Bills() {
   const { user } = useAuth();
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
   const [payingId, setPayingId] = useState(null);
   const [filterStatus, setFilterStatus] = useState('All Statuses');
 
@@ -46,7 +47,7 @@ export default function Bills() {
       if (fetchError) throw fetchError;
       setBills(data || []);
     } catch (err) {
-      console.error("Error fetching bills:", err);
+      logger.error("Error fetching bills:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -80,7 +81,7 @@ export default function Bills() {
       
       alert("Payment authentication successful. Transaction verified.");
     } catch (err) {
-      console.error("Error paying bill:", err);
+      logger.error("Error paying bill:", err);
       alert("Verification failed. Please authenticate again.");
     } finally {
       setPayingId(null);

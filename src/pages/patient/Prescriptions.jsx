@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
+import logger from './utils/logger';
 
 /**
  * Prescriptions Component
@@ -51,7 +52,7 @@ export default function Prescriptions() {
       if (fetchError) throw fetchError;
       setPrescriptions(data || []);
     } catch (err) {
-      console.error("Error fetching prescriptions:", err);
+      logger.error("Error fetching prescriptions:", err);
       setError(err.message);
     } finally {
       setLoading(false);

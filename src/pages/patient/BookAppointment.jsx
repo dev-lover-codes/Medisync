@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import logger from './utils/logger';
 
 /**
  * BookAppointment Component
@@ -53,7 +54,7 @@ export default function BookAppointment() {
       if (error) throw error;
       setAppointments(data || []);
     } catch (err) {
-      console.error("Error fetching appointments:", err);
+      logger.error("Error fetching appointments:", err);
     }
   };
 
@@ -91,7 +92,7 @@ export default function BookAppointment() {
         setFormData(prev => ({ ...prev, department: depts[0] }));
       }
     } catch (err) {
-      console.error("Error fetching initial data:", err);
+      logger.error("Error fetching initial data:", err);
       setFetchError(err.message);
     } finally {
       setFetchingDocs(false);
@@ -142,7 +143,7 @@ const handleBack = () => {
       navigate('/patient/appointments');
       
     } catch (err) {
-      console.error("Error booking appointment:", err);
+      logger.error("Error booking appointment:", err);
       alert("Failed to book: " + err.message);
     } finally {
       setLoading(false);

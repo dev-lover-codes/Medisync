@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import logger from './utils/logger';
 
 /**
  * Appointments Component
@@ -54,7 +55,7 @@ export default function Appointments() {
       if (fetchError) throw fetchError;
       setAppointments(data || []);
     } catch (err) {
-      console.error("Error fetching appointments:", err);
+      logger.error("Error fetching appointments:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -73,7 +74,7 @@ export default function Appointments() {
       setAppointments(prev => prev.filter(app => app.id !== id));
       alert("Appointment cancelled successfully.");
     } catch (err) {
-      console.error("Error cancelling appointment:", err);
+      logger.error("Error cancelling appointment:", err);
       alert("Failed to cancel appointment. Please try again.");
     }
   };

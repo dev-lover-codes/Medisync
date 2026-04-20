@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { Link } from 'react-router-dom';
+import logger from './utils/logger';
 
 /**
  * AdminDashboard Component
@@ -63,7 +64,7 @@ export default function AdminDashboard() {
       setRecentPatients(latest || []);
 
     } catch (err) {
-      console.error('Error fetching admin stats:', err);
+      logger.error('Error fetching admin stats:', err);
     } finally {
       setLoading(false);
     }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
 import { useNavigate, Link } from 'react-router-dom';
+import logger from './utils/logger';
 
 /**
  * Dashboard internal Component or utility
@@ -46,7 +47,7 @@ const Dashboard = () => {
         if (!aptError && aptData) {
           setAppointments(aptData);
         } else if (aptError) {
-          console.warn("Dashboard: Appointments fetch error (likely no matching patient_id):", aptError.message);
+          logger.warn("Dashboard: Appointments fetch error (likely no matching patient_id):", aptError.message);
         }
 
         // Fetch pending bill total
@@ -61,12 +62,12 @@ const Dashboard = () => {
             const total = billData.reduce((sum, bill) => sum + (Number(bill.total_amount) || 0), 0);
             setPendingBillsTotal(total);
           }
-        } catch (e) {
-          console.warn("Dashboard: Billing table accessibility issue.");
+        } catch {
+          logger.warn("Dashboard: Billing table accessibility issue.");
         }
 
       } catch (err) {
-        console.error("Dashboard fetch error:", err);
+        logger.error("Dashboard fetch error:", err);
       } finally {
         setLoading(false);
       }

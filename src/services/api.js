@@ -4,12 +4,13 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import logger from './utils/logger';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase URL or Anon Key is missing in environment variables.');
+  logger.error('Supabase URL or Anon Key is missing in environment variables.');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -122,7 +123,7 @@ export const dbCall = async (operation, table, data = null, options = {}) => {
     const { data: result, error } = await query;
 
     if (error) {
-      console.error(`Supabase Error [${operation} on ${table}]:`, error);
+      logger.error(`Supabase Error [${operation} on ${table}]:`, error);
       return handleApiError(error);
     }
 
@@ -134,7 +135,7 @@ export const dbCall = async (operation, table, data = null, options = {}) => {
     };
 
   } catch (err) {
-    console.error(`API Service Exception:`, err.message);
+    logger.error(`API Service Exception:`, err.message);
     return handleApiError(err);
   }
 };

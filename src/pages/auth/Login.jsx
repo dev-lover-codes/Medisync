@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import logger from './utils/logger';
 
 /**
  * Login Component
@@ -43,7 +44,7 @@ export default function Login() {
       else if (userRole === 'doctor') navigate('/doctor/dashboard');
       else navigate('/patient/dashboard'); // default fallback
     } catch (err) {
-      console.error("Login Error:", err);
+      logger.error("Login Error:", err);
       setErrorMsg("An unexpected error occurred. Please try again.");
       setIsLoading(false);
     }

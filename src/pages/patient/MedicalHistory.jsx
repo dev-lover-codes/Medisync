@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
+import logger from './utils/logger';
 
 /**
  * MedicalHistory Component
@@ -11,7 +12,7 @@ export default function MedicalHistory() {
   const { user, userProfile } = useAuth();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export default function MedicalHistory() {
       if (fetchError) throw fetchError;
       setHistory(data || []);
     } catch (err) {
-      console.error("Error fetching medical history:", err);
+      logger.error("Error fetching medical history:", err);
       setError(err.message);
     } finally {
       setLoading(false);

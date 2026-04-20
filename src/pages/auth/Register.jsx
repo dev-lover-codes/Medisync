@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import logger from './utils/logger';
 
 /**
  * Register Component
@@ -160,7 +161,7 @@ const handleBack = () => {
 
     try {
       // Provide default 'patient' role
-      const { data, error } = await signUp(formData.email, formData.password, formData.fullName, 'patient', extraData);
+      const { error } = await signUp(formData.email, formData.password, formData.fullName, 'patient', extraData);
       
       if (error) {
         setErrorMsg(error.message);
@@ -171,7 +172,7 @@ const handleBack = () => {
       setIsLoading(false);
       navigate('/patient/dashboard');
     } catch (err) {
-      console.error("Registration Error:", err);
+      logger.error("Registration Error:", err);
       setErrorMsg("An unexpected error occurred. Please try again.");
       setIsLoading(false);
     }

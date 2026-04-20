@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../../services/api';
+import logger from './utils/logger';
 
 /**
  * AISymptomChecker Component
@@ -9,7 +10,7 @@ import { supabase } from '../../../services/api';
  * @returns {React.ReactElement} The rendered component
  */
 export default function AISymptomChecker() {
-  const { user, userProfile } = useAuth();
+  const { userProfile } = useAuth();
   const [messages, setMessages] = useState([
     { 
       role: 'assistant', 
@@ -72,7 +73,7 @@ export default function AISymptomChecker() {
       }
 
     } catch (error) {
-      console.warn("AI Service error or timeout:", error);
+      logger.warn("AI Service error or timeout:", error);
       
       let errorMsg = "There was a problem connecting to the triage neural engine. Please try again or seek manual assistance.";
       if (error.name === 'AbortError') {
