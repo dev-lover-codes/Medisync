@@ -32,7 +32,7 @@ export default function WritePrescription() {
   }, [patientIdParam]);
 
   const fetchPatientDetails = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', patientIdParam)

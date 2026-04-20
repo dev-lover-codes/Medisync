@@ -55,7 +55,7 @@ export default function DoctorDashboard() {
         .eq('status', 'completed')
         .gte('appointment_date', today + 'T00:00:00');
 
-      const { count: totalPending } = await supabase
+      await supabase
         .from('appointments')
         .select('*', { count: 'exact', head: true })
         .eq('doctor_id', user.id)

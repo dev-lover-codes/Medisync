@@ -9,7 +9,7 @@ import logger from '../../utils/logger';
  * @returns {React.ReactElement} The rendered component
  */
 export default function MedicalHistory() {
-  const { user, userProfile } = useAuth();
+  const { user } = useAuth();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [, setError] = useState(null);

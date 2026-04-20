@@ -29,7 +29,7 @@ export default function Login() {
     try {
       // We try to sign in ignoring the selected role tab 
       // because Supabase auth handles role retrieval post-login
-      const { user, role: userRole, error } = await signIn(email, password);
+      const { role: userRole, error } = await signIn(email, password);
       
       if (error) {
         setErrorMsg(error.message);
