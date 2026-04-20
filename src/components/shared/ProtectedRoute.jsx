@@ -19,6 +19,8 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
       timer = setTimeout(() => setShowRetry(true), 7000);
     }
     return () => clearTimeout(timer);
+  
+     
   }, [loading]);
 
   if (loading) {

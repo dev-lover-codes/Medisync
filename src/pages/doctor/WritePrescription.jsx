@@ -29,6 +29,8 @@ export default function WritePrescription() {
     if (patientIdParam) {
       fetchPatientDetails();
     }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientIdParam]);
 
   const fetchPatientDetails = async () => {

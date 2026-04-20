@@ -19,6 +19,8 @@ export default function MedicalHistory() {
     if (user) {
       fetchMedicalHistory();
     }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchMedicalHistory = async () => {

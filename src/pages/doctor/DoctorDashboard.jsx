@@ -24,6 +24,8 @@ export default function DoctorDashboard() {
     if (user) {
       fetchDoctorData();
     }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchDoctorData = async () => {

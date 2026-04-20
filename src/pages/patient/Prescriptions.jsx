@@ -19,6 +19,8 @@ export default function Prescriptions() {
     if (user) {
       fetchPrescriptions();
     }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, activeTab]);
 
   const fetchPrescriptions = async () => {

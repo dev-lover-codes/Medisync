@@ -22,6 +22,8 @@ export default function Appointments() {
     if (user) {
       fetchAppointments();
     }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, activeTab]);
 
   const fetchAppointments = async () => {

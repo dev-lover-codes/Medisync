@@ -5,6 +5,7 @@ import logger from '../utils/logger';
 
 const AuthContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
@@ -82,10 +83,13 @@ export const AuthProvider = ({ children }) => {
     }
 
     const safetyTimeout = setTimeout(() => {
-      if (isMounted && loading) {
-        logger.warn("AuthContext: Safety timeout reached, forcing loading false");
-        setLoading(false);
-      }
+      setLoading((prevLoading) => {
+        if (isMounted && prevLoading) {
+          logger.warn("AuthContext: Safety timeout reached, forcing loading false");
+          return false;
+        }
+        return prevLoading;
+      });
     }, 6000);
 
     return () => {
@@ -93,6 +97,8 @@ export const AuthProvider = ({ children }) => {
       if (authListener) authListener.unsubscribe();
       clearTimeout(safetyTimeout);
     };
+  
+     
   }, []);
 
   const signUp = async (email, password, fullName, role, extraData) => {

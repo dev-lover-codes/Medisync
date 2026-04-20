@@ -24,6 +24,8 @@ export default function AISymptomChecker() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  
+     
   }, [messages]);
 
   const handleSend = async (e) => {

@@ -20,6 +20,8 @@ export default function Bills() {
     if (user) {
       fetchBills();
     }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchBills = async () => {

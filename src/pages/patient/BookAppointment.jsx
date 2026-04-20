@@ -39,6 +39,8 @@ export default function BookAppointment() {
   useEffect(() => {
     fetchInitialData();
     fetchUpcomingAppointments();
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchUpcomingAppointments = async () => {

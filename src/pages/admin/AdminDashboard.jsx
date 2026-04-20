@@ -21,6 +21,8 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchAdminStats();
+  
+     
   }, []);
 
   const fetchAdminStats = async () => {
