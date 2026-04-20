@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import logger from './utils/logger';
+import logger from '../../utils/logger';
 
 /**
  * Register Component

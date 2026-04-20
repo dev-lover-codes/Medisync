@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../../services/api';
-import logger from './utils/logger';
+import logger from '../../utils/logger';
 
 /**
  * AISymptomChecker Component

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
 import { useNavigate, Link } from 'react-router-dom';
-import logger from './utils/logger';
+import logger from '../../utils/logger';
 
 /**
  * Dashboard internal Component or utility
