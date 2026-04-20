@@ -64,7 +64,7 @@ export default function Prescriptions() {
  * @component
  * @returns {React.ReactElement} The rendered component
  */
-const requestRefill = (id) => {
+const requestRefill = (_id) => {
     alert("Digital refill request has been transmitted to your physician's portal.");
   };
 

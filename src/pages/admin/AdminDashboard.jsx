@@ -47,7 +47,7 @@ export default function AdminDashboard() {
       const totalPending = bills.reduce((acc, b) => acc + b.amount, 0);
 
       // 3. Fetch Recent Patients (Latest signups)
-      const { data: latest, error: latestError } = await supabase
+      const { data: latest } = await supabase
         .from('profiles')
         .select('*')
         .eq('role', 'patient')
