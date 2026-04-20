@@ -1,32 +1,32 @@
-import { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/shared/ProtectedRoute';
 
 // Pages
-import LandingPage from './pages/LandingPage';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
-import ForgotPassword from './pages/auth/ForgotPassword';
+const LandingPage = React.lazy(() => import('./pages/LandingPage'));
+const Login = React.lazy(() => import('./pages/auth/Login'));
+const Register = React.lazy(() => import('./pages/auth/Register'));
+const ForgotPassword = React.lazy(() => import('./pages/auth/ForgotPassword'));
 
 // Patient Pages
-import Dashboard from './pages/patient/Dashboard';
-import Appointments from './pages/patient/Appointments';
-import Prescriptions from './pages/patient/Prescriptions';
-import MedicalHistory from './pages/patient/MedicalHistory';
-import Bills from './pages/patient/Bills';
-import Profile from './pages/patient/Profile';
-import BookAppointment from './pages/patient/BookAppointment';
-import AISymptomChecker from './pages/patient/AISymptomChecker';
+const Dashboard = React.lazy(() => import('./pages/patient/Dashboard'));
+const Appointments = React.lazy(() => import('./pages/patient/Appointments'));
+const Prescriptions = React.lazy(() => import('./pages/patient/Prescriptions'));
+const MedicalHistory = React.lazy(() => import('./pages/patient/MedicalHistory'));
+const Bills = React.lazy(() => import('./pages/patient/Bills'));
+const Profile = React.lazy(() => import('./pages/patient/Profile'));
+const BookAppointment = React.lazy(() => import('./pages/patient/BookAppointment'));
+const AISymptomChecker = React.lazy(() => import('./pages/patient/AISymptomChecker'));
 
 // Admin Pages
-import AdminDashboard from './pages/admin/AdminDashboard';
-import BedManagement from './pages/admin/BedManagement';
-import Inventory from './pages/admin/Inventory';
+const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'));
+const BedManagement = React.lazy(() => import('./pages/admin/BedManagement'));
+const Inventory = React.lazy(() => import('./pages/admin/Inventory'));
 
 // Doctor Pages
-import DoctorDashboard from './pages/doctor/DoctorDashboard';
-import WritePrescription from './pages/doctor/WritePrescription';
+const DoctorDashboard = React.lazy(() => import('./pages/doctor/DoctorDashboard'));
+const WritePrescription = React.lazy(() => import('./pages/doctor/WritePrescription'));
 
 // Components
 import Sidebar from './components/shared/Sidebar';
@@ -61,7 +61,8 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <Routes>
+        <Suspense fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}>
+          <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -98,6 +99,7 @@ function App() {
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>
+        </Suspense>
       </Router>
     </AuthProvider>
   );

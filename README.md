@@ -1,127 +1,58 @@
 # MediSync
 
-MediSync is a modern, responsive, and secure Healthcare Management System built for patients, doctors, and hospital administrators. It features an AI-driven symptom checker, real-time appointment booking, and robust administrative tools.
-
----
+MediSync is a modern, real-time hospital management system designed to streamline patient care, doctor scheduling, and hospital administration. Built with an enterprise-grade technology stack, it features role-based access control, AI-powered symptom analysis, and secure medical data management.
 
 ## Architecture Overview
 
-MediSync uses a modern, serverless-oriented web architecture tailored for scalability, speed, and developer experience.
+*   **Frontend**: React (Vite), React Router, Tailwind CSS
+*   **State & Context**: React Context API
+*   **Backend & Database**: Supabase (PostgreSQL, Go)
+*   **Authentication**: Supabase Auth (JWT)
+*   **AI Integration**: Google Gemini API
+*   **Hosting**: Google Cloud Run / Vercel
 
-### Frontend
-- **Framework**: [React](https://react.dev/) + [Vite](https://vitejs.dev/) for lightning-fast HMR and optimized production builds.
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) for utility-first styling with custom UI components.
-- **Routing**: [React Router v7](https://reactrouter.com/) for declarative client-side routing.
-- **Testing**: [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) for robust component and integration testing.
+### Security & Data Integrity
 
-### Backend & Database (Supabase)
-- **Database**: PostgreSQL database hosted on [Supabase](https://supabase.com/).
-- **Authentication**: Built-in Supabase Auth supporting Role-Based Access Control (RBAC).
-- **Security**: PostgreSQL Row Level Security (RLS) ensures users can only access their authorized data.
-- **Edge Functions**: Deno-based edge functions used to securely interface with AI models (e.g., OpenAI / Gemini) without exposing API keys to the client.
+*   **Row-Level Security (RLS)**: Strict Postgres RLS ensures patients can only access their own records, and doctors can only access records of assigned patients.
+*   **Environment Configuration**: Secrets are handled via `.env` files locally and secure secret managers in production.
+*   **Database Schema**: fully indexed foreign keys and strict relational constraints guarantee high performance and data integrity.
 
----
+## Local Installation
 
-## Local Installation Guide
+1.  **Clone the Repository**
+    \`\`\`bash
+    git clone https://github.com/your-username/medisync.git
+    cd medisync
+    \`\`\`
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
-- A Supabase Project (for DB and Auth)
+2.  **Install Dependencies**
+    \`\`\`bash
+    npm install
+    \`\`\`
 
-### Setup Steps
+3.  **Environment Variables**
+    Copy the \`.env.example\` to \`.env\` and fill in your keys:
+    \`\`\`bash
+    cp .env.example .env
+    \`\`\`
+    You will need:
+    *   \`VITE_SUPABASE_URL\`
+    *   \`VITE_SUPABASE_ANON_KEY\`
+    *   \`VITE_GEMINI_API_KEY\`
 
-1. **Clone the repository:**
-   ```bash
-   git clone <repository-url>
-   cd medisync
-   ```
+4.  **Database Setup**
+    Execute \`database_schema.sql\` in your Supabase SQL Editor to construct the schema, triggers, and Row Level Security policies.
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+5.  **Run Development Server**
+    \`\`\`bash
+    npm run dev
+    \`\`\`
 
-3. **Environment Configuration:**
-   Copy the example environment file and fill in your Supabase credentials:
-   ```bash
-   cp .env.example .env.local
-   ```
-   Open `.env.local` and add:
-   - `VITE_SUPABASE_URL`: Your Supabase Project URL
-   - `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon Key
+## AI Symptom Checker Logic
 
-4. **Database Setup:**
-   Run the provided `database_schema.sql` script in your Supabase SQL editor to create all required tables, triggers, and Row Level Security (RLS) policies.
-
-5. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-   The app will be available at `http://localhost:5173`.
-
-6. **Run Tests:**
-   ```bash
-   npm run test
-   ```
-
----
-
-## Supabase Database Schema
-
-The MediSync database is carefully normalized and secured using Row Level Security (RLS). 
-
-### Core Tables
-
-#### `users`
-Handles application users and RBAC.
-- `user_id` (PK)
-- `email` (Unique)
-- `password_hash`
-- `role` (Enum: admin, doctor, nurse, receptionist, pharmacist, patient)
-
-#### `patients`
-Stores patient demographics and contact details.
-- `patient_id` (PK)
-- `user_id` (FK to users)
-- `uhid` (Unique Health ID, auto-generated)
-- `first_name`, `last_name`, `date_of_birth`, `gender`
-- *RLS*: Patients can view their own data; Admins/Staff can view all.
-
-#### `doctors`
-Profiles for medical staff.
-- `doctor_id` (PK)
-- `user_id` (FK to users)
-- `department_id` (FK to departments)
-- `specialization`, `consultation_fee`
-
-#### `appointments`
-Manages scheduling and tracking visits.
-- `appointment_id` (PK)
-- `patient_id` (FK), `doctor_id` (FK), `department_id` (FK)
-- `status` (scheduled, completed, cancelled)
-- *RLS*: Doctors see their assigned appointments; Patients see their own.
-
-#### `medical_records` & `prescriptions`
-Stores clinical data linked to appointments.
-- `record_id` (PK), `appointment_id` (FK)
-- `symptoms`, `diagnosis`, `notes`
-- *RLS*: Only assigned doctors and the patient themselves can access these records.
-
-#### `departments` & `beds`
-Hospital infrastructure management.
-- Handles OPD limits, ward allocation, and bed occupancy statuses.
-
-#### `billing`
-Financial tracking for appointments and admissions.
-- Trigger-automated bill generation upon appointment completion.
-
-#### `audit_logs`
-Security and action tracking.
-- Tracks critical actions (e.g., bed assignments). 
-- *RLS*: Only viewable by admins.
-
-### Automation (Triggers)
-- **Auto-UHID Generation**: Assigns a unique `MED-YYYY-XXXX` ID on new patient insert.
-- **OPD Limit Enforcement**: Prevents overbooking a department on a specific date.
-- **Auto-Billing**: Automatically creates a pending bill when an appointment status changes to `completed`.
+The AI Symptom Checker provides a secure, state-of-the-art triage assistant for patients. 
+1.  **Input Processing**: Users enter symptoms via a secure form.
+2.  **Prompt Engineering**: The input is sent to the Gemini API with a system prompt enforcing structured JSON output.
+3.  **Data Validation**: The frontend strictly parses the JSON, extracting `content`, `urgency` (HIGH/MEDIUM/LOW), `conditions`, and `department`.
+4.  **Fallback & Safety**: A 15-second timeout controller prevents hanging API calls. If the AI is unresponsive, the system degrades gracefully to a "Manual Evaluation Required" state.
+5.  **Emergency Disclaimer**: A high-visibility disclaimer alerts users to call emergency services for critical issues.

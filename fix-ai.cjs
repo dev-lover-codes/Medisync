@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect, memo } from 'react';
+const fs = require('fs');
+
+const code = `import React, { useState, useRef, useEffect, memo } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 import logger from '../../utils/logger';
@@ -9,11 +11,11 @@ import logger from '../../utils/logger';
  */
 const MessageItem = memo(({ msg, userProfile }) => {
   return (
-    <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
-      <div className={`flex gap-5 max-w-[90%] md:max-w-[80%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+    <div className={\`flex \${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in\`}>
+      <div className={\`flex gap-5 max-w-[90%] md:max-w-[80%] \${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}\`}>
         
         {/* Avatar / Identity Icon */}
-        <div className={`w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-lg transition-transform hover:scale-110 ${msg.role === 'user' ? 'bg-surface-container-high' : 'bg-primary text-white'}`}>
+        <div className={\`w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-lg transition-transform hover:scale-110 \${msg.role === 'user' ? 'bg-surface-container-high' : 'bg-primary text-white'}\`}>
           {msg.role === 'user' ? (
             <img 
               className="w-full h-full object-cover rounded-2xl" 
@@ -35,12 +37,12 @@ const MessageItem = memo(({ msg, userProfile }) => {
                     <h3 className="font-headline font-black text-2xl text-on-surface tracking-tighter leading-none mb-2">Preliminary Assessment</h3>
                     <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-widest">Clinical Identity Triage Phase 1</p>
                   </div>
-                  <div className={`px-5 py-2 rounded-full text-[10px] font-black tracking-widest flex items-center gap-2 border ${
+                  <div className={\`px-5 py-2 rounded-full text-[10px] font-black tracking-widest flex items-center gap-2 border \${
                     (msg.urgency || 'MEDIUM') === 'HIGH' ? 'bg-rose-50 text-rose-700 border-rose-100' : 'bg-orange-50 text-orange-700 border-orange-100'
-                  }`}>
-                    <span aria-hidden="true" className={`w-2 h-2 rounded-full animate-pulse ${
+                  }\`}>
+                    <span aria-hidden="true" className={\`w-2 h-2 rounded-full animate-pulse \${
                       (msg.urgency || 'MEDIUM') === 'HIGH' ? 'bg-rose-600' : 'bg-orange-600'
-                    }`}></span>
+                    }\`}></span>
                     {msg.urgency || 'MEDIUM'} URGENCY
                   </div>
                 </div>
@@ -80,15 +82,15 @@ const MessageItem = memo(({ msg, userProfile }) => {
               </div>
             </div>
           ) : (
-            <div className={`p-6 rounded-[2rem] text-sm font-medium leading-relaxed shadow-sm ${
+            <div className={\`p-6 rounded-[2rem] text-sm font-medium leading-relaxed shadow-sm \${
               msg.role === 'user' 
                 ? 'bg-primary text-white rounded-tr-none' 
                 : 'bg-white text-on-surface border border-outline-variant/10 rounded-tl-none'
-            }`}>
+            }\`}>
               {msg.content}
             </div>
           )}
-          <span className={`text-[9px] font-black uppercase tracking-tighter opacity-30 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+          <span className={\`text-[9px] font-black uppercase tracking-tighter opacity-30 \${msg.role === 'user' ? 'text-right' : 'text-left'}\`}>
             {msg.role === 'user' ? 'Transmission Verified' : 'AI Response Core 1.0'} • Just Now
           </span>
         </div>
@@ -107,7 +109,7 @@ export default function AISymptomChecker() {
   const [messages, setMessages] = useState([
     { 
       role: 'assistant', 
-      content: `Hello${userProfile?.full_name ? ' ' + userProfile.full_name : ''}! I am your MediSync triage assistant. Please describe your symptoms in detail so I can help guide you to the right care.`,
+      content: \`Hello\${userProfile?.full_name ? ' ' + userProfile.full_name : ''}! I am your MediSync triage assistant. Please describe your symptoms in detail so I can help guide you to the right care.\`,
       isInitial: true
     }
   ]);
@@ -139,16 +141,16 @@ export default function AISymptomChecker() {
         throw new Error("API key is missing.");
       }
 
-      const promptText = `You are an AI Symptom Checker. Analyze the following symptoms: "${input}". 
+      const promptText = \`You are an AI Symptom Checker. Analyze the following symptoms: "\${input}". 
 Respond ONLY with a valid JSON object matching this schema: 
 { 
   "content": "A brief compassionate response and summary", 
   "urgency": "HIGH", "MEDIUM", or "LOW", 
   "conditions": ["Possible condition 1", "Possible condition 2"], 
   "department": "Recommended hospital department (e.g. Cardiology, General Medicine)" 
-}`;
+}\`;
 
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+      const response = await fetch(\`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=\${apiKey}\`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -170,7 +172,7 @@ Respond ONLY with a valid JSON object matching this schema:
       let aiData = {};
       try {
         // Strip markdown code block markers if Gemini included them
-        const jsonStr = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+        const jsonStr = textResponse.replace(/\`\`\`json/g, '').replace(/\`\`\`/g, '').trim();
         aiData = JSON.parse(jsonStr);
       } catch (err) {
         throw new Error('Failed to parse structured JSON from AI.');
@@ -260,7 +262,7 @@ Respond ONLY with a valid JSON object matching this schema:
               <button 
                 key={s}
                 onClick={() => handleSuggestion(s)}
-                aria-label={`Suggest ${s}`}
+                aria-label={\`Suggest \${s}\`}
                 className="whitespace-nowrap px-5 py-2.5 bg-surface-container-low rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60 hover:bg-primary/5 hover:text-primary border border-outline-variant/10 transition-all"
               >
                 {s}
@@ -307,3 +309,6 @@ Respond ONLY with a valid JSON object matching this schema:
     </div>
   );
 }
+`;
+
+fs.writeFileSync('src/pages/patient/AISymptomChecker.jsx', code);

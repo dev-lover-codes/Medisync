@@ -1,5 +1,6 @@
 CREATE TABLE users (
     user_id         SERIAL PRIMARY KEY,
+    auth_id         UUID UNIQUE NOT NULL,
     email           VARCHAR(100) UNIQUE NOT NULL,
     password_hash   VARCHAR(255) NOT NULL,
     role            VARCHAR(20) NOT NULL CHECK (role IN ('admin','doctor','nurse','receptionist','pharmacist','patient')),
@@ -507,7 +508,7 @@ ON departments FOR SELECT USING (true);
 
 CREATE POLICY "Departments are manageable only by admins" 
 ON departments FOR ALL USING (
-    EXISTS (SELECT 1 FROM users WHERE user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int AND role = 'admin')
+    EXISTS (SELECT 1 FROM users WHERE user_id = (SELECT user_id FROM users WHERE auth_id = auth.uid()) AND role = 'admin')
 );
 
 -- 2. Patients:
@@ -518,7 +519,7 @@ CREATE POLICY "Patients viewable by staff or self"
 ON patients FOR SELECT USING (
     EXISTS (
         SELECT 1 FROM users u 
-        WHERE u.user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int
+        WHERE u.user_id = (SELECT user_id FROM users WHERE auth_id = auth.uid())
         AND (
             u.role IN ('admin', 'receptionist', 'nurse')
             OR (u.role = 'doctor' AND EXISTS (
@@ -539,7 +540,7 @@ CREATE POLICY "Appointments access policy"
 ON appointments FOR ALL USING (
     EXISTS (
         SELECT 1 FROM users u 
-        WHERE u.user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int
+        WHERE u.user_id = (SELECT user_id FROM users WHERE auth_id = auth.uid())
         AND (
             u.role IN ('admin', 'receptionist')
             OR (u.role = 'doctor' AND doctor_id = (SELECT doctor_id FROM doctors WHERE user_id = u.user_id))
@@ -554,7 +555,7 @@ CREATE POLICY "Medical records access policy"
 ON medical_records FOR ALL USING (
     EXISTS (
         SELECT 1 FROM users u 
-        WHERE u.user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int
+        WHERE u.user_id = (SELECT user_id FROM users WHERE auth_id = auth.uid())
         AND (
             u.role = 'admin'
             OR (u.role = 'doctor' AND doctor_id = (SELECT doctor_id FROM doctors WHERE user_id = u.user_id))
@@ -569,7 +570,7 @@ CREATE POLICY "Billing access policy"
 ON billing FOR SELECT USING (
     EXISTS (
         SELECT 1 FROM users u 
-        WHERE u.user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int
+        WHERE u.user_id = (SELECT user_id FROM users WHERE auth_id = auth.uid())
         AND (
             u.role IN ('admin', 'receptionist')
             OR (u.role = 'patient' AND patient_id = (SELECT patient_id FROM patients WHERE user_id = u.user_id))
@@ -581,5 +582,21 @@ ON billing FOR SELECT USING (
 -- Only admins can see audit logs
 CREATE POLICY "Only admins can view audit logs" 
 ON audit_logs FOR SELECT USING (
-    EXISTS (SELECT 1 FROM users WHERE user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int AND role = 'admin')
+    EXISTS (SELECT 1 FROM users WHERE user_id = (SELECT user_id FROM users WHERE auth_id = auth.uid()) AND role = 'admin')
 );
+
+CREATE INDEX idx_patients_user_id ON patients(user_id);
+CREATE INDEX idx_doctors_user_id ON doctors(user_id);
+CREATE INDEX idx_doctors_department_id ON doctors(department_id);
+CREATE INDEX idx_appointments_doctor_id ON appointments(doctor_id);
+CREATE INDEX idx_appointments_department_id ON appointments(department_id);
+CREATE INDEX idx_appointments_parent_appointment_id ON appointments(parent_appointment_id);
+CREATE INDEX idx_appointments_created_by ON appointments(created_by);
+CREATE INDEX idx_medical_records_appointment_id ON medical_records(appointment_id);
+CREATE INDEX idx_prescriptions_medical_record_id ON prescriptions(medical_record_id);
+CREATE INDEX idx_prescriptions_patient_id ON prescriptions(patient_id);
+CREATE INDEX idx_prescriptions_doctor_id ON prescriptions(doctor_id);
+CREATE INDEX idx_beds_current_patient_id ON beds(current_patient_id);
+CREATE INDEX idx_billing_patient_id ON billing(patient_id);
+CREATE INDEX idx_billing_appointment_id ON billing(appointment_id);
+CREATE INDEX idx_audit_logs_user_id ON audit_logs(user_id);
