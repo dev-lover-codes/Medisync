@@ -33,3 +33,10 @@ dist-ssr
 .vercel
 .env.vercel*
 
+# Project Scratch & Tools
+.agents
+scratch
+build_log.txt
+scaffold.ps1
+.gcloudignore
+
