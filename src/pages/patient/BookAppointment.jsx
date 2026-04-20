@@ -3,6 +3,11 @@ import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * BookAppointment Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function BookAppointment() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -93,13 +98,23 @@ export default function BookAppointment() {
     }
   };
 
-  const handleNext = () => {
+  /**
+ * handleNext internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const handleNext = () => {
     if (step === 1 && (!formData.department || !formData.doctor_id)) return;
     if (step === 2 && (!formData.appointment_date || !formData.time_slot)) return;
     setStep(prev => prev + 1);
   };
 
-  const handleBack = () => {
+  /**
+ * handleBack internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const handleBack = () => {
     setStep(prev => prev - 1);
   };
 

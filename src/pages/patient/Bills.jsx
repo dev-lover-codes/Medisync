@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 
+/**
+ * Bills Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function Bills() {
   const { user } = useAuth();
   const [bills, setBills] = useState([]);

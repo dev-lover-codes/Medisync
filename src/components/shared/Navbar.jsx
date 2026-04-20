@@ -1,5 +1,10 @@
 import React from 'react';
 
+/**
+ * Navbar internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 const Navbar = ({ onMenuClick }) => {
   return (
     <header className="sticky top-0 z-40 bg-surface/60 backdrop-blur-3xl w-full h-20 transition-all duration-500">

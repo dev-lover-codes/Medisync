@@ -8,6 +8,11 @@ const Wards = [
   { name: 'Maternity', total: 10, occupied: 5 },
 ];
 
+/**
+ * BedManagement Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function BedManagement() {
   return (
     <div className="space-y-8 animate-in slide-in-from-right duration-500">

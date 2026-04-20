@@ -1,7 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { supabase } from '../../../services/api';
 
+/**
+ * AISymptomChecker Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function AISymptomChecker() {
   const { user, userProfile } = useAuth();
   const [messages, setMessages] = useState([
@@ -28,66 +34,72 @@ export default function AISymptomChecker() {
     setInput('');
     setLoading(true);
 
-    try {
-      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-      
-      if (!apiKey) {
-        throw new Error('API key not found');
-      }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout limit
 
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+    try {
+      // Securely call the backend / Supabase Edge Function without exposing API keys
+      // The function 'analyze-symptoms' will validate the session and securely contact the AI model.
+      const { data, error } = await supabase.functions.invoke('analyze-symptoms', {
+        body: { 
+          messages: messages.filter(m => !m.isInitial).concat(userMessage).map(m => ({ role: m.role, content: m.content })) 
         },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: [
-            { 
-              role: 'system', 
-              content: "You are a professional medical triage AI for MediSync. Analyze symptoms and provide: 1. A summary assessment. 2. Urgency level (LOW, MEDIUM, HIGH). 3. Potential conditions. 4. Suggested department. Keep it clinical and professional. Always state you are an AI and not a substitute for a doctor." 
-            },
-            ...messages.filter(m => !m.isInitial).concat(userMessage).map(m => ({ role: m.role, content: m.content }))
-          ],
-          max_tokens: 500,
-          temperature: 0.7
-        })
+        signal: controller.signal
       });
 
-      if (!response.ok) throw new Error('API Request failed');
+      clearTimeout(timeoutId);
 
-      const data = await response.json();
-      const content = data.choices[0].message.content;
-      
-      // Parse for structured UI if possible, or just show as text
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: content,
-        isAssessment: content.toLowerCase().includes('assessment') || content.toLowerCase().includes('urgency')
-      }]);
+      if (error) {
+        throw new Error(error.message);
+      }
 
-    } catch (error) {
-      console.warn("API fallback triggered.", error);
-      
-      setTimeout(() => {
+      // Expected structured JSON output from Edge Function:
+      // { content: "...", urgency: "HIGH|MEDIUM|LOW", conditions: [...], department: "..." }
+      if (data && data.assessment) {
         setMessages(prev => [...prev, { 
           role: 'assistant', 
-          content: "Based on the symptoms described, I've generated a preliminary assessment. Please review the details below. As an AI, I recommend consulting a specialist for a definitive diagnosis.",
+          content: data.content || "Assessment complete. See details below.",
           isAssessment: true,
-          urgency: 'MEDIUM',
-          conditions: ['Common Viral Syndrome', 'Acute Respiratory Response'],
-          department: 'General Medicine'
+          urgency: data.urgency || 'MEDIUM',
+          conditions: data.conditions || [],
+          department: data.department || 'General Medicine'
         }]);
-        setLoading(false);
-      }, 1500);
-      return;
+      } else {
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: data?.content || "I couldn't process that properly. Please provide more details."
+        }]);
+      }
+
+    } catch (error) {
+      console.warn("AI Service error or timeout:", error);
+      
+      let errorMsg = "There was a problem connecting to the triage neural engine. Please try again or seek manual assistance.";
+      if (error.name === 'AbortError') {
+        errorMsg = "The AI service is taking too long to respond. Please try again.";
+      }
+
+      // Fallback response simulating structured output for UX continuity during failures
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: errorMsg,
+        isAssessment: true,
+        urgency: 'MEDIUM',
+        conditions: ['System Timeout', 'Manual Evaluation Required'],
+        department: 'General Triage'
+      }]);
+    } finally {
+      clearTimeout(timeoutId);
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
-  const handleSuggestion = (symptom) => {
+  /**
+ * handleSuggestion internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const handleSuggestion = (symptom) => {
     setInput(symptom);
     // Auto send suggestion? Let's just set input for now for better UX
   };
@@ -264,4 +276,3 @@ export default function AISymptomChecker() {
     </div>
   );
 }
-

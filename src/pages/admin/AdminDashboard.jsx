@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { Link } from 'react-router-dom';
 
+/**
+ * AdminDashboard Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
     totalPatients: 0,

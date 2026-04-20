@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 
+/**
+ * Prescriptions Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function Prescriptions() {
   const { user } = useAuth();
   const [prescriptions, setPrescriptions] = useState([]);
@@ -53,7 +58,12 @@ export default function Prescriptions() {
     }
   };
 
-  const requestRefill = (id) => {
+  /**
+ * requestRefill internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const requestRefill = (id) => {
     alert("Digital refill request has been transmitted to your physician's portal.");
   };
 

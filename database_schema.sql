@@ -2,7 +2,7 @@ CREATE TABLE users (
     user_id         SERIAL PRIMARY KEY,
     email           VARCHAR(100) UNIQUE NOT NULL,
     password_hash   VARCHAR(255) NOT NULL,
-    role            VARCHAR(20) NOT NULL CHECK (role IN ('admin','doctor','nurse','receptionist','pharmacist')),
+    role            VARCHAR(20) NOT NULL CHECK (role IN ('admin','doctor','nurse','receptionist','pharmacist','patient')),
     linked_id       INT,
     is_active       BOOLEAN DEFAULT TRUE,
     last_login      TIMESTAMPTZ,
@@ -20,6 +20,7 @@ CREATE TABLE departments (
 
 CREATE TABLE patients (
     patient_id              SERIAL PRIMARY KEY,
+    user_id                 INT REFERENCES users(user_id), -- Link to users for authentication
     uhid                    VARCHAR(20) UNIQUE,
     first_name              VARCHAR(50) NOT NULL,
     last_name               VARCHAR(50) NOT NULL,
@@ -479,3 +480,106 @@ LEFT JOIN appointments a
     AND a.appointment_date = CURRENT_DATE
     AND a.status != 'cancelled'
 GROUP BY dept.department_id;
+
+-- ==========================================
+-- ROW LEVEL SECURITY (RLS) POLICIES
+-- ==========================================
+
+-- Enable RLS on all tables
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE departments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE patients ENABLE ROW LEVEL SECURITY;
+ALTER TABLE doctors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE medical_records ENABLE ROW LEVEL SECURITY;
+ALTER TABLE prescriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE beds ENABLE ROW LEVEL SECURITY;
+ALTER TABLE billing ENABLE ROW LEVEL SECURITY;
+ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
+
+-- Utility Function to get current user role/id from JWT claims
+-- This assumes you are using Supabase Auth and have mapped user_id to a custom claim or use a mapping table.
+-- For now, we will use a placeholder logic that can be adapted.
+
+-- 1. Departments: Readable by everyone, editable only by admin
+CREATE POLICY "Departments are viewable by all authenticated users" 
+ON departments FOR SELECT USING (true);
+
+CREATE POLICY "Departments are manageable only by admins" 
+ON departments FOR ALL USING (
+    EXISTS (SELECT 1 FROM users WHERE user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int AND role = 'admin')
+);
+
+-- 2. Patients:
+-- Doctors can see patients they have appointments with
+-- Patients can see their own record
+-- Admins/Receptionists can see all
+CREATE POLICY "Patients viewable by staff or self" 
+ON patients FOR SELECT USING (
+    EXISTS (
+        SELECT 1 FROM users u 
+        WHERE u.user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int
+        AND (
+            u.role IN ('admin', 'receptionist', 'nurse')
+            OR (u.role = 'doctor' AND EXISTS (
+                SELECT 1 FROM appointments a 
+                JOIN doctors d ON a.doctor_id = d.doctor_id 
+                WHERE a.patient_id = patients.patient_id AND d.user_id = u.user_id
+            ))
+            OR (u.role = 'patient' AND patients.user_id = u.user_id)
+        )
+    )
+);
+
+-- 3. Appointments:
+-- Doctors see their own appointments
+-- Patients see their own
+-- Staff see all
+CREATE POLICY "Appointments access policy" 
+ON appointments FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM users u 
+        WHERE u.user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int
+        AND (
+            u.role IN ('admin', 'receptionist')
+            OR (u.role = 'doctor' AND doctor_id = (SELECT doctor_id FROM doctors WHERE user_id = u.user_id))
+            OR (u.role = 'patient' AND patient_id = (SELECT patient_id FROM patients WHERE user_id = u.user_id))
+        )
+    )
+);
+
+-- 4. Medical Records:
+-- Only assigned doctors and the patient themselves can see
+CREATE POLICY "Medical records access policy" 
+ON medical_records FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM users u 
+        WHERE u.user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int
+        AND (
+            u.role = 'admin'
+            OR (u.role = 'doctor' AND doctor_id = (SELECT doctor_id FROM doctors WHERE user_id = u.user_id))
+            OR (u.role = 'patient' AND patient_id = (SELECT patient_id FROM patients WHERE user_id = u.user_id))
+        )
+    )
+);
+
+-- 5. Billing:
+-- Patients see their own, admins/receptionists see all
+CREATE POLICY "Billing access policy" 
+ON billing FOR SELECT USING (
+    EXISTS (
+        SELECT 1 FROM users u 
+        WHERE u.user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int
+        AND (
+            u.role IN ('admin', 'receptionist')
+            OR (u.role = 'patient' AND patient_id = (SELECT patient_id FROM patients WHERE user_id = u.user_id))
+        )
+    )
+);
+
+-- 6. Audit Logs:
+-- Only admins can see audit logs
+CREATE POLICY "Only admins can view audit logs" 
+ON audit_logs FOR SELECT USING (
+    EXISTS (SELECT 1 FROM users WHERE user_id = (current_setting('request.jwt.claims', true)::json->>'user_id')::int AND role = 'admin')
+);

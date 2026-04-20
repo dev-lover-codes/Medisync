@@ -2,6 +2,11 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
+/**
+ * Sidebar internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 const Sidebar = ({ isOpen, onClose }) => {
   const { userProfile, role, signOut } = useAuth();
   const navigate = useNavigate();
@@ -110,6 +115,11 @@ const Sidebar = ({ isOpen, onClose }) => {
   );
 };
 
+/**
+ * NavItem internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 const NavItem = ({ to, icon, label, onClick }) => {
   return (
     <NavLink

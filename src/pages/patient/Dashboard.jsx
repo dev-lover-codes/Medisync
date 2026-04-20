@@ -3,6 +3,11 @@ import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
 import { useNavigate, Link } from 'react-router-dom';
 
+/**
+ * Dashboard internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 const Dashboard = () => {
   const { user, userProfile } = useAuth();
   const navigate = useNavigate();

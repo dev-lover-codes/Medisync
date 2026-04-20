@@ -3,6 +3,11 @@ import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Appointments Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function Appointments() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -73,7 +78,12 @@ export default function Appointments() {
     }
   };
 
-  const getStatusDisplay = (status) => {
+  /**
+ * getStatusDisplay internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const getStatusDisplay = (status) => {
     switch (status) {
       case 'upcoming': return { color: 'bg-green-50 text-green-700 border-green-100', dot: 'bg-green-500', label: 'Confirmed' };
       case 'completed': return { color: 'bg-blue-50 text-blue-700 border-blue-100', dot: 'bg-blue-500', label: 'Completed' };

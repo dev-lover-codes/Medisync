@@ -1,107 +1,127 @@
-# 🏥 MediSync: Next-Gen Digital Healthcare Ecosystem
+# MediSync
 
-![MediSync Hero Banner](medisync_hero_banner_1776698583274.png)
-
-MediSync is a premium, full-stack Hospital Management System (HMS) designed to bridge the gap between patients, doctors, and healthcare administrators. Built with a focus on **Visual Excellence**, **AI-Driven Insights**, and **Security**, MediSync transforms clinical workflows into a seamless digital experience.
+MediSync is a modern, responsive, and secure Healthcare Management System built for patients, doctors, and hospital administrators. It features an AI-driven symptom checker, real-time appointment booking, and robust administrative tools.
 
 ---
 
-## 🌐 Live Demo
-**Deployed on Google Cloud Run:** [https://medisync-738373994270.us-central1.run.app](https://medisync-738373994270.us-central1.run.app)
+## Architecture Overview
+
+MediSync uses a modern, serverless-oriented web architecture tailored for scalability, speed, and developer experience.
+
+### Frontend
+- **Framework**: [React](https://react.dev/) + [Vite](https://vitejs.dev/) for lightning-fast HMR and optimized production builds.
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) for utility-first styling with custom UI components.
+- **Routing**: [React Router v7](https://reactrouter.com/) for declarative client-side routing.
+- **Testing**: [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) for robust component and integration testing.
+
+### Backend & Database (Supabase)
+- **Database**: PostgreSQL database hosted on [Supabase](https://supabase.com/).
+- **Authentication**: Built-in Supabase Auth supporting Role-Based Access Control (RBAC).
+- **Security**: PostgreSQL Row Level Security (RLS) ensures users can only access their authorized data.
+- **Edge Functions**: Deno-based edge functions used to securely interface with AI models (e.g., OpenAI / Gemini) without exposing API keys to the client.
 
 ---
 
-## ✨ Key Pillars
-
-### 1. 🧬 Unified Health Record (UHR)
-Experience a 360-degree view of patient health. MediSync consolidates medical history, prescriptions, and lab results into a single, secure, and easily accessible timeline.
-
-### 2. 🤖 AI-Powered Diagnostics
-Empowering patients with an **AI Symptom Checker** that provides preliminary health guidance, helping users make informed decisions before their consultation.
-
-### 3. ⚡ Real-Time Clinical Workflows
-*   **For Doctors:** Streamlined "Write Prescription" interface, instant access to patient history, and real-time appointment status updates.
-*   **For Nurses:** Integrated Bed Management and real-time monitoring of patient status.
-
-### 4. 🏢 Smarter Resource Allocation
-Manage hospital logistics with precision.
-*   **Bed Management:** Real-time tracking of occupancy, bed types, and department allocation.
-*   **Smart Inventory:** Automated stock tracking for essential medicines and medical supplies.
-
----
-
-## 🛠 Tech Stack
-
-*   **Frontend:** React.js, Tailwind CSS (Velvet Clinical Design System)
-*   **Backend & DB:** Supabase (PostgreSQL)
-*   **Infrastructure:** Google Cloud Run (Containerized with Docker & Nginx)
-*   **Authentication:** Supabase Auth with Role-Based Access Control (RBAC)
-*   **Aesthetics:** Modern glassmorphism, smooth transitions, and a premium dark-mode-first approach.
-
----
-
-## 🔒 Security & Compliance
-
-MediSync is built with a "Privacy by Design" philosophy:
-*   **Row-Level Security (RLS):** Ensures patients can only access their own sensitive data.
-*   **Secure Auth:** JWT-based authentication for all API requests.
-*   **Data Integrity:** Multi-layered database constraints and automated triggers for consistent state management.
-
----
-
-## 🚀 Getting Started
+## Local Installation Guide
 
 ### Prerequisites
-- Node.js (v20+)
-- Google Cloud SDK (for deployment)
-- Supabase Project
+- Node.js (v18 or higher)
+- npm or yarn
+- A Supabase Project (for DB and Auth)
 
-### Installation
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/dev-lover-codes/Medisync.git
-    cd Medisync
-    ```
+### Setup Steps
 
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd medisync
+   ```
 
-3.  **Configure Environment Variables:**
-    Create a `.env` file in the root directory:
-    ```env
-    VITE_SUPABASE_URL=your_supabase_url
-    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-    ```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-4.  **Launch Local Development:**
-    ```bash
-    npm run dev
-    ```
+3. **Environment Configuration:**
+   Copy the example environment file and fill in your Supabase credentials:
+   ```bash
+   cp .env.example .env.local
+   ```
+   Open `.env.local` and add:
+   - `VITE_SUPABASE_URL`: Your Supabase Project URL
+   - `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon Key
 
----
+4. **Database Setup:**
+   Run the provided `database_schema.sql` script in your Supabase SQL editor to create all required tables, triggers, and Row Level Security (RLS) policies.
 
-## ☁️ Deployment (Google Cloud Run)
+5. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+   The app will be available at `http://localhost:5173`.
 
-The project is configured for seamless deployment to Cloud Run using Docker.
-
-1.  **Build and Deploy:**
-    ```bash
-    gcloud run deploy medisync --source . --region us-central1 --allow-unauthenticated
-    ```
-2.  **Important Note:** Ensure `.gcloudignore` includes your `.env` file during the build process so Vite can bake the environment variables into the static build.
-
----
-
-## 📐 Database Architecture
-The system relies on a robust schema containing tables for `profiles`, `doctors`, `appointments`, `prescriptions`, `bills`, and `medical_history`. Full schema available in `database_schema.sql`.
+6. **Run Tests:**
+   ```bash
+   npm run test
+   ```
 
 ---
 
-## 🎨 Design System: "Velvet Clinical"
-The UI follows a curated palette of deep charcoals, surgical teals, and soft accents, ensuring that the interface feels both professional and welcoming.
+## Supabase Database Schema
 
----
+The MediSync database is carefully normalized and secured using Row Level Security (RLS). 
 
-**Developed with ❤️ for Modern Healthcare.**
+### Core Tables
+
+#### `users`
+Handles application users and RBAC.
+- `user_id` (PK)
+- `email` (Unique)
+- `password_hash`
+- `role` (Enum: admin, doctor, nurse, receptionist, pharmacist, patient)
+
+#### `patients`
+Stores patient demographics and contact details.
+- `patient_id` (PK)
+- `user_id` (FK to users)
+- `uhid` (Unique Health ID, auto-generated)
+- `first_name`, `last_name`, `date_of_birth`, `gender`
+- *RLS*: Patients can view their own data; Admins/Staff can view all.
+
+#### `doctors`
+Profiles for medical staff.
+- `doctor_id` (PK)
+- `user_id` (FK to users)
+- `department_id` (FK to departments)
+- `specialization`, `consultation_fee`
+
+#### `appointments`
+Manages scheduling and tracking visits.
+- `appointment_id` (PK)
+- `patient_id` (FK), `doctor_id` (FK), `department_id` (FK)
+- `status` (scheduled, completed, cancelled)
+- *RLS*: Doctors see their assigned appointments; Patients see their own.
+
+#### `medical_records` & `prescriptions`
+Stores clinical data linked to appointments.
+- `record_id` (PK), `appointment_id` (FK)
+- `symptoms`, `diagnosis`, `notes`
+- *RLS*: Only assigned doctors and the patient themselves can access these records.
+
+#### `departments` & `beds`
+Hospital infrastructure management.
+- Handles OPD limits, ward allocation, and bed occupancy statuses.
+
+#### `billing`
+Financial tracking for appointments and admissions.
+- Trigger-automated bill generation upon appointment completion.
+
+#### `audit_logs`
+Security and action tracking.
+- Tracks critical actions (e.g., bed assignments). 
+- *RLS*: Only viewable by admins.
+
+### Automation (Triggers)
+- **Auto-UHID Generation**: Assigns a unique `MED-YYYY-XXXX` ID on new patient insert.
+- **OPD Limit Enforcement**: Prevents overbooking a department on a specific date.
+- **Auto-Billing**: Automatically creates a pending bill when an appointment status changes to `completed`.

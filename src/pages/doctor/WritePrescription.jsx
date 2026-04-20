@@ -3,6 +3,11 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
 
+/**
+ * WritePrescription Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function WritePrescription() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -34,17 +39,32 @@ export default function WritePrescription() {
     if (data) setPatient(data);
   };
 
-  const addMedication = () => {
+  /**
+ * addMedication internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const addMedication = () => {
     setMedications([...medications, { name: '', dosage: '', frequency: '', duration: '' }]);
   };
 
-  const removeMedication = (index) => {
+  /**
+ * removeMedication internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const removeMedication = (index) => {
     const list = [...medications];
     list.splice(index, 1);
     setMedications(list);
   };
 
-  const handleMedChange = (index, field, value) => {
+  /**
+ * handleMedChange internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const handleMedChange = (index, field, value) => {
     const list = [...medications];
     list[index][field] = value;
     setMedications(list);

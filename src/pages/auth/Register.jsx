@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
+/**
+ * Register Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function Register() {
   const navigate = useNavigate();
   const { signUp } = useAuth();
@@ -31,7 +36,12 @@ export default function Register() {
   const chronicOptions = ['Diabetes', 'Hypertension', 'Asthma', 'Heart Disease', 'None'];
 
   // Input Handlers
-  const handleChange = (e) => {
+  /**
+ * handleChange internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -39,7 +49,12 @@ export default function Register() {
     }));
   };
 
-  const handleChronicChange = (condition) => {
+  /**
+ * handleChronicChange internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const handleChronicChange = (condition) => {
     setFormData(prev => {
       let currentConditions = [...prev.chronicConditions];
       
@@ -58,7 +73,12 @@ export default function Register() {
     });
   };
 
-  const handlePhotoUpload = (e) => {
+  /**
+ * handlePhotoUpload internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -70,7 +90,12 @@ export default function Register() {
   };
 
   // Password Strength Logic
-  const getPasswordStrength = () => {
+  /**
+ * getPasswordStrength internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const getPasswordStrength = () => {
     const p = formData.password;
     let strength = 0;
     if (p.length >= 8) strength += 1;
@@ -87,11 +112,21 @@ export default function Register() {
   const passStrength = getPasswordStrength();
 
   // Navigation Handlers
-  const handleNext = () => {
+  /**
+ * handleNext internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const handleNext = () => {
     if (currentStep < 3) setCurrentStep(prev => prev + 1);
   };
 
-  const handleBack = () => {
+  /**
+ * handleBack internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const handleBack = () => {
     if (currentStep > 1) setCurrentStep(prev => prev - 1);
   };
 
@@ -142,7 +177,12 @@ export default function Register() {
     }
   };
 
-  const renderStepIndicator = () => {
+  /**
+ * renderStepIndicator internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const renderStepIndicator = () => {
     return (
       <div className="w-full mb-12">
         <div className="flex justify-between items-center relative z-10 w-full max-w-md mx-auto">

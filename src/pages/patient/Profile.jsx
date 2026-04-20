@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 
+/**
+ * Profile Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function Profile() {
   const { user, userProfile } = useAuth();
   
@@ -68,7 +73,12 @@ export default function Profile() {
     }
   };
 
-  const handleChange = (e) => {
+  /**
+ * handleChange internal Component or utility
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
+const handleChange = (e) => {
     if (!isEditing) return;
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));

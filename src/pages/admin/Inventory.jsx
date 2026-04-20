@@ -8,6 +8,11 @@ const InventoryData = [
   { id: 'MED-003', name: 'Insulin Glargine', category: 'Pharmacy', stock: 85, unit: 'Vials', status: 'In Stock' },
 ];
 
+/**
+ * Inventory Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function Inventory() {
   return (
     <div className="space-y-8 animate-in slide-in-from-right duration-500">

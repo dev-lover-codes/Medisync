@@ -1,6 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * LandingPage Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function LandingPage() {
   return (
     <div className="bg-surface font-body text-on-surface-variant selection:bg-primary-container/30 min-h-screen">

@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
+/**
+ * Login Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function Login() {
   const navigate = useNavigate();
   const { signIn } = useAuth();

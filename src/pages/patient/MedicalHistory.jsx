@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 
+/**
+ * MedicalHistory Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function MedicalHistory() {
   const { user, userProfile } = useAuth();
   const [history, setHistory] = useState([]);

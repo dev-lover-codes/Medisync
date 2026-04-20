@@ -3,6 +3,11 @@ import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
 import { Link } from 'react-router-dom';
 
+/**
+ * DoctorDashboard Component
+ * @component
+ * @returns {React.ReactElement} The rendered component
+ */
 export default function DoctorDashboard() {
   const { user, userProfile } = useAuth();
   const [stats, setStats] = useState({
