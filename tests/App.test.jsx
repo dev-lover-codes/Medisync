@@ -34,8 +34,8 @@ describe('Authentication Flows', () => {
       </BrowserRouter>
     );
     
-    const emailInput = screen.getByPlaceholderText(/your.email@example.com/i);
-    const passwordInput = screen.getByPlaceholderText(/••••••••/i);
+    const emailInput = screen.getByPlaceholderText(/enter your email/i);
+    const passwordInput = screen.getByPlaceholderText(/enter your password/i);
     const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     fireEvent.change(emailInput, { target: { value: 'test@test.com' } });
