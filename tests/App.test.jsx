@@ -8,16 +8,43 @@ import { AuthProvider } from '../src/context/AuthContext';
 
 // Mock the AuthContext
 vi.mock('../src/context/AuthContext', async () => {
-  const actual = await vi.importActual('../src/context/AuthContext');
   return {
-    ...actual,
+    AuthProvider: ({ children }) => <div>{children}</div>,
     useAuth: () => ({
-      login: vi.fn().mockResolvedValue({ success: true }),
-      register: vi.fn().mockResolvedValue({ success: true }),
-      user: { id: 1, role: 'patient' }
+      signIn: vi.fn().mockResolvedValue({ success: true }),
+      signUp: vi.fn().mockResolvedValue({ success: true }),
+      user: { id: 1, role: 'patient' },
+      userProfile: { full_name: 'Jane Doe' },
+      loading: false
     })
   };
 });
+
+// Mock supabase
+vi.mock('../src/lib/supabaseClient', () => ({
+  supabase: {
+    from: vi.fn().mockReturnThis(),
+    select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
+    order: vi.fn().mockReturnThis(),
+    then: vi.fn().mockImplementation((callback) => {
+      // Simulate successful data fetch for doctors and appointments
+      return callback({ 
+        data: [
+          { 
+            doctor_id: 1, 
+            first_name: 'John', 
+            last_name: 'Doe', 
+            department: 'Cardiology',
+            consultation_fee: 100,
+            departments: { department_name: 'Cardiology' }
+          }
+        ], 
+        error: null 
+      });
+    })
+  }
+}));
 
 // Mock api
 vi.mock('../src/services/api', () => ({
@@ -36,7 +63,7 @@ describe('Authentication Flows', () => {
     
     const emailInput = screen.getByPlaceholderText(/enter your email/i);
     const passwordInput = screen.getByPlaceholderText(/enter your password/i);
-    const submitButton = screen.getByRole('button', { name: /sign in/i });
+    const submitButton = screen.getByRole('button', { name: /Log In/i });
 
     fireEvent.change(emailInput, { target: { value: 'test@test.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
@@ -48,7 +75,7 @@ describe('Authentication Flows', () => {
     });
   });
 
-  it('renders register form and toggles tabs', async () => {
+  it('renders register form', async () => {
     render(
       <BrowserRouter>
         <AuthProvider>
@@ -57,14 +84,7 @@ describe('Authentication Flows', () => {
       </BrowserRouter>
     );
 
-    const patientTab = screen.getByText(/I am a Patient/i);
-    const staffTab = screen.getByText(/I am Staff/i);
-    
-    expect(patientTab).toBeInTheDocument();
-    
-    // Switch to staff tab
-    fireEvent.click(staffTab);
-    expect(screen.getByText(/Department/i)).toBeInTheDocument();
+    expect(screen.getByText(/Join MediSync today/i)).toBeInTheDocument();
   });
 
   it('validates password mismatch on register', async () => {
@@ -76,8 +96,16 @@ describe('Authentication Flows', () => {
       </BrowserRouter>
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/••••••••/i, { selector: 'input[name="password"]' }), { target: { value: 'pass123' } });
-    fireEvent.change(screen.getByPlaceholderText(/••••••••/i, { selector: 'input[name="confirmPassword"]' }), { target: { value: 'pass456' } });
+    // Navigate to step 3 first
+    fireEvent.click(screen.getByText(/Next Step/i)); // To Step 2
+    fireEvent.click(screen.getByText(/Next Step/i)); // To Step 3
+
+    await waitFor(() => {
+      expect(screen.getAllByPlaceholderText(/••••••••/i)[0]).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getAllByPlaceholderText(/••••••••/i)[0], { target: { value: 'pass123' } });
+    fireEvent.change(screen.getAllByPlaceholderText(/••••••••/i)[1], { target: { value: 'pass456' } });
     
     const submitButton = screen.getByRole('button', { name: /create account/i });
     fireEvent.click(submitButton);
@@ -89,7 +117,7 @@ describe('Authentication Flows', () => {
 });
 
 describe('Appointment Booking Logic', () => {
-  it('renders the appointment booking form', () => {
+  it('renders the appointment booking form', async () => {
     render(
       <BrowserRouter>
         <AuthProvider>
@@ -98,8 +126,9 @@ describe('Appointment Booking Logic', () => {
       </BrowserRouter>
     );
     
-    expect(screen.getByText(/Book an Appointment/i)).toBeInTheDocument();
-    expect(screen.getByText(/Select Department/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/Clinician Synchronization/i)).toBeInTheDocument();
+    });
   });
 
   it('allows selecting a department and doctor', async () => {
@@ -111,14 +140,16 @@ describe('Appointment Booking Logic', () => {
       </BrowserRouter>
     );
 
+    await waitFor(() => {
+      expect(screen.getByText(/Clinical Domain/i)).toBeInTheDocument();
+    });
+
     // Mock interactions
-    const deptSelect = screen.getByRole('combobox');
-    fireEvent.change(deptSelect, { target: { value: '1' } }); // Select Cardiology or similar
+    const deptButton = screen.getByText(/Module 1/i);
+    fireEvent.click(deptButton);
 
     await waitFor(() => {
-      // The mock api returns a doctor, wait for it to be rendered or available in state
-      // This is a basic structural test
-      expect(screen.getByText(/Select Doctor/i)).toBeInTheDocument();
+      expect(screen.getByText(/Expertise Registry/i)).toBeInTheDocument();
     });
   });
 
