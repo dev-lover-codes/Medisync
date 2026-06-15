@@ -15,6 +15,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          curl -i -s "$SUPABASE_URL/rest/v1/" \
+          curl -i -s "$SUPABASE_URL/rest/v1/departments" \
             -H "apikey: $SUPABASE_KEY" \
             -H "Authorization: Bearer $SUPABASE_KEY"
+
