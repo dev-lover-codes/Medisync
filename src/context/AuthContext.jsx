@@ -115,6 +115,10 @@ export const AuthProvider = ({ children }) => {
     return res;
   };
 
+  const signInWithGoogle = async () => {
+    return await authService.signInWithGoogle();
+  };
+
   const signOut = async () => {
     const res = await authService.signOut();
     if (!res.error) {
@@ -138,6 +142,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     signUp,
     signIn,
+    signInWithGoogle,
     signOut,
     resetPassword
   };

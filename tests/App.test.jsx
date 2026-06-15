@@ -13,6 +13,7 @@ vi.mock('../src/context/AuthContext', async () => {
     useAuth: () => ({
       signIn: vi.fn().mockResolvedValue({ success: true }),
       signUp: vi.fn().mockResolvedValue({ success: true }),
+      signInWithGoogle: vi.fn().mockResolvedValue({ success: true }),
       user: { id: 1, role: 'patient' },
       userProfile: { full_name: 'Jane Doe' },
       loading: false
@@ -73,6 +74,19 @@ describe('Authentication Flows', () => {
       // Mock triggers navigation or state change
       expect(submitButton).toBeDisabled(); // usually loading state
     });
+  });
+
+  it('renders sign in with google button', async () => {
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <Login />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    const googleButton = screen.getByRole('button', { name: /Sign in with Google/i });
+    expect(googleButton).toBeInTheDocument();
   });
 
   it('renders register form', async () => {

@@ -72,6 +72,22 @@ export const authService = {
     }
   },
 
+  async signInWithGoogle() {
+    try {
+      if (!supabase) throw new Error("Supabase is not initialized.");
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/patient/dashboard'
+        }
+      });
+      return { data, error };
+    } catch (err) {
+      logger.error("Google Sign In Error:", err);
+      return { data: null, error: err };
+    }
+  },
+
   async signOut() {
     if (!supabase) return { error: null };
     const { error } = await supabase.auth.signOut();
