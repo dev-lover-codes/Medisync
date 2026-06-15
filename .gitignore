@@ -7,10 +7,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies and Builds
 node_modules
 dist
 dist-ssr
 *.local
+coverage/
 
 # Editor directories and files
 .vscode/*
@@ -30,13 +32,23 @@ dist-ssr
 .env.test.local
 .env.production.local
 
+# Vercel deployment
 .vercel
 .env.vercel*
 
-# Project Scratch & Tools
-.agents
-scratch
+# Project Scratch, Scripts & Tools
+.agents/
+scratch/
 build_log.txt
 scaffold.ps1
 .gcloudignore
+.mcp.json
 
+# Development scripts
+add-jsdoc.cjs
+fix-ai.cjs
+fix-db.cjs
+refactor-app.cjs
+
+# Local archives
+archive/
