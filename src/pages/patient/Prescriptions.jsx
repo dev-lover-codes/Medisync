@@ -15,14 +15,6 @@ export default function Prescriptions() {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('active');
 
-  useEffect(() => {
-    if (user) {
-      fetchPrescriptions();
-    }
-  
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, activeTab]);
-
   const fetchPrescriptions = async () => {
     try {
       setLoading(true);
@@ -60,6 +52,14 @@ export default function Prescriptions() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      fetchPrescriptions();
+    }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, activeTab]);
 
   /**
  * requestRefill internal Component or utility

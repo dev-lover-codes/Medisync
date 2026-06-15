@@ -38,7 +38,7 @@ describe('AISymptomChecker', () => {
 
   it('shows timeout error when API takes longer than 15 seconds', async () => {
     // Mock global fetch to just wait infinitely
-    global.fetch = vi.fn(() => new Promise(() => {}));
+    globalThis.fetch = vi.fn(() => new Promise(() => {}));
 
     render(
       <BrowserRouter>

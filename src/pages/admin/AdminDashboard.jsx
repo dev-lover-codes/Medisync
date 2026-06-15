@@ -19,12 +19,6 @@ export default function AdminDashboard() {
   const [recentPatients, setRecentPatients] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchAdminStats();
-  
-     
-  }, []);
-
   const fetchAdminStats = async () => {
     try {
       setLoading(true);
@@ -40,21 +34,23 @@ export default function AdminDashboard() {
       const doctorsCount = profiles.filter(p => p.role === 'doctor').length;
 
       // 2. Fetch Pending Payments
-      const { data: bills, error: billError } = await supabase
+      const { data: bills, error: billsError } = await supabase
         .from('bills')
         .select('amount')
-        .eq('status', 'unpaid');
-      
-      if (billError) throw billError;
-      const totalPending = bills.reduce((acc, b) => acc + b.amount, 0);
+        .eq('status', 'pending');
+        
+      if (billsError) throw billsError;
+      const totalPending = bills.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
-      // 3. Fetch Recent Patients (Latest signups)
-      const { data: latest } = await supabase
+      // 3. Fetch Recent Registered Patients
+      const { data: latest, error: latestError } = await supabase
         .from('profiles')
         .select('*')
         .eq('role', 'patient')
-        .order('id', { ascending: false }) // Fallback since no created_at
+        .order('created_at', { ascending: false })
         .limit(5);
+
+      if (latestError) throw latestError;
 
       setStats({
         totalPatients: patientsCount,
@@ -71,6 +67,12 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchAdminStats();
+  
+     
+  }, []);
 
   if (loading) {
     return (

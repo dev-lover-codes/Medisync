@@ -25,14 +25,6 @@ export default function WritePrescription() {
     { name: '', dosage: '', frequency: '', duration: '' }
   ]);
 
-  useEffect(() => {
-    if (patientIdParam) {
-      fetchPatientDetails();
-    }
-  
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [patientIdParam]);
-
   const fetchPatientDetails = async () => {
     const { data } = await supabase
       .from('profiles')
@@ -41,6 +33,14 @@ export default function WritePrescription() {
       .single();
     if (data) setPatient(data);
   };
+
+  useEffect(() => {
+    if (patientIdParam) {
+      fetchPatientDetails();
+    }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patientIdParam]);
 
   /**
  * addMedication internal Component or utility

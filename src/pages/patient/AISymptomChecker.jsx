@@ -172,7 +172,7 @@ Respond ONLY with a valid JSON object matching this schema:
         // Strip markdown code block markers if Gemini included them
         const jsonStr = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
         aiData = JSON.parse(jsonStr);
-      } catch (err) {
+      } catch {
         throw new Error('Failed to parse structured JSON from AI.');
       }
 

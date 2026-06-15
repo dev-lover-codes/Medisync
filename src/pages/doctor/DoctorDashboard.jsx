@@ -20,14 +20,6 @@ export default function DoctorDashboard() {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user) {
-      fetchDoctorData();
-    }
-  
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
   const fetchDoctorData = async () => {
     try {
       setLoading(true);
@@ -76,6 +68,13 @@ export default function DoctorDashboard() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      fetchDoctorData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   if (loading) {
     return (

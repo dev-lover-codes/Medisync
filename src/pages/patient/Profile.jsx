@@ -28,26 +28,6 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('Personal Info');
 
-  useEffect(() => {
-    if (userProfile) {
-      setFormData({
-        full_name: userProfile.full_name || '',
-        phone: userProfile.phone || '',
-        date_of_birth: userProfile.date_of_birth || '',
-        gender: userProfile.gender || '',
-        blood_group: userProfile.blood_group || '',
-        address: userProfile.address || '',
-        emergency_contact_name: userProfile.emergency_contact_name || '',
-        emergency_contact_phone: userProfile.emergency_contact_phone || '',
-        known_allergies: userProfile.known_allergies || ''
-      });
-    } else if (user) {
-      fetchProfile();
-    }
-  
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userProfile, user]);
-
   const fetchProfile = async () => {
     try {
       const { data, error } = await supabase
@@ -75,6 +55,26 @@ export default function Profile() {
       logger.error("Error fetching profile:", error);
     }
   };
+
+  useEffect(() => {
+    if (userProfile) {
+      setFormData({
+        full_name: userProfile.full_name || '',
+        phone: userProfile.phone || '',
+        date_of_birth: userProfile.date_of_birth || '',
+        gender: userProfile.gender || '',
+        blood_group: userProfile.blood_group || '',
+        address: userProfile.address || '',
+        emergency_contact_name: userProfile.emergency_contact_name || '',
+        emergency_contact_phone: userProfile.emergency_contact_phone || '',
+        known_allergies: userProfile.known_allergies || ''
+      });
+    } else if (user) {
+      fetchProfile();
+    }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfile, user]);
 
   /**
  * handleChange internal Component or utility

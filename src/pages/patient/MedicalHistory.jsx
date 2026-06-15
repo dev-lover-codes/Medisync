@@ -15,14 +15,6 @@ export default function MedicalHistory() {
   const [, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    if (user) {
-      fetchMedicalHistory();
-    }
-  
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
   const fetchMedicalHistory = async () => {
     try {
       setLoading(true);
@@ -51,6 +43,14 @@ export default function MedicalHistory() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      fetchMedicalHistory();
+    }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const filteredHistory = history.filter(record => 
     record.diagnosis?.toLowerCase().includes(searchTerm.toLowerCase()) ||

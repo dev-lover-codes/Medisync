@@ -18,14 +18,6 @@ export default function Appointments() {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
-  useEffect(() => {
-    if (user) {
-      fetchAppointments();
-    }
-  
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, activeTab]);
-
   const fetchAppointments = async () => {
     try {
       setLoading(true);
@@ -63,6 +55,14 @@ export default function Appointments() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      fetchAppointments();
+    }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, activeTab]);
 
   const cancelAppointment = async (id) => {
     try {

@@ -36,13 +36,6 @@ export default function BookAppointment() {
     '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM'
   ];
 
-  useEffect(() => {
-    fetchInitialData();
-    fetchUpcomingAppointments();
-  
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
   const fetchUpcomingAppointments = async () => {
     if (!user) return;
     try {
@@ -100,6 +93,13 @@ export default function BookAppointment() {
       setFetchingDocs(false);
     }
   };
+
+  useEffect(() => {
+    fetchInitialData();
+    fetchUpcomingAppointments();
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   /**
  * handleNext internal Component or utility

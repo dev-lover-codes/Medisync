@@ -16,14 +16,6 @@ export default function Bills() {
   const [payingId, setPayingId] = useState(null);
   const [filterStatus, setFilterStatus] = useState('All Statuses');
 
-  useEffect(() => {
-    if (user) {
-      fetchBills();
-    }
-  
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
   const fetchBills = async () => {
     try {
       setLoading(true);
@@ -55,6 +47,14 @@ export default function Bills() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      fetchBills();
+    }
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const handlePayBill = async (id) => {
     try {
