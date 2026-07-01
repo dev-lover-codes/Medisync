@@ -9,18 +9,17 @@ on:
 jobs:
   database_heartbeat:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # Crucial: Allows the bot to push commits
     steps:
     - name: Checkout Repository Code
       uses: actions/checkout@v3
       with:
-        # Uses the built-in GitHub Token with write permissions
-        token: ${{ secrets.GITHUB_TOKEN }}
+        # Crucial: Use your Personal Access Token secret (GH_PAT) here 
+        # instead of GITHUB_TOKEN so GitHub counts it as human activity!
+        token: ${{ secrets.GH_PAT }}
 
     - name: Execute Live Supabase Database Query
       run: |
-        curl -X GET "https://suzhqkydzafgugeyqcxi.supabase.co/rest/v1/doctors?select=*" \
+        curl -X GET "https://zvyhmmotpzpsppbdycos.supabase.co/rest/v1/doctors?select=*" \
         -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
         -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
 
