@@ -1,21 +1,41 @@
-name: Keep Supabase Alive
+name: MediSync Permanent 5-Year Keep Alive
 
 on:
   schedule:
-    # This runs automatically every 5 days at 8:00 AM UTC
-    - cron: '0 8 */5 * *'
-  workflow_dispatch: # This allows you to manually run the script anytime
+    # Runs automatically every 5 days at midnight
+    - cron: '0 0 */5 * *'
+  workflow_dispatch: # Allows manual trigger for testing
 
 jobs:
-  ping:
+  database_heartbeat:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Crucial: Allows the bot to push commits
     steps:
-      - name: Ping Supabase REST Endpoint
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: |
-          curl -i -s "$SUPABASE_URL/rest/v1/departments" \
-            -H "apikey: $SUPABASE_KEY" \
-            -H "Authorization: Bearer $SUPABASE_KEY"
+    - name: Checkout Repository Code
+      uses: actions/checkout@v3
+      with:
+        # Uses the built-in GitHub Token with write permissions
+        token: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Execute Live Supabase Database Query
+      run: |
+        curl -X GET "https://suzhqkydzafgugeyqcxi.supabase.co/rest/v1/doctors?select=*" \
+        -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+        -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
+
+    - name: Reset 60-Day Supabase & GitHub Workflow Disabling Timers
+      run: |
+        # 1. Update the timestamp file for Supabase activity
+        echo "Last database heartbeat check-in executed on: $(date)" > library_heartbeat.txt
+        
+        # 2. Setup git configurations
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Automation Bot"
+        
+        # 3. Commit the timestamp change to keep the repository active
+        git add library_heartbeat.txt
+        git commit -m "System routine maintenance heartbeat [skip ci]" || exit 0
+        
+        # 4. Push directly back to the main branch
+        git push origin HEAD:main
