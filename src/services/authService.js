@@ -7,7 +7,7 @@ export const authService = {
     
     try {
       logger.info("Fetching profile for:", userId);
-      const isNumeric = /^\\d+$/.test(userId);
+      const isNumeric = /^\d+$/.test(userId);
       
       let query = supabase.from('users').select('*');
       if (authEmail) {
@@ -74,16 +74,17 @@ export const authService = {
 
   async signInWithGoogle() {
     try {
-      if (!supabase) throw new Error("Supabase is not initialized.");
+      if (!supabase) throw new Error('Supabase is not initialized.');
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/patient/dashboard'
+          // Redirect back to login — AuthContext's onAuthStateChange
+          // will detect the session and redirect to the correct role dashboard
+          redirectTo: window.location.origin + '/login'
         }
       });
       return { data, error };
     } catch (err) {
-      logger.error("Google Sign In Error:", err);
       return { data: null, error: err };
     }
   },

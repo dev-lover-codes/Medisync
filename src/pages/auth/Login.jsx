@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import logger from '../../utils/logger';
@@ -10,16 +10,24 @@ import logger from '../../utils/logger';
  */
 export default function Login() {
   const navigate = useNavigate();
-  const { signIn, signInWithGoogle } = useAuth();
-  const [role, setRole] = useState('Patient');
+  const { signIn, signInWithGoogle, user, role, loading } = useAuth();
+  const [selectedRole, setSelectedRole] = useState('Patient');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const roles = ['Patient', 'Doctor', 'Admin', 'Nurse', 'Pharmacist'];
+  const roles = ['Patient', 'Doctor', 'Admin'];
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Auto-redirect if already authenticated (e.g. after Google OAuth callback)
+  useEffect(() => {
+    if (!loading && user && role) {
+      const dashboardMap = { patient: '/patient/dashboard', doctor: '/doctor/dashboard', admin: '/admin/dashboard' };
+      navigate(dashboardMap[role] || '/patient/dashboard', { replace: true });
+    }
+  }, [user, role, loading, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -161,10 +169,10 @@ export default function Login() {
                   <button
                     key={r}
                     type="button"
-                    onClick={() => setRole(r)}
+                    onClick={() => setSelectedRole(r)}
                     className={`
                       px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 shadow-sm
-                      ${role === r 
+                      ${selectedRole === r 
                         ? 'bg-primary-container text-[#49394c] ring-2 ring-primary-container/50' 
                         : 'bg-surface-container-high text-on-surface-variant hover:bg-outline-variant/30'
                       }

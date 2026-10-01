@@ -62,12 +62,18 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <Suspense fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}>
+        <Suspense fallback={
+          <div className="flex h-screen items-center justify-center bg-background flex-col gap-4">
+            <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+            <p className="text-sm font-medium text-on-surface-variant">Loading MediSync...</p>
+          </div>
+        }>
           <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/forgot-password/reset" element={<ForgotPassword />} />
           
           {/* Patient Routes */}
           <Route path="/patient" element={<ProtectedRoute allowedRoles={['patient']}><Layout /></ProtectedRoute>}>

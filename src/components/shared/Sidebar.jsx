@@ -60,7 +60,7 @@ const Sidebar = ({ isOpen, onClose }) => {
              </div>
              <div>
                 <span className="text-2xl font-black font-headline text-on-surface tracking-tighter leading-none block">MediSync</span>
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40">Clinical Network v2.0</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant/40">Smart Healthcare</span>
              </div>
           </div>
         </div>
@@ -71,15 +71,15 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className="w-full h-full rounded-[2rem] overflow-hidden border-4 border-surface shadow-inner group-hover:scale-105 transition-transform duration-500">
                <img 
                  className="w-full h-full object-cover" 
-                 src={userProfile?.image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuAwfI3BpPZZmY1N3tcehtrjKSKIf1Xkkkpi9jZJyB-W3q6gR2bPOw-CMgIA1uz24qxl3V-5zoz2z_T-WCp90dSrqHm9DheCqZDTkItCwPUnzbFexOXFJ16XllIY2zXsrZnGSaxHn2JQ5fQPoTIrEmC32PcXnfTsBby7Lw9YcRIw-xeNafycMF21Hf_22S5Rj-k8XQlFUEIlEzPFTy9SfYiOkH2ffa0f88nUFanmaIKQC9tPsqfvulYeUHoIOFhEYLVEQ5abLwD6cQw"} 
+                 src={userProfile?.image_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userProfile?.full_name || 'User')}&background=6f5673&color=fff&size=192`} 
                  alt="Profile" 
                />
             </div>
             <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 border-4 border-surface rounded-full shadow-lg"></div>
           </div>
-          <h3 className="font-headline font-black text-on-surface tracking-tight text-lg line-clamp-1 group-hover:text-primary transition-colors">{userProfile?.full_name || 'Subject Unidentified'}</h3>
+          <h3 className="font-headline font-black text-on-surface tracking-tight text-lg line-clamp-1 group-hover:text-primary transition-colors">{userProfile?.full_name || 'User'}</h3>
           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary bg-primary/5 border border-primary/10 px-4 py-1.5 rounded-full mt-3">
-             {role || 'PATIENT'} GRADE A
+             {(role || 'Patient').charAt(0).toUpperCase() + (role || 'patient').slice(1)}
           </span>
         </div>
 
@@ -96,7 +96,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             onClick={handleLogout}
             className="w-full flex items-center justify-between px-6 py-4 text-rose-600 font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-rose-50 transition-all border border-transparent hover:border-rose-100"
           >
-            Terminal Output
+            Log Out
             <span className="material-symbols-outlined text-lg">logout</span>
           </button>
           
@@ -104,9 +104,9 @@ const Sidebar = ({ isOpen, onClose }) => {
              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform duration-700">
                 <span className="material-symbols-outlined text-6xl text-white">support_agent</span>
              </div>
-             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60 mb-3 relative z-10">Critical Protocol</p>
+             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60 mb-3 relative z-10">Need Help?</p>
              <button className="text-[10px] font-black uppercase tracking-[0.2em] bg-white/10 hover:bg-white/20 text-white w-full py-3.5 rounded-2xl transition-all relative z-10 border border-white/10">
-                Emergency Dispatch
+                Emergency Contact
              </button>
           </div>
         </div>

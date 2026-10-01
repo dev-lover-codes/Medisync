@@ -1,19 +1,5 @@
-/**
- * API Service for interacting with Supabase and external endpoints.
- * @module api
- */
-
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabaseClient';
 import logger from '../utils/logger';
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  logger.error('Supabase URL or Anon Key is missing in environment variables.');
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 /**
  * Maps Supabase errors to standard HTTP status codes and consistent error objects.
